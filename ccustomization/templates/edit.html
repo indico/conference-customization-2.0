@@ -1,0 +1,56 @@
+{% extends '_layout.html' %}
+
+{% block title %}Layout modification{% endblock %}
+
+{% block content -%}
+
+    <div class="page-header">
+        <h1>Layout modification</h1>
+
+        <div>
+            <a href="{{ url_for('.view', id=page_id) }}">Page view</a>
+        </div>
+    </div>
+
+    <div class="modification-toolbar">
+        <div class="widget-selector">
+            <label>Add widget:</label>
+            <select>
+                <option selected></option>
+                {% for widget in widget_list %}
+                    <option>{{ widget }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="row-button">
+            <input type="submit" value="Add row"/>
+        </div>
+        <div class="save-discard-buttons">
+            <div>
+                <input type="submit" value="Save"/>
+            </div>
+            <div>
+                <input type="submit" value="Discard changes"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="modification-grid">
+
+        <div id="widget-test" style="height: 140px; width: {{ 100/cols - 0.1 }}%; float: left; z-index: 1; background: red;"></div>
+        {% for i in range(0, rows) %}
+            <div class="grid-row">
+                {% for j in range(0, cols) %}
+                    <div class="grid-cell" style="width: {{ 100/cols - 0.1 }}%;"></div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+
+{%- endblock %}
+
+{% block body_end %}
+    {%- assets filters='rjsmin', output='assets/edit.js', 'js/edit.js' %}
+        <script src="{{ ASSET_URL|version_url }}"></script>
+    {%- endassets %}
+{% endblock %}

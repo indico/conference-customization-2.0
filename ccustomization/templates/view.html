@@ -1,0 +1,21 @@
+{% extends '_layout.html' %}
+
+{% block title %}Page view{% endblock %}
+
+{% block content -%}
+
+    <div class="page-header">
+        <h1>Page view</h1>
+
+        <div>
+            <a href="{{ url_for('.edit', id=page_id) }}">Layout modification</a>
+        </div>
+    </div>
+
+    <div class="clearfix">
+
+
+
+    </div>
+
+{%- endblock %}

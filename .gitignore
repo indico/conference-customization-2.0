@@ -1,0 +1,10 @@
+/env/
+/dist
+*.egg-info
+/.idea/
+/ccustomization/static/.webassets-cache
+/ccustomization/static/assets/
+/ccustomization/static/locale/*.js
+.*.swp
+*.pyc
+*.cfg

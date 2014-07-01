@@ -1,0 +1,58 @@
+
+.page-header {
+    border-bottom: 2px solid black;
+    margin-bottom: 10px;
+}
+
+$grid-border: 1px solid black;
+
+.modification-toolbar {
+    $toolbar-color: #E0E0E0;
+
+    width: 100%;
+    height: 60px;
+    border: $grid-border;
+    border-color: $toolbar-color;
+    background-color: $toolbar-color;
+
+    .widget-selector, .row-button, .save-discard-buttons {
+        margin-top: 18px;
+    }
+
+    .widget-selector, .row-button {
+        float: left;
+        margin-left: 40px;
+    }
+
+    .save-discard-buttons {
+        float: right;
+        margin-right: 40px;
+
+        div {
+            float: left;
+        }
+    }
+}
+
+.modification-grid {
+
+    .grid-row {
+        width: 100%;
+        height: 140px;
+        border: $grid-border;
+        border-bottom: 0px;
+
+        &:last-child {
+            border-bottom: $grid-border;
+        }
+
+        .grid-cell {
+            float: left;
+            height: 100%;
+
+            &:not(:last-child) {
+                border-right: $grid-border;
+            }
+        }
+    }
+}

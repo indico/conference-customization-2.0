@@ -1,0 +1,18 @@
+{% extends '_layout.html' %}
+
+{% block title %}Conference customization{% endblock %}
+
+{% block content -%}
+
+    <div class="page-header">
+        <h1>Conference customization</h1>
+
+        <div>
+            <a href="{{ url_for('.edit', id=main_page_id) }}">Layout modification</a>
+        </div>
+        <div>
+            <a href="{{ url_for('.view', id=main_page_id) }}">Page view</a>
+        </div>
+    </div>
+
+{%- endblock %}
