@@ -36,16 +36,20 @@
     </div>
 
     <div class="modification-grid">
-
-        <div id="widget-test" style="height: 140px; width: {{ 100/cols - 0.1 }}%; float: left; z-index: 1; background: red;"></div>
         {% for i in range(0, rows) %}
             <div class="grid-row">
                 {% for j in range(0, cols) %}
-                    <div class="grid-cell" style="width: {{ 100/cols - 0.1 }}%;"></div>
+                    <div class="grid-cell" style="width: {{ 100/cols - 0.1 }}%;">
+                        <div id="widget-{{ i }}-{{ j }}" class="widget-test"></div>
+                    </div>
                 {% endfor %}
             </div>
         {% endfor %}
     </div>
+
+<!--     <div class="style-toolbar">
+        
+    </div> -->
 
 {%- endblock %}
 
