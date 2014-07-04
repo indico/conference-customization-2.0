@@ -13,43 +13,33 @@
     </div>
 
     <div class="modification-toolbar">
-        <div class="widget-selector">
-            <label>Add widget:</label>
-            <select>
-                <option selected></option>
-                {% for widget in widget_list %}
-                    <option>{{ widget }}</option>
-                {% endfor %}
-            </select>
+        <div class="widget-button">
+            <button type="button">Add widget</button>
         </div>
-        <div class="row-button">
-            <input type="submit" value="Add row"/>
+        <div class="container-button">
+            <button type="button">Add container</button>
         </div>
         <div class="save-discard-buttons">
             <div>
-                <input type="submit" value="Save"/>
+                <button type="button">Save</button>
             </div>
             <div>
-                <input type="submit" value="Discard changes"/>
+                <button type="button">Discard changes</button>
             </div>
         </div>
     </div>
 
-    <div class="modification-grid">
-        {% for i in range(0, rows) %}
-            <div class="grid-row">
-                {% for j in range(0, cols) %}
-                    <div class="grid-cell" style="width: {{ 100/cols - 0.1 }}%;">
-                        <div id="widget-{{ i }}-{{ j }}" class="widget-test"></div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endfor %}
+    <div id="main-container" class="main-container">
+        <ul class="main-list">
+            {% for col in range(0, 2) %}
+                <li id="column-{{ col }}-container" class="column-container">
+                    <ul class="column-list"></ul>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 
-<!--     <div class="style-toolbar">
-        
-    </div> -->
+
 
 {%- endblock %}
 

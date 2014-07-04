@@ -1,28 +1,69 @@
 $(document).ready(function() {
-    function enableDrag(elem, grid) {
-        elem.draggable({
-            grid: grid,
-            containment: '.modification-grid',
-            scroll: false
-        }).resizable({
-            grid: grid,
-            containment: '.modification-grid'
-        }).addClass('active').on('click', function(){
+    // var widgets = $('.widget-test');
+    // var width = $('.main-container').width();
+    // widgets.on('click', function(){
+    //     var widget = $(this);
+    //     var select = true;
+    //     if (widget.hasClass('selected')) {
+    //         select = false;
+    //     }
+    //     widgets.removeClass('selected');
+    //     widget.toggleClass('selected', select);
+    // });
+
+    // $('.main-list').width(width).sortable();
+
+    // ---------------------------------------
+
+    //$('.main-list').sortable();
+    $('.column-list, .container-list').sortable({
+        connectWith: '.column-list, .container-list',
+        handle: '.ui-icon.ui-icon-arrow-4'
+    });
+
+    var widgetCount = 0,
+        containerCount = 0;
+
+    $('.widget-button button').on('click', function(){
+        var widget = $('<li>', {
+            class: 'widget-test',
+            text: 'Widget '+widgetCount
+        });
+        var drag = $('<span>', {
+            class: 'widget-drag ui-icon ui-icon-arrow-4'
+        });
+        drag.appendTo(widget);
+        widget.on('click', function(){
             var select = true;
-            if (elem.hasClass('selected')) {
+            if (widget.hasClass('selected')) {
                 select = false;
             }
             $('.widget-test').removeClass('selected');
-            elem.toggleClass('selected', select);
-        });
-    }
+            widget.toggleClass('selected', select);
+        }).appendTo($('#column-0-container .column-list'));
+        widgetCount++;
+    });
 
-    var widget = $('.widget-test');
-    var width = $('.modification-grid .grid-row .grid-cell').width();
-    var height = $('.modification-grid .grid-row .grid-cell').height();
-    widget.width(width-8);
-    widget.height(height-8);
-    var grid = [width+1, height+1];
-    enableDrag($('#widget-0-0'), grid);
-    enableDrag($('#widget-1-2'), grid);
+    $('.container-button button').on('click', function(){
+        var container = $('<li>', {
+            class: 'container-test',
+            id: 'container-'+containerCount
+        });
+        var drag = $('<span>', {
+            class: 'container-drag ui-icon ui-icon-arrow-4'
+        });
+        var containerList = $('<ul>', {
+            class: 'container-list'
+        });
+        drag.appendTo(container);
+        containerList.appendTo(container);
+        container.appendTo($('#column-0-container .column-list'));
+        containerCount++;
+
+        containerList.sortable({
+            connectWith: '.column-list, .container-list',
+            handle: '.ui-icon.ui-icon-arrow-4'
+        });
+    });
+
 });
