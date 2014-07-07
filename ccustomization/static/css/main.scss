@@ -70,8 +70,6 @@ $toolbar-color: #E0E0E0;
     width: 100%;
     height: 120px;
     border-radius: 4px;
-    margin-top: 2px;
-    margin-bottom: 2px;
     background-color: lighten(red, 20%);
     text-align: center;
 
@@ -83,11 +81,14 @@ $toolbar-color: #E0E0E0;
 .container-test {
     width: 100%;
     height: 120px;
-    border-radius: 4px;
     margin-top: 2px;
     margin-bottom: 2px;
-    border: 2px solid blue;
     text-align: center;
+
+    &.filled {
+    background-color: lighten(blue, 20%);
+    border-radius: 4px;
+    }
 }
 
 .main-container {
