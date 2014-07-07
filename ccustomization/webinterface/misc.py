@@ -18,7 +18,7 @@ def get_classes(module):
     classes_list.sort()
     return classes_list
 
-COLS = 4
+COLS = 3
 ROWS = 8
 widget_list = get_classes(widgets)
 

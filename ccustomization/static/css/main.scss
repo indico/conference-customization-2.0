@@ -15,11 +15,11 @@ $toolbar-color: #E0E0E0;
     border-color: $toolbar-color;
     background-color: $toolbar-color;
 
-    .widget-button, .container-button, .save-discard-buttons {
+    .widget-button, .add-column-button, .save-discard-buttons {
         margin-top: 18px;
     }
 
-    .widget-button, .container-button {
+    .widget-button, .add-column-button {
         float: left;
         margin-left: 40px;
     }

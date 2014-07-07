@@ -14,7 +14,15 @@
 
     <div class="modification-toolbar">
         <div class="widget-button">
-            <button type="button">Add widget</button>
+            <button type="button">Add widget to column</button>
+            <select>
+                {% for col in range(0, cols) %}
+                    <option>{{ col }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="add-column-button">
+            <button type="button">Add column</button>
         </div>
         <div class="save-discard-buttons">
             <div>
@@ -28,7 +36,7 @@
 
     <div id="main-container" class="main-container">
         <ul class="main-list">
-            {% for col in range(0, 2) %}
+            {% for col in range(0, cols) %}
                 <li id="column-{{ col }}-container" class="column-container">
                     <ul class="column-list"></ul>
                 </li>

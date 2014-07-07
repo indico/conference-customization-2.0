@@ -21,7 +21,8 @@ $(document).ready(function() {
         handle: '.ui-icon.ui-icon-arrow-4'
     });
 
-    var widgetCount = 0;
+    var widgetCount = 0,
+        cols = $('.main-list').children().length;
 
     $('.widget-button button').on('click', function(){
         var widget = $('<li>', {
@@ -36,7 +37,9 @@ $(document).ready(function() {
         });
         var containerList = $('<ul>', {
             'class': 'container-list'
-        });
+        })
+        var colNumber = $('.widget-button select').val();
+        var column = $('#column-'+colNumber+'-container .column-list');
         drag.appendTo(widget);
         widget.on('click', function(){
             var select = ! widget.hasClass('selected');
@@ -44,13 +47,37 @@ $(document).ready(function() {
             widget.toggleClass('selected', select);
         }).appendTo(containerList);
         containerList.appendTo(container);
-        container.appendTo($('#column-0-container .column-list'));
+        container.appendTo(column);
         widgetCount++;
 
         containerList.sortable({
             connectWith: '.column-list, .container-list',
             handle: '.ui-icon.ui-icon-arrow-4'
         });
+    });
+
+    $('.add-column-button button').on('click', function(){
+        var columnContainer = $('<li>', {
+            id: 'column-'+cols+'-container',
+            'class': 'column-container'
+        });
+        var columnList = $('<ul>', {
+            'class': 'column-list'
+        });
+        var option = $('<option>', {
+            text: cols
+        });
+
+        columnList.appendTo(columnContainer);
+        columnContainer.appendTo($('.main-list'));
+        option.appendTo($('.widget-button select'));
+
+        columnList.sortable({
+            connectWith: '.column-list, .container-list',
+            handle: '.ui-icon.ui-icon-arrow-4'
+        });
+
+        cols++;
     });
 
     $('body').on('sortstop', function(){
