@@ -89,6 +89,7 @@ $(document).ready(function() {
         columnList.appendTo(columnContainer);
         columnContainer.appendTo($('.main-list'));
         option.appendTo($('.actions select'));
+        $('.actions select').selectmenu('refresh');
 
         columnList.sortable({
             connectWith: '.column-list, .container-list',
