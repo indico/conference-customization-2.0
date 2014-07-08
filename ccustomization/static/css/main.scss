@@ -5,7 +5,7 @@
 }
 
 $grid-border: 1px solid black;
-$toolbar-color: #E0E0E0;
+$toolbar-color: lightblue;
 
 .modification-toolbar {
 
@@ -15,11 +15,11 @@ $toolbar-color: #E0E0E0;
     border-color: $toolbar-color;
     background-color: $toolbar-color;
 
-    .widget-button, .add-column-button, .save-discard-buttons {
+    .actions, .save-discard-buttons {
         margin-top: 18px;
     }
 
-    .widget-button, .add-column-button {
+    .actions {
         float: left;
         margin-left: 40px;
     }
@@ -30,6 +30,18 @@ $toolbar-color: #E0E0E0;
 
         div {
             float: left;
+        }
+    }
+
+    .ui-selectmenu-button {
+
+        span.ui-selectmenu-text {
+            padding: 0 0 0 0.2em;
+            line-height: initial;
+        }
+
+        span.ui-icon {
+            right: 0.1em;
         }
     }
 }
@@ -116,4 +128,24 @@ $toolbar-color: #E0E0E0;
 .ui-icon.ui-icon-arrow-4 {
     float: right;
     cursor: move;
+}
+
+.style-dialog {
+    font-size: 80%;
+
+    label, input {
+        display: block;
+    }
+
+    input.text {
+        margin-bottom: 12px;
+        width: 95%;
+        padding: .4em;
+    }
+
+    fieldset {
+        padding: 0;
+        border: 0;
+        margin-top: 25px;
+    }
 }

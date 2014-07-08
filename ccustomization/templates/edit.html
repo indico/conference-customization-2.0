@@ -13,16 +13,14 @@
     </div>
 
     <div class="modification-toolbar">
-        <div class="widget-button">
-            <button type="button">Add widget to column</button>
+        <div class="actions">
+            <button id="add-widget" type="button">Add widget to column</button>
             <select>
                 {% for col in range(0, cols) %}
                     <option>{{ col }}</option>
                 {% endfor %}
             </select>
-        </div>
-        <div class="add-column-button">
-            <button type="button">Add column</button>
+            <button id="add-column" type="button">Add column</button>
         </div>
         <div class="save-discard-buttons">
             <div>
@@ -44,13 +42,15 @@
         </ul>
     </div>
 
-    <div id="dialog-form" title="Customize the style!">
-      <form id="actual-form">
-        <fieldset>
-          <label for="color">Color</label>
-          <input type="text" name="color" id="color" value="red" class="text ui-widget-content ui-corner-all">
-        </fieldset>
-      </form>
+    <div id="dialog-form" title="Customize the style!" class="style-dialog">
+        <form id="actual-form">
+            <fieldset>
+                <label for="color">Color</label>
+                <input type="text" name="color" id="color" class="text ui-widget-content ui-corner-all">
+                <label for="font-size">Font size</label>
+                <input type="text" name="font-size" id="font-size" class="text ui-widget-content ui-corner-all">
+            </fieldset>
+        </form>
     </div>
 
 

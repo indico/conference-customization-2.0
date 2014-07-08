@@ -35,7 +35,7 @@ $(document).ready(function() {
         dialog,
         hexDigits = new Array("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f");
 
-    $('.widget-button button').on('click', function(){
+    $('.actions button#add-widget').on('click', function(){
         var widget = $('<li>', {
             'class': 'widget-test',
             text: 'Widget '+widgetCount
@@ -49,7 +49,7 @@ $(document).ready(function() {
         var containerList = $('<ul>', {
             'class': 'container-list'
         })
-        var colNumber = $('.widget-button select').val();
+        var colNumber = $('.actions select').val();
         var column = $('#column-'+colNumber+'-container .column-list');
         drag.appendTo(widget);
         widget.on('click', function(){
@@ -57,8 +57,10 @@ $(document).ready(function() {
             $('.widget-test').removeClass('selected');
             widget.toggleClass('selected', select);
             if (select) {
-                var color = dialog.find("form input#color");
+                var color = dialog.find("form input#color"),
+                    fontSize = dialog.find("form input#font-size");
                 color.val(rgb2hex(widget.css('background-color')));
+                fontSize.val(widget.css('font-size'));
                 dialog.dialog("open");
             }
         }).appendTo(containerList);
@@ -72,7 +74,7 @@ $(document).ready(function() {
         });
     });
 
-    $('.add-column-button button').on('click', function(){
+    $('.actions button#add-column').on('click', function(){
         var columnContainer = $('<li>', {
             id: 'column-'+cols+'-container',
             'class': 'column-container'
@@ -86,7 +88,7 @@ $(document).ready(function() {
 
         columnList.appendTo(columnContainer);
         columnContainer.appendTo($('.main-list'));
-        option.appendTo($('.widget-button select'));
+        option.appendTo($('.actions select'));
 
         columnList.sortable({
             connectWith: '.column-list, .container-list',
@@ -140,8 +142,9 @@ $(document).ready(function() {
         buttons: {
             "Save": function() {
                 var color = dialog.find("form input#color"),
+                    fontSize = dialog.find("form input#font-size")
                     widget = $('.widget-test.selected');
-                widget.css('background-color', color.val());
+                widget.css('background-color', color.val()).css('font-size', fontSize.val());
                 dialog.dialog("close");
             },
             Cancel: function() {
@@ -150,7 +153,18 @@ $(document).ready(function() {
         },
         close: function() {
             $('.widget-test').removeClass('selected');
+        },
+        show: {
+            effect: "explode",
+            duration: 400
+        },
+        hide: {
+            effect: "explode",
+            duration: 400
         }
     });
+
+    $('button').button();
+    $('select').selectmenu();
 
 });
