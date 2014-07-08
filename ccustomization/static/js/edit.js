@@ -21,8 +21,19 @@ $(document).ready(function() {
         handle: '.ui-icon.ui-icon-arrow-4'
     });
 
+    function rgb2hex(rgb) {
+       rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+       return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+    }
+
+    function hex(x) {
+        return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
+    }
+
     var widgetCount = 0,
-        cols = $('.main-list').children().length;
+        cols = $('.main-list').children().length,
+        dialog,
+        hexDigits = new Array("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f");
 
     $('.widget-button button').on('click', function(){
         var widget = $('<li>', {
@@ -45,6 +56,11 @@ $(document).ready(function() {
             var select = ! widget.hasClass('selected');
             $('.widget-test').removeClass('selected');
             widget.toggleClass('selected', select);
+            if (select) {
+                var color = dialog.find("form input#color");
+                color.val(rgb2hex(widget.css('background-color')));
+                dialog.dialog("open");
+            }
         }).appendTo(containerList);
         containerList.appendTo(container);
         container.appendTo(column);
@@ -76,7 +92,7 @@ $(document).ready(function() {
             connectWith: '.column-list, .container-list',
             handle: '.ui-icon.ui-icon-arrow-4'
         });
-
+ 
         cols++;
     });
 
@@ -93,10 +109,8 @@ $(document).ready(function() {
                 });
                 drag.appendTo($this);
                 list.appendTo($this);
-                $this.addClass('filled');
             } else if (list.children().length == 1) {
                 $this.children('.ui-icon.ui-icon-arrow-4').remove();
-                $this.removeClass('filled');
             }
         });
         $('.widget-test').each(function(){
@@ -116,6 +130,27 @@ $(document).ready(function() {
                 });
             }
         });
+    });
+
+    dialog = $( "#dialog-form" ).dialog({
+        autoOpen: false,
+        height: 300,
+        width: 350,
+        modal: true,
+        buttons: {
+            "Save": function() {
+                var color = dialog.find("form input#color"),
+                    widget = $('.widget-test.selected');
+                widget.css('background-color', color.val());
+                dialog.dialog("close");
+            },
+            Cancel: function() {
+                dialog.dialog("close");
+            }
+        },
+        close: function() {
+            $('.widget-test').removeClass('selected');
+        }
     });
 
 });
