@@ -125,9 +125,20 @@ $toolbar-color: lightblue;
     }
 }
 
-.ui-icon.ui-icon-arrow-4 {
-    float: right;
-    cursor: move;
+.ui-icon {
+
+    &.ui-icon-arrow-4, &.ui-icon-trash {
+        float: right;
+    }
+
+    &.ui-icon-arrow-4 {
+        margin-left: 5px;
+        cursor: move;
+    }
+
+    &.ui-icon-trash {
+        cursor: pointer;
+    }
 }
 
 .style-dialog {

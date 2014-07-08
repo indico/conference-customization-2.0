@@ -43,6 +43,17 @@ $(document).ready(function() {
         var drag = $('<span>', {
             'class': 'ui-icon ui-icon-arrow-4'
         });
+        var trash = $('<span>', {
+            'class': 'ui-icon ui-icon-trash'
+        }).on('click', function(e){
+            e.stopPropagation();
+            if (widget.siblings('.widget-test').length < 1) {
+                widget.parent().parent().remove();
+            } else {
+                widget.remove();
+            }
+            $('body').trigger('sortstop');
+        });
         var container = $('<li>', {
             'class': 'container-test'
         });
@@ -52,6 +63,7 @@ $(document).ready(function() {
         var colNumber = $('.actions select').val();
         var column = $('#column-'+colNumber+'-container .column-list');
         drag.appendTo(widget);
+        trash.appendTo(widget);
         widget.on('click', function(){
             var select = ! widget.hasClass('selected');
             $('.widget-test').removeClass('selected');
@@ -140,7 +152,7 @@ $(document).ready(function() {
         });
     });
 
-    dialog = $( "#dialog-form" ).dialog({
+    dialog = $("#dialog-form").dialog({
         autoOpen: false,
         height: 300,
         width: 350,
