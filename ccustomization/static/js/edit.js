@@ -115,6 +115,11 @@ $(document).ready(function() {
             } else if (list.children().length == 1) {
                 $this.children('.ui-icon.ui-icon-arrow-4').remove();
             }
+
+            if ($this.parent().hasClass('container-list')) {
+                $this.children('.ui-icon.ui-icon-arrow-4').remove();
+                $this.children().children().unwrap().unwrap();
+            }
         });
         $('.widget-test').each(function(){
             var $this = $(this);
