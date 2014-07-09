@@ -125,19 +125,29 @@ $toolbar-color: lightblue;
     }
 }
 
-.ui-icon {
+.widget-icons, .container-icons {
+    float: right;
+    display: inline-block;
 
-    &.ui-icon-arrow-4, &.ui-icon-trash {
-        float: right;
+    .ui-icon {
+
+        &.ui-icon-arrow-4 {
+            cursor: move;
+        }
+
+        &.ui-icon-trash {
+            cursor: pointer;
+        }
     }
+}
 
-    &.ui-icon-arrow-4 {
-        margin-left: 5px;
-        cursor: move;
-    }
+.widget-icons {
 
-    &.ui-icon-trash {
-        cursor: pointer;
+    .ui-icon {
+
+        &.ui-icon-arrow-4, &.ui-icon-trash {
+            float: right;
+        }
     }
 }
 

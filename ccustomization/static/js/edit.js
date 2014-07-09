@@ -40,6 +40,9 @@ $(document).ready(function() {
             'class': 'widget-test',
             text: 'Widget '+widgetCount
         });
+        var widgetIcons = $('<div>', {
+            'class': 'widget-icons'
+        });
         var drag = $('<span>', {
             'class': 'ui-icon ui-icon-arrow-4'
         });
@@ -62,8 +65,9 @@ $(document).ready(function() {
         })
         var colNumber = $('.actions select').val();
         var column = $('#column-'+colNumber+'-container .column-list');
-        drag.appendTo(widget);
-        trash.appendTo(widget);
+        drag.appendTo(widgetIcons);
+        trash.appendTo(widgetIcons);
+        widgetIcons.appendTo(widget);
         widget.on('click', function(){
             var select = ! widget.hasClass('selected');
             $('.widget-test').removeClass('selected');
@@ -117,8 +121,11 @@ $(document).ready(function() {
             var list = $this.children('.container-list');
             if (list.children().length < 1) {
                 $this.remove();
-            } else if (list.children().length > 1 && $this.children('.ui-icon').length < 1) {
+            } else if (list.children().length > 1 && $this.children('.container-icons').length < 1) {
                 list.detach();
+                var containerIcons = $('<div>', {
+                    'class': 'container-icons'
+                });
                 var drag = $('<span>', {
                     'class': 'ui-icon ui-icon-arrow-4'
                 });
@@ -126,17 +133,18 @@ $(document).ready(function() {
                     'class': 'ui-icon ui-icon-trash'
                 }).on('click', function(e){
                     e.stopPropagation();
-                    $(this).parent().remove();
+                    $(this).parent().parent().remove();
                 });
-                drag.appendTo($this);
-                trash.appendTo($this);
+                drag.appendTo(containerIcons);
+                trash.appendTo(containerIcons);
+                containerIcons.appendTo($this);
                 list.appendTo($this);
             } else if (list.children().length == 1) {
-                $this.children('.ui-icon').remove();
+                $this.children('.container-icons').remove();
             }
 
             if ($this.parent().hasClass('container-list')) {
-                $this.children('.ui-icon').remove();
+                $this.children('.container-icons').remove();
                 $this.children().children().unwrap().unwrap();
             }
         });
