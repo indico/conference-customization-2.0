@@ -117,19 +117,26 @@ $(document).ready(function() {
             var list = $this.children('.container-list');
             if (list.children().length < 1) {
                 $this.remove();
-            } else if (list.children().length > 1 && $this.children('.ui-icon.ui-icon-arrow-4').length < 1) {
+            } else if (list.children().length > 1 && $this.children('.ui-icon').length < 1) {
                 list.detach();
                 var drag = $('<span>', {
                     'class': 'ui-icon ui-icon-arrow-4'
                 });
+                var trash = $('<span>', {
+                    'class': 'ui-icon ui-icon-trash'
+                }).on('click', function(e){
+                    e.stopPropagation();
+                    $(this).parent().remove();
+                });
                 drag.appendTo($this);
+                trash.appendTo($this);
                 list.appendTo($this);
             } else if (list.children().length == 1) {
-                $this.children('.ui-icon.ui-icon-arrow-4').remove();
+                $this.children('.ui-icon').remove();
             }
 
             if ($this.parent().hasClass('container-list')) {
-                $this.children('.ui-icon.ui-icon-arrow-4').remove();
+                $this.children('.ui-icon').remove();
                 $this.children().children().unwrap().unwrap();
             }
         });
