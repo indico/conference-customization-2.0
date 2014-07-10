@@ -106,7 +106,8 @@ $(document).ready(function() {
     $('.actions button#add-column').on('click', function(){
         var columnContainer = $('<li>', {
             id: 'column-'+cols+'-container',
-            'class': 'column-container'
+            'class': 'column-container',
+            'data-column': cols
         });
         var columnList = $('<ul>', {
             'class': 'column-list'
