@@ -82,13 +82,8 @@ $toolbar-color: lightblue;
     width: 100%;
     min-height: 120px;
     border-radius: 4px;
-    background-color: red;
+    background-color: lighten(red, 20%);
     text-align: center;
-    opacity: 0.6;
-
-    &.selected {
-        opacity: 1;
-    }
 }
 
 .container-test {
@@ -135,7 +130,7 @@ $toolbar-color: lightblue;
             cursor: move;
         }
 
-        &.ui-icon-trash {
+        &.ui-icon-trash, &.ui-icon-copy {
             cursor: pointer;
         }
     }

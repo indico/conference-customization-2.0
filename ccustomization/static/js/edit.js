@@ -64,6 +64,13 @@ $(document).ready(function() {
             }
             $('body').trigger('sortstop');
         });
+        widget.find('.ui-icon.ui-icon-copy').on('click', function(e){
+            e.stopPropagation();
+            var newWidget = widget.clone();
+            widget.parent().parent().after(newWidget);
+            bindWidget(newWidget);
+            $('body').trigger('sortstop');
+        });
     }
 
     $('.actions button#add-widget').on('click', function(){
@@ -80,6 +87,9 @@ $(document).ready(function() {
         var trash = $('<span>', {
             'class': 'ui-icon ui-icon-trash'
         });
+        var copy = $('<span>', {
+            'class': 'ui-icon ui-icon-copy'
+        });
         var container = $('<li>', {
             'class': 'container-test'
         });
@@ -90,6 +100,7 @@ $(document).ready(function() {
         var column = $('#column-'+colNumber+'-container .column-list');
         drag.appendTo(widgetIcons);
         trash.appendTo(widgetIcons);
+        copy.appendTo(widgetIcons);
         widgetIcons.appendTo(widget);
         widget.appendTo(containerList);
         bindWidget(widget);
@@ -149,8 +160,21 @@ $(document).ready(function() {
                     e.stopPropagation();
                     $(this).parent().parent().remove();
                 });
+                var copy = $('<span>', {
+                    'class': 'ui-icon ui-icon-copy'
+                }).on('click', function(e){
+                    e.stopPropagation();
+                    var newContainer = $(this).parent().parent().clone();
+                    $this.after(newContainer);
+                    newContainer.find('.widget-test').each(function(){
+                        bindWidget($(this));
+                    });
+                    newContainer.children('.container-icons').remove();
+                    refreshContainers();
+                });
                 drag.appendTo(containerIcons);
                 trash.appendTo(containerIcons);
+                copy.appendTo(containerIcons);
                 containerIcons.appendTo($this);
                 list.appendTo($this);
             } else if (list.children().length == 1) {
