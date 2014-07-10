@@ -4,8 +4,7 @@ from sqlalchemy.types import TypeDecorator, VARCHAR
 
 from ..core import db
 
-DEFAULT_ROWS = 8
-DEFAULT_COLS = 4
+DEFAULT_COLS = 2
 
 
 class JSONEncodedDict(TypeDecorator):
@@ -30,15 +29,18 @@ class JSONEncodedDict(TypeDecorator):
 
 class Page(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    grid = db.Column(JSONEncodedDict, nullable=False)
-    rows = db.Column(db.Integer, default=DEFAULT_ROWS)
-    columns = db.Column(db.Integer, default=DEFAULT_COLS)
+    name = db.Column(db.String, nullable=False)
+    content = db.Column(JSONEncodedDict, nullable=False)
+    columns = db.Column(db.Integer, nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, columns=DEFAULT_COLS):
         self.name = name or "Page {0}".format(self.id)
-        self.grid = {}
+        self.columns = columns
+        content = {}
+        for col in range(0, self.columns):
+            content[col] = []
+        self.content = content
 
     def __repr__(self):
         return '<Page {0}>'.format(self.id)

@@ -1,7 +1,9 @@
 import inspect
+import json
 import re
 
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, jsonify, request
+from sqlalchemy.exc import SQLAlchemyError
 
 from ..core import db
 from ..layout import widgets
@@ -47,12 +49,24 @@ def edit(id):
     if page is None:
         return redirect(url_for(".index"))
     wvars = {
-        'cols': COLS,
-        'rows': ROWS,
-        'page_id': id,
-        'widget_list': widget_list
+        'cols': page.columns,
+        'content': page.content,
+        'page_id': id
     }
     return render_template('edit.html', **wvars)
+
+
+@bp.route('/edit/<id>', methods=('PATCH',))
+def update(id):
+    page = Page.query.filter_by(id=id).first_or_404()
+    page.content = request.get_json()
+    page.columns = len(page.content)
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify(error=str(e)), 400
+    return jsonify()
 
 
 @bp.route('/view/<id>')
