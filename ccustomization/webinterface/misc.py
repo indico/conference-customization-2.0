@@ -75,8 +75,8 @@ def view(id):
     if page is None:
         return redirect(url_for(".index"))
     wvars = {
-        'cols': COLS,
-        'rows': ROWS,
+        'cols': page.columns,
+        'content': page.content,
         'page_id': id
     }
     return render_template('view.html', **wvars)

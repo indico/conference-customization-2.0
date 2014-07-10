@@ -80,7 +80,7 @@ $toolbar-color: lightblue;
 
 .widget-test {
     width: 100%;
-    height: 120px;
+    min-height: 120px;
     border-radius: 4px;
     background-color: red;
     text-align: center;
@@ -93,7 +93,7 @@ $toolbar-color: lightblue;
 
 .container-test {
     width: 100%;
-    height: 120px;
+    min-height: 120px;
     margin-top: 2px;
     margin-bottom: 2px;
     text-align: center;
