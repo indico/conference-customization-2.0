@@ -4,7 +4,7 @@ from sqlalchemy.types import TypeDecorator, VARCHAR
 
 from ..core import db
 
-DEFAULT_COLS = 2
+DEFAULT_COLS = 0
 
 
 class JSONEncodedDict(TypeDecorator):
@@ -38,8 +38,6 @@ class Page(db.Model):
         self.name = name or "Page {0}".format(self.id)
         self.columns = columns
         content = {}
-        for col in range(0, self.columns):
-            content[col] = []
         self.content = content
 
     def __repr__(self):

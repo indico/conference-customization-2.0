@@ -38,7 +38,7 @@
                                 <ul class="container-list">
                                     {% for widget in container %}
                                         <li class="widget-test" style="background-color: {{ widget.color }}; font-size: {{ widget.font_size }};">
-                                            {{ widget.title }}
+                                            <span>{{ widget.title }}</span>
                                             <div class="widget-icons">
                                                 <span class="ui-icon ui-icon-arrow-4"></span>
                                                 <span class="ui-icon ui-icon-trash"></span>
@@ -55,8 +55,8 @@
         </ul>
     </div>
 
-    <div id="dialog-form" title="Customize the style!" class="style-dialog">
-        <form id="actual-form">
+    <div id="style-dialog" title="Customize the style!" class="style-dialog">
+        <form>
             <fieldset>
                 <label for="title">Title</label>
                 <input type="text" name="title" id="title" class="text ui-widget-content ui-corner-all">
@@ -68,7 +68,27 @@
         </form>
     </div>
 
+    <div id="layout-dialog" title="Choose a layout!" class="layout-dialog">
+        <form>
+            <fieldset>
+                <label>Columns</label>
+                <div id="col_radio">
+                    <input id="col1" type="radio" name="radio" data-col="1"><label for="col1">1 column</label>
+                    <input id="col2" type="radio" name="radio" data-col="2" checked="checked"><label for="col2">2 columns</label>
+                    <input id="col3" type="radio" name="radio" data-col="3"><label for="col3">3 columns</label>
+                </div>
 
+                <label>Menu(s)</label>
+                <div id="menu_checkboxes">
+                    <input type="checkbox" id="menu_left"><label for="menu_left">Left</label>
+                    <input type="checkbox" id="menu_top"><label for="menu_top">Top</label>
+                    <input type="checkbox" id="menu_right"><label for="menu_right">Right</label>
+                </div>
+
+                <input type="checkbox" id="title_checkbox"><label for="title_checkbox">Title</label>
+            </fieldset>
+        </form>
+    </div>
 
 {%- endblock %}
 

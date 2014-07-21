@@ -1,20 +1,5 @@
 $(document).ready(function() {
     "use strict";
-    // var widgets = $('.widget-test');
-    // var width = $('.main-container').width();
-    // widgets.on('click', function(){
-    //     var widget = $(this);
-    //     var select = true;
-    //     if (widget.hasClass('selected')) {
-    //         select = false;
-    //     }
-    //     widgets.removeClass('selected');
-    //     widget.toggleClass('selected', select);
-    // });
-
-    // $('.main-list').width(width).sortable();
-
-    // ---------------------------------------
 
     //$('.main-list').sortable();
     $('.column-list, .container-list').sortable({
@@ -42,18 +27,15 @@ $(document).ready(function() {
 
     function bindWidget(widget) {
         widget.on('click', function(){
-            var select = ! widget.hasClass('selected');
             $('.widget-test').removeClass('selected');
-            widget.toggleClass('selected', select);
-            if (select) {
-                var color = dialog.find("form input#color"),
-                    fontSize = dialog.find("form input#font-size"),
-                    title = dialog.find("form input#title");
-                color.val(rgb2hex(widget.css('background-color')));
-                fontSize.val(widget.css('font-size'));
-                title.val(widget.text().trim());
-                dialog.dialog("open");
-            }
+            widget.addClass('selected');
+            var color = dialog.find("form input#color"),
+                fontSize = dialog.find("form input#font-size"),
+                title = dialog.find("form input#title");
+            color.val(rgb2hex(widget.css('background-color')));
+            fontSize.val(widget.css('font-size'));
+            title.val(widget.text().trim());
+            dialog.dialog("open");
         });
         widget.find('.ui-icon.ui-icon-trash').on('click', function(e){
             e.stopPropagation();
@@ -75,32 +57,35 @@ $(document).ready(function() {
 
     $('.actions button#add-widget').on('click', function(){
         var widget = $('<li>', {
-            'class': 'widget-test',
+            'class': 'widget-test'
+        }),
+            title = $('<span>', {
             text: 'Widget '+widgetCount
-        });
-        var widgetIcons = $('<div>', {
+        }),
+            widgetIcons = $('<div>', {
             'class': 'widget-icons'
-        });
-        var drag = $('<span>', {
+        }),
+            drag = $('<span>', {
             'class': 'ui-icon ui-icon-arrow-4'
-        });
-        var trash = $('<span>', {
+        }),
+            trash = $('<span>', {
             'class': 'ui-icon ui-icon-trash'
-        });
-        var copy = $('<span>', {
+        }),
+            copy = $('<span>', {
             'class': 'ui-icon ui-icon-copy'
-        });
-        var container = $('<li>', {
+        }),
+            container = $('<li>', {
             'class': 'container-test'
-        });
-        var containerList = $('<ul>', {
+        }),
+            containerList = $('<ul>', {
             'class': 'container-list'
-        })
-        var colNumber = $('.actions select').val();
-        var column = $('#column-'+colNumber+'-container .column-list');
+        }),
+            colNumber = $('.actions select').val(),
+            column = $('#column-'+colNumber+'-container .column-list');
         drag.appendTo(widgetIcons);
         trash.appendTo(widgetIcons);
         copy.appendTo(widgetIcons);
+        title.appendTo(widget);
         widgetIcons.appendTo(widget);
         widget.appendTo(containerList);
         bindWidget(widget);
@@ -213,18 +198,24 @@ $(document).ready(function() {
         refreshWidgets();
     }).trigger('sortstop');
 
-    dialog = $("#dialog-form").dialog({
+    dialog = $("#style-dialog").dialog({
         autoOpen: false,
         height: 400,
         width: 350,
         modal: true,
         buttons: {
             "Save": function() {
-                var color = dialog.find("form input#color"),
-                    fontSize = dialog.find("form input#font-size"),
-                    title = dialog.find("form input#title"),
-                    widget = $('.widget-test.selected');
-                widget.css('background-color', color.val()).css('font-size', fontSize.val()).text(title.val());
+                var color = dialog.find("form input#color").val(),
+                    fontSize = dialog.find("form input#font-size").val(),
+                    title = dialog.find("form input#title").val(),
+                    widget = $('.widget-test.selected'),
+                    titleSpan = $('<span>', {
+                        text: title
+                    });
+                widget.css('background-color', color)
+                      .css('font-size', fontSize)
+                      .children('span').remove();
+                widget.append(titleSpan);
                 dialog.dialog("close");
             },
             Cancel: function() {
@@ -247,9 +238,8 @@ $(document).ready(function() {
     $('button').button();
     $('select').selectmenu();
 
-    $('#save').on('click', function(){
-        var data = {},
-            saveButton = $(this);
+    function getSerializedLayout() {
+        var data = {};
         $('.column-container').each(function(){
             var columnContainer = $(this),
                 col = columnContainer.data('column');
@@ -272,20 +262,62 @@ $(document).ready(function() {
             });
         });
 
+        return JSON.stringify(data);
+    }
+
+    function saveLayout() {
         $.ajax({
             type: 'PATCH',
-            url: saveButton.data('url'),
+            url: $('#save').data('url'),
             contentType: 'application/json',
             dataType: 'json',
-            data: JSON.stringify(data),
+            data: getSerializedLayout(),
             error: function() {
                 alert('Error: couldn\'t save correctly!');
             }
         });
+    }
+
+    $('#save').on('click', function(){
+        saveLayout();
     });
 
     $('#discard').on('click', function(){
         location.reload();
     });
+
+    var layoutDialog = $("#layout-dialog").dialog({
+        autoOpen: false,
+        height: 400,
+        width: 350,
+        modal: true,
+        buttons: {
+            "Continue": function() {
+                layoutDialog.dialog("close");
+            }
+        },
+        close: function() {
+            var columnNumber = $('#col_radio input:checked').data('col');
+
+            for (var i=0; i<columnNumber; i++) {
+                $('.actions button#add-column').trigger('click');
+            }
+        },
+        show: {
+            effect: "explode",
+            duration: 400
+        },
+        hide: {
+            effect: "explode",
+            duration: 400
+        }
+    });
+    $('#col_radio').buttonset();
+    $('#menu_checkboxes').buttonset();
+    $('#title_checkbox').button();
+
+    if ($('.main-list').children().length < 1)  {
+        layoutDialog.dialog('open');
+    }
 
 });
