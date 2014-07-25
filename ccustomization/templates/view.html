@@ -21,7 +21,7 @@
                             <li class="container-test">
                                 <ul class="container-list">
                                     {% for widget in container %}
-                                        <li class="widget-test"></li>
+                                        {{ widget | safe }}
                                     {% endfor %}
                                 </ul>
                             </li>

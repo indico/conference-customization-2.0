@@ -5,11 +5,11 @@
             <span class="ui-icon ui-icon-trash"></span>
             <span class="ui-icon ui-icon-copy"></span>
         </div>
-    {% endif %}
-    {% if settings | length == 1 %}
-        <span class="empty-widget-message">
-            Click here to start the widget customization!
-        </span>
+        {% if settings | length == 1 %}
+            <span class="empty-widget-message">
+                Click here to start the widget customization!
+            </span>
+        {% endif %}
     {% endif %}
     {% block widget_content %}{% endblock %}
 </li>

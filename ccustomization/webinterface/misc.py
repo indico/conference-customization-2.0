@@ -64,9 +64,17 @@ def update(id):
 @bp.route('/view/<id>')
 def view(id):
     page = Page.query.filter_by(id=id).first_or_404()
+    page_content = {}
+    for col in page.content:
+        page_content[col] = []
+        for container in page.content[col]:
+            new_container = []
+            page_content[col].append(new_container)
+            for widget in container:
+                new_container.append(render_widget(widget))
     wvars = {
         'cols': page.columns,
-        'content': page.content,
+        'content': page_content,
         'page_id': id
     }
     return render_template('view.html', **wvars)
