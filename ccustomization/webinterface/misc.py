@@ -11,20 +11,6 @@ from ..models import Event, Page
 from . import bp
 
 
-def get_classes(module):
-    classes_list = []
-    for name, obj in inspect.getmembers(module):
-        if inspect.isclass(obj) and name[0] != '_':
-            pretty_name = ' '.join(re.findall('[A-Z][^A-Z]*', name))
-            classes_list.append(pretty_name)
-    classes_list.sort()
-    return classes_list
-
-COLS = 2
-ROWS = 8
-widget_list = get_classes(widgets)
-
-
 @bp.route('/')
 def index():
     conference = Event.query.first()
@@ -45,12 +31,18 @@ def index():
 
 @bp.route('/edit/<id>')
 def edit(id):
-    page = Page.query.filter_by(id=id).first()
-    if page is None:
-        return redirect(url_for(".index"))
+    page = Page.query.filter_by(id=id).first_or_404()
+    page_content = {}
+    for col in page.content:
+        page_content[col] = []
+        for container in page.content[col]:
+            new_container = []
+            page_content[col].append(new_container)
+            for widget in container:
+                new_container.append(render_widget(widget, True))
     wvars = {
         'cols': page.columns,
-        'content': page.content,
+        'content': page_content,
         'page_id': id
     }
     return render_template('edit.html', **wvars)
@@ -71,12 +63,30 @@ def update(id):
 
 @bp.route('/view/<id>')
 def view(id):
-    page = Page.query.filter_by(id=id).first()
-    if page is None:
-        return redirect(url_for(".index"))
+    page = Page.query.filter_by(id=id).first_or_404()
     wvars = {
         'cols': page.columns,
         'content': page.content,
         'page_id': id
     }
     return render_template('view.html', **wvars)
+
+
+def render_widget(settings, edit=False):
+    wvars = {
+        'settings': settings,
+        'edit': edit
+    }
+    if settings['type'] == 'Box':
+        return render_template('widgets/box.html', **wvars)
+    elif settings['type'] == 'Location':
+        return render_template('widgets/location.html', **wvars)
+    elif settings['type'] == 'People':
+        return render_template('widgets/people.html', **wvars)
+    return None
+
+
+@bp.route('/render/', methods=('POST',))
+def render():
+    data = request.get_json()
+    return render_widget(data['settings'], data['edit'])

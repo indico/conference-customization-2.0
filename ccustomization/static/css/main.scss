@@ -78,17 +78,18 @@ $toolbar-color: lightblue;
     background-color: $toolbar-color;
 }
 
+$min-height: 120px;
+
 .widget-test {
     width: 100%;
-    min-height: 120px;
+    min-height: $min-height;
     border-radius: 4px;
-    background-color: lighten(red, 20%);
     text-align: center;
 }
 
 .container-test {
     width: 100%;
-    min-height: 120px;
+    min-height: $min-height;
     margin-top: 2px;
     margin-bottom: 2px;
     text-align: center;
@@ -171,4 +172,15 @@ $toolbar-color: lightblue;
     label, input {
         display: block;
     }
+}
+
+.widget-content {
+    height: 100%;
+}
+
+.empty-widget-message {
+    margin-top: 60px;
+    background-color: white;
+    border-radius: 4px;
+    display: none;
 }

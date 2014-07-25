@@ -14,13 +14,17 @@
 
     <div class="modification-toolbar">
         <div class="actions">
-            <button id="add-widget" type="button">Add widget to column</button>
-            <select>
+            <select id="widget-select">
+                <option>Box</option>
+                <option>Location</option>
+                <option>People</option>
+            </select>
+            <select id="col-select">
                 {% for col in range(0, cols) %}
                     <option>{{ col }}</option>
                 {% endfor %}
             </select>
-            <button id="add-column" type="button">Add column</button>
+            <button id="add-widget" type="button">Add widget</button>
         </div>
         <div class="save-discard-buttons">
             <button id="save" type="button" data-url="{{ url_for('.update', id=page_id) }}">Save</button>
@@ -28,7 +32,7 @@
         </div>
     </div>
 
-    <div id="main-container" class="main-container">
+    <div id="main-container" class="main-container" data-render-url="{{ url_for('.render') }}">
         <ul class="main-list">
             {% for col, col_content in content | dictsort %}
                 <li id="column-{{ col }}-container" class="column-container" data-column="{{ col }}">
@@ -37,14 +41,7 @@
                             <li class="container-test">
                                 <ul class="container-list">
                                     {% for widget in container %}
-                                        <li class="widget-test" style="background-color: {{ widget.color }}; font-size: {{ widget.font_size }};">
-                                            <span>{{ widget.title }}</span>
-                                            <div class="widget-icons">
-                                                <span class="ui-icon ui-icon-arrow-4"></span>
-                                                <span class="ui-icon ui-icon-trash"></span>
-                                                <span class="ui-icon ui-icon-copy"></span>
-                                            </div>
-                                        </li>
+                                        {{ widget | safe }}
                                     {% endfor %}
                                 </ul>
                             </li>
@@ -55,17 +52,7 @@
         </ul>
     </div>
 
-    <div id="style-dialog" title="Customize the style!" class="style-dialog">
-        <form>
-            <fieldset>
-                <label for="title">Title</label>
-                <input type="text" name="title" id="title" class="text ui-widget-content ui-corner-all">
-                <label for="color">Color</label>
-                <input type="text" name="color" id="color" class="text ui-widget-content ui-corner-all">
-                <label for="font-size">Font size</label>
-                <input type="text" name="font-size" id="font-size" class="text ui-widget-content ui-corner-all">
-            </fieldset>
-        </form>
+    <div id="style-dialog" title="Lol" class="style-dialog">
     </div>
 
     <div id="layout-dialog" title="Choose a layout!" class="layout-dialog">

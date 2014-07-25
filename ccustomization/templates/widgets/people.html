@@ -1,0 +1,8 @@
+{% extends 'widgets/_widget.html' %}
+
+{% block widget_style -%}
+    {% if settings | length == 1 %}
+        background: url('http://www.risk.net/IMG/315/86315/people-outline.jpg') repeat center;
+        background-size: auto 100%;
+    {% endif %}
+{%- endblock %}

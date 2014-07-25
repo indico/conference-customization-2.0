@@ -1,0 +1,7 @@
+{% extends 'widgets/_widget.html' %}
+
+{% block widget_style -%}
+    {% if settings | length == 1 %}
+        background: url('http://hackathon-in-a-box.org/img/box.png') repeat center;
+    {% endif %}
+{%- endblock %}

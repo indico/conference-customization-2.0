@@ -1,12 +1,16 @@
 $(document).ready(function() {
     "use strict";
 
+    var cols = $('.main-list').children().length,
+        dialog,
+        layoutDialog,
+        hexDigits = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"];
+
     //$('.main-list').sortable();
     $('.column-list, .container-list').sortable({
         connectWith: '.column-list, .container-list',
         handle: '.ui-icon.ui-icon-arrow-4'
     });
-
     $('.widget-test').each(function(){
         bindWidget($(this));
     });
@@ -15,31 +19,29 @@ $(document).ready(function() {
        rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
     }
-
     function hex(x) {
         return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
     }
-
-    var widgetCount = 0,
-        cols = $('.main-list').children().length,
-        dialog,
-        hexDigits = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"];
 
     function bindWidget(widget) {
         widget.on('click', function(){
             $('.widget-test').removeClass('selected');
             widget.addClass('selected');
-            var color = dialog.find("form input#color"),
-                fontSize = dialog.find("form input#font-size"),
-                title = dialog.find("form input#title");
-            color.val(rgb2hex(widget.css('background-color')));
-            fontSize.val(widget.css('font-size'));
-            title.val(widget.text().trim());
             dialog.dialog("open");
+        }).on('mouseover', function(){
+            var emptyMessage = widget.children('.empty-widget-message');
+            if(emptyMessage.length > 0) {
+                emptyMessage.show(100);
+            }
+        }).on('mouseleave', function(){
+            var emptyMessage = widget.children('.empty-widget-message');
+            if(emptyMessage.length > 0) {
+                emptyMessage.hide(100);
+            }
         });
         widget.find('.ui-icon.ui-icon-trash').on('click', function(e){
             e.stopPropagation();
-            if (widget.siblings('.widget-test').length < 1) {
+            if (!widget.siblings('.widget-test').length) {
                 widget.parent().parent().remove();
             } else {
                 widget.remove();
@@ -55,12 +57,10 @@ $(document).ready(function() {
         });
     }
 
-    $('.actions button#add-widget').on('click', function(){
+    $('#add-widget').on('click', function(){
         var widget = $('<li>', {
-            'class': 'widget-test'
-        }),
-            title = $('<span>', {
-            text: 'Widget '+widgetCount
+            'class': 'widget-test',
+            'data-settings': JSON.stringify({type: $('#widget-select').val()})
         }),
             widgetIcons = $('<div>', {
             'class': 'widget-icons'
@@ -80,49 +80,26 @@ $(document).ready(function() {
             containerList = $('<ul>', {
             'class': 'container-list'
         }),
-            colNumber = $('.actions select').val(),
+            content = $('<div>', {
+                'class': 'widget-content'
+            }),
+            colNumber = $('#col-select').val(),
             column = $('#column-'+colNumber+'-container .column-list');
         drag.appendTo(widgetIcons);
         trash.appendTo(widgetIcons);
         copy.appendTo(widgetIcons);
-        title.appendTo(widget);
         widgetIcons.appendTo(widget);
+        content.appendTo(widget);
         widget.appendTo(containerList);
         bindWidget(widget);
         containerList.appendTo(container);
         container.appendTo(column);
-        widgetCount++;
 
         containerList.sortable({
             connectWith: '.column-list, .container-list',
             handle: '.ui-icon.ui-icon-arrow-4'
         });
-    });
-
-    $('.actions button#add-column').on('click', function(){
-        var columnContainer = $('<li>', {
-            id: 'column-'+cols+'-container',
-            'class': 'column-container',
-            'data-column': cols
-        });
-        var columnList = $('<ul>', {
-            'class': 'column-list'
-        });
-        var option = $('<option>', {
-            text: cols
-        });
-
-        columnList.appendTo(columnContainer);
-        columnContainer.appendTo($('.main-list'));
-        option.appendTo($('.actions select'));
-        $('.actions select').selectmenu('refresh');
-
-        columnList.sortable({
-            connectWith: '.column-list, .container-list',
-            handle: '.ui-icon.ui-icon-arrow-4'
-        });
- 
-        cols++;
+        renderWidget(widget);
     });
 
     function refreshContainers() {
@@ -143,7 +120,8 @@ $(document).ready(function() {
                     'class': 'ui-icon ui-icon-trash'
                 }).on('click', function(e){
                     e.stopPropagation();
-                    $(this).parent().parent().remove();
+                    var container = $(this).parent().parent();
+                    container.remove();
                 });
                 var copy = $('<span>', {
                     'class': 'ui-icon ui-icon-copy'
@@ -172,7 +150,6 @@ $(document).ready(function() {
             }
         });
     }
-
     function refreshWidgets() {
         $('.widget-test').each(function(){
             var $this = $(this);
@@ -192,7 +169,6 @@ $(document).ready(function() {
             }
         });
     }
-
     $('body').on('sortstop', function(){
         refreshContainers();
         refreshWidgets();
@@ -205,17 +181,7 @@ $(document).ready(function() {
         modal: true,
         buttons: {
             "Save": function() {
-                var color = dialog.find("form input#color").val(),
-                    fontSize = dialog.find("form input#font-size").val(),
-                    title = dialog.find("form input#title").val(),
-                    widget = $('.widget-test.selected'),
-                    titleSpan = $('<span>', {
-                        text: title
-                    });
-                widget.css('background-color', color)
-                      .css('font-size', fontSize)
-                      .children('span').remove();
-                widget.append(titleSpan);
+                renderWidget($('.widget-test.selected'));
                 dialog.dialog("close");
             },
             Cancel: function() {
@@ -251,20 +217,14 @@ $(document).ready(function() {
                 var widgetCounter = 0;
                 container.find('.container-list .widget-test').each(function(){
                     var widget = $(this);
-                    data[col][containerCounter][widgetCounter] = {
-                        'title': widget.text().trim(),
-                        'color': rgb2hex(widget.css('background-color')),
-                        'font_size': widget.css('font-size')
-                    }
+                    data[col][containerCounter][widgetCounter] = widget.data('settings');
                     widgetCounter++;
                 });
                 containerCounter++;
             });
         });
-
         return JSON.stringify(data);
     }
-
     function saveLayout() {
         $.ajax({
             type: 'PATCH',
@@ -277,16 +237,14 @@ $(document).ready(function() {
             }
         });
     }
-
     $('#save').on('click', function(){
         saveLayout();
     });
-
     $('#discard').on('click', function(){
         location.reload();
     });
 
-    var layoutDialog = $("#layout-dialog").dialog({
+    layoutDialog = $("#layout-dialog").dialog({
         autoOpen: false,
         height: 400,
         width: 350,
@@ -298,10 +256,32 @@ $(document).ready(function() {
         },
         close: function() {
             var columnNumber = $('#col_radio input:checked').data('col');
-
             for (var i=0; i<columnNumber; i++) {
-                $('.actions button#add-column').trigger('click');
+                var columnContainer = $('<li>', {
+                    id: 'column-'+cols+'-container',
+                    'class': 'column-container',
+                    'data-column': cols
+                });
+                var columnList = $('<ul>', {
+                    'class': 'column-list'
+                });
+                var option = $('<option>', {
+                    text: cols
+                });
+
+                columnList.appendTo(columnContainer);
+                columnContainer.appendTo($('.main-list'));
+                option.appendTo($('.actions select'));
+                $('.actions select').selectmenu('refresh');
+
+                columnList.sortable({
+                    connectWith: '.column-list, .container-list',
+                    handle: '.ui-icon.ui-icon-arrow-4'
+                });
+         
+                cols++;
             }
+            saveLayout();
         },
         show: {
             effect: "explode",
@@ -315,9 +295,26 @@ $(document).ready(function() {
     $('#col_radio').buttonset();
     $('#menu_checkboxes').buttonset();
     $('#title_checkbox').button();
-
     if ($('.main-list').children().length < 1)  {
         layoutDialog.dialog('open');
+    }
+
+    function renderWidget(widget) {
+        $.ajax({
+            type: 'POST',
+            url: $('.main-container').data('render-url'),
+            contentType: 'application/json',
+            dataType: 'html',
+            data: JSON.stringify({
+                settings: widget.data('settings'),
+                edit: true
+            }),
+            success: function(response) {
+                var container = widget.parent();
+                container.html(response);
+                bindWidget(container.children('.widget-test'));
+            }
+        });
     }
 
 });
