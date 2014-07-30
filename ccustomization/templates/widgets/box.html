@@ -1,7 +1,23 @@
 {% extends 'widgets/_widget.html' %}
 
 {% block widget_style -%}
-    {% if settings | length == 1 %}
+    {% if not settings.content %}
         background: url('http://hackathon-in-a-box.org/img/box.png') repeat center;
+    {% else %}
+        background-color: {{ settings.style.color }};
+        {% if settings.style.border %}
+            border: 2px solid black;
+        {% endif %}
     {% endif %}
 {%- endblock %}
+
+{% block widget_content %}
+    {% if settings.content %}
+        {% if settings.style.title %}
+            <h1 style="margin: 0;{% if settings.style.border %} border-bottom: 2px solid black; {% endif %}">{{ settings.style.title }}</h1>
+        {% endif %}
+        <div style="float: left; margin-left: 30px; text-align: left;">
+            {{ settings.render_content }}
+        </div>
+    {% endif %}
+{% endblock %}

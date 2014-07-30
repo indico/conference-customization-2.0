@@ -2,7 +2,8 @@ import inspect
 import json
 import re
 
-from flask import render_template, redirect, url_for, jsonify, request
+from flask import render_template, redirect, url_for, jsonify, request, Markup
+import markdown
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..core import db
@@ -86,6 +87,8 @@ def render_widget(settings, edit=False):
         'edit': edit
     }
     if settings['type'] == 'Box':
+        if wvars.get('settings', {}).get('content', None):
+            wvars['settings']['render_content'] = Markup(markdown.markdown(wvars['settings']['content']))
         return render_template('widgets/box.html', **wvars)
     elif settings['type'] == 'Location':
         return render_template('widgets/location.html', **wvars)

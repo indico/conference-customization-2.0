@@ -52,27 +52,38 @@
         </ul>
     </div>
 
-    <div id="style-dialog" title="Lol" class="style-dialog">
+    <div id="box-style-dialog" title="Style and content customization" class="style-dialog">
+        <form>
+            <fieldset>
+                <label for="box-title">Title</label>
+                <input type="text" name="box-title" id="box-title" class="text ui-widget-content ui-corner-all">
+                <label for="box-color">Background color</label>
+                <input type="text" name="box-color" id="box-color" class="text ui-widget-content ui-corner-all">
+                <input type="checkbox" id="box-border"><label for="box-border">Border</label>
+                <label for="box-content">Content</label>
+                <textarea id="box-content" rows="4" cols="50"></textarea>
+            </fieldset>
+        </form>
     </div>
 
     <div id="layout-dialog" title="Choose a layout!" class="layout-dialog">
         <form>
             <fieldset>
                 <label>Columns</label>
-                <div id="col_radio">
+                <div id="col-radio">
                     <input id="col1" type="radio" name="radio" data-col="1"><label for="col1">1 column</label>
                     <input id="col2" type="radio" name="radio" data-col="2" checked="checked"><label for="col2">2 columns</label>
                     <input id="col3" type="radio" name="radio" data-col="3"><label for="col3">3 columns</label>
                 </div>
 
                 <label>Menu(s)</label>
-                <div id="menu_checkboxes">
-                    <input type="checkbox" id="menu_left"><label for="menu_left">Left</label>
-                    <input type="checkbox" id="menu_top"><label for="menu_top">Top</label>
-                    <input type="checkbox" id="menu_right"><label for="menu_right">Right</label>
+                <div id="menu-checkboxes">
+                    <input type="checkbox" id="menu-left"><label for="menu-left">Left</label>
+                    <input type="checkbox" id="menu-top"><label for="menu-top">Top</label>
+                    <input type="checkbox" id="menu-right"><label for="menu-right">Right</label>
                 </div>
 
-                <input type="checkbox" id="title_checkbox"><label for="title_checkbox">Title</label>
+                <input type="checkbox" id="title-checkbox"><label for="title-checkbox">Title</label>
             </fieldset>
         </form>
     </div>

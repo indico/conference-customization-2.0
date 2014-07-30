@@ -5,7 +5,7 @@
             <span class="ui-icon ui-icon-trash"></span>
             <span class="ui-icon ui-icon-copy"></span>
         </div>
-        {% if settings | length == 1 %}
+        {% if not settings.content %}
             <span class="empty-widget-message">
                 Click here to start the widget customization!
             </span>

@@ -2,14 +2,53 @@ $(document).ready(function() {
     "use strict";
 
     var cols = $('.main-list').children().length,
-        dialog,
+        boxDialog = $("#box-style-dialog").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true,
+            buttons: {
+                "Save": function() {
+                    var widget = $('.widget-test.selected');
+                    var title = $('#box-title').val();
+                    var color = $('#box-color').val();
+                    var border = $('#box-border').is(':checked');
+                    var content = $('#box-content').val();
+                    var settings = widget.data('settings');
+                    settings['style'] = {}
+                    settings['style']['title'] = title;
+                    settings['style']['color'] = color;
+                    settings['style']['border'] = border;
+                    settings['content'] = content;
+                    widget.data('settings', settings);
+                    renderWidget(widget);
+                    boxDialog.dialog("close");
+                },
+                Cancel: function() {
+                    boxDialog.dialog("close");
+                }
+            },
+            close: function() {
+                $('.widget-test').removeClass('selected');
+            },
+            show: {
+                effect: "explode",
+                duration: 400
+            },
+            hide: {
+                effect: "explode",
+                duration: 400
+            }
+        }),
         layoutDialog,
         hexDigits = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"];
 
     //$('.main-list').sortable();
     $('.column-list, .container-list').sortable({
         connectWith: '.column-list, .container-list',
-        handle: '.ui-icon.ui-icon-arrow-4'
+        handle: '.ui-icon.ui-icon-arrow-4',
+        placeholder: "ui-state-highlight",
+        forcePlaceholderSize: true
     });
     $('.widget-test').each(function(){
         bindWidget($(this));
@@ -23,11 +62,26 @@ $(document).ready(function() {
         return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
     }
 
+    function openStyleDialog(widget) {
+        var settings = widget.data('settings');
+        if (settings.type == 'Box') {
+            if (settings['style'] != undefined) {
+                $('#box-title').val(settings['style']['title'] || '');
+                $('#box-color').val(settings['style']['color'] || '');
+                if (settings['style']['border'] || false) {
+                    $('#box-border').trigger('click');
+                }
+                $('#box-content').val(settings['content'] || '');
+            }
+            boxDialog.dialog("open");
+        }
+    }
+
     function bindWidget(widget) {
         widget.on('click', function(){
             $('.widget-test').removeClass('selected');
             widget.addClass('selected');
-            dialog.dialog("open");
+            openStyleDialog(widget);
         }).on('mouseover', function(){
             var emptyMessage = widget.children('.empty-widget-message');
             if(emptyMessage.length > 0) {
@@ -97,7 +151,9 @@ $(document).ready(function() {
 
         containerList.sortable({
             connectWith: '.column-list, .container-list',
-            handle: '.ui-icon.ui-icon-arrow-4'
+            handle: '.ui-icon.ui-icon-arrow-4',
+            placeholder: "ui-state-highlight",
+            forcePlaceholderSize: true
         });
         renderWidget(widget);
     });
@@ -164,7 +220,9 @@ $(document).ready(function() {
                 $this.parent().wrap(container);
                 $this.parent().sortable({
                     connectWith: '.column-list, .container-list',
-                    handle: '.ui-icon.ui-icon-arrow-4'
+                    handle: '.ui-icon.ui-icon-arrow-4',
+                    placeholder: "ui-state-highlight",
+                    forcePlaceholderSize: true
                 });
             }
         });
@@ -173,33 +231,6 @@ $(document).ready(function() {
         refreshContainers();
         refreshWidgets();
     }).trigger('sortstop');
-
-    dialog = $("#style-dialog").dialog({
-        autoOpen: false,
-        height: 400,
-        width: 350,
-        modal: true,
-        buttons: {
-            "Save": function() {
-                renderWidget($('.widget-test.selected'));
-                dialog.dialog("close");
-            },
-            Cancel: function() {
-                dialog.dialog("close");
-            }
-        },
-        close: function() {
-            $('.widget-test').removeClass('selected');
-        },
-        show: {
-            effect: "explode",
-            duration: 400
-        },
-        hide: {
-            effect: "explode",
-            duration: 400
-        }
-    });
 
     $('button').button();
     $('select').selectmenu();
@@ -255,7 +286,7 @@ $(document).ready(function() {
             }
         },
         close: function() {
-            var columnNumber = $('#col_radio input:checked').data('col');
+            var columnNumber = $('#col-radio input:checked').data('col');
             for (var i=0; i<columnNumber; i++) {
                 var columnContainer = $('<li>', {
                     id: 'column-'+cols+'-container',
@@ -276,7 +307,9 @@ $(document).ready(function() {
 
                 columnList.sortable({
                     connectWith: '.column-list, .container-list',
-                    handle: '.ui-icon.ui-icon-arrow-4'
+                    handle: '.ui-icon.ui-icon-arrow-4',
+                    placeholder: "ui-state-highlight",
+                    forcePlaceholderSize: true
                 });
          
                 cols++;
@@ -292,12 +325,14 @@ $(document).ready(function() {
             duration: 400
         }
     });
-    $('#col_radio').buttonset();
-    $('#menu_checkboxes').buttonset();
-    $('#title_checkbox').button();
+    $('#col-radio').buttonset();
+    $('#menu-checkboxes').buttonset();
+    $('#title-checkbox').button();
     if ($('.main-list').children().length < 1)  {
         layoutDialog.dialog('open');
     }
+
+    $( "#box-border" ).button();
 
     function renderWidget(widget) {
         $.ajax({

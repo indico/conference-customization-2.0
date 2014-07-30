@@ -1,7 +1,7 @@
 {% extends 'widgets/_widget.html' %}
 
 {% block widget_style -%}
-    {% if settings | length == 1 %}
+    {% if not settings.content %}
         background: url('http://upload.wikimedia.org/wikipedia/commons/f/f7/Soho_-_map_1.png') no-repeat center;
         background-size: 100%;
     {% endif %}
