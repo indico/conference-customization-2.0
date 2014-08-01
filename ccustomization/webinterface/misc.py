@@ -11,6 +11,8 @@ from ..layout import widgets
 from ..models import Event, Page
 from . import bp
 
+counter = 0
+
 
 @bp.route('/')
 def index():
@@ -34,6 +36,8 @@ def index():
 def edit(id):
     page = Page.query.filter_by(id=id).first_or_404()
     page_content = {}
+    global counter
+    counter = 0
     for col in page.content:
         page_content[col] = []
         for container in page.content[col]:
@@ -66,6 +70,8 @@ def update(id):
 def view(id):
     page = Page.query.filter_by(id=id).first_or_404()
     page_content = {}
+    global counter
+    counter = 0
     for col in page.content:
         page_content[col] = []
         for container in page.content[col]:
@@ -82,6 +88,8 @@ def view(id):
 
 
 def render_widget(settings, edit=False):
+    global counter
+    counter += 1
     wvars = {
         'settings': settings,
         'edit': edit
@@ -91,6 +99,7 @@ def render_widget(settings, edit=False):
             wvars['settings']['render_content'] = Markup(markdown.markdown(wvars['settings']['content']))
         return render_template('widgets/box.html', **wvars)
     elif settings['type'] == 'Location':
+        wvars['counter'] = counter
         return render_template('widgets/location.html', **wvars)
     elif settings['type'] == 'People':
         return render_template('widgets/people.html', **wvars)

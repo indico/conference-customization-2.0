@@ -20,12 +20,60 @@ $(document).ready(function() {
                     settings['style']['color'] = color;
                     settings['style']['border'] = border;
                     settings['content'] = content;
+                    settings['empty'] = content == '';
                     widget.data('settings', settings);
                     renderWidget(widget);
                     boxDialog.dialog("close");
                 },
                 Cancel: function() {
                     boxDialog.dialog("close");
+                }
+            },
+            close: function() {
+                $('.widget-test').removeClass('selected');
+            },
+            show: {
+                effect: "explode",
+                duration: 400
+            },
+            hide: {
+                effect: "explode",
+                duration: 400
+            }
+        }),
+        locationDialog = $("#location-style-dialog").dialog({
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true,
+            buttons: {
+                "Save": function() {
+                    var widget = $('.widget-test.selected');
+                    var isAddress = $('#location-address-opt').is(':checked');
+                    var address = $('#location-address').val();
+                    var latitude = $('#location-latitude').val();
+                    var longitude = $('#location-longitude').val();
+                    var settings = widget.data('settings');
+                    settings['content'] = {}
+                    settings['content']['address'] = '';
+                    settings['content']['latitude'] = '';
+                    settings['content']['longitude'] = '';
+                    if (isAddress) {
+                        settings['content']['type'] = 'address';
+                        settings['content']['address'] = address;
+                        settings['empty'] = address == '';
+                    } else {
+                        settings['content']['type'] = 'coordinates';
+                        settings['content']['latitude'] = latitude;
+                        settings['content']['longitude'] = longitude;
+                        settings['empty'] = latitude == '' || longitude == '';
+                    }
+                    widget.data('settings', settings);
+                    renderWidget(widget);
+                    locationDialog.dialog("close");
+                },
+                Cancel: function() {
+                    locationDialog.dialog("close");
                 }
             },
             close: function() {
@@ -68,12 +116,46 @@ $(document).ready(function() {
             if (settings['style'] != undefined) {
                 $('#box-title').val(settings['style']['title'] || '');
                 $('#box-color').val(settings['style']['color'] || '');
-                if (settings['style']['border'] || false) {
-                    $('#box-border').trigger('click');
-                }
+                $('#box-border').prop('checked', settings['style']['border'] || false).button('refresh');
                 $('#box-content').val(settings['content'] || '');
+            } else {
+                $('#box-title').val('');
+                $('#box-color').val('');
+                $('#box-border').prop('checked', false).button('refresh');
+                $('#box-content').val('');
             }
             boxDialog.dialog("open");
+        } else if (settings.type == 'Location') {
+            if (settings['content'] != undefined) {
+                if (settings['content']['type'] == 'address' || settings['content']['type'] == undefined) {
+                    $('#location-address-opt').trigger('click');
+                } else {
+                    $('#location-coordinates-opt').trigger('click');
+                }
+            }
+            if ($('#location-address-opt').is(':checked')) {
+                $('#location-latitude').val('');
+                $('#location-longitude').val('');
+                if (settings['content'] != undefined) {
+                    $('#location-address').val(settings['content']['address'] || '');
+                } else {
+                    $('#location-address').val('');
+                }
+                $('#location-address-div').show();
+                $('#location-coordinates-div').hide();
+            } else {
+                $('#location-address').val('');
+                if (settings['content'] != undefined) {
+                    $('#location-latitude').val(settings['content']['latitude'] || '');
+                    $('#location-longitude').val(settings['content']['longitude'] || '');
+                } else {
+                    $('#location-latitude').val('');
+                    $('#location-longitude').val('');
+                }
+                $('#location-coordinates-div').show();
+                $('#location-address-div').hide();
+            }
+            locationDialog.dialog("open");
         }
     }
 
@@ -114,7 +196,10 @@ $(document).ready(function() {
     $('#add-widget').on('click', function(){
         var widget = $('<li>', {
             'class': 'widget-test',
-            'data-settings': JSON.stringify({type: $('#widget-select').val()})
+            'data-settings': JSON.stringify({
+                type: $('#widget-select').val(),
+                empty: true
+            })
         }),
             widgetIcons = $('<div>', {
             'class': 'widget-icons'
@@ -332,7 +417,17 @@ $(document).ready(function() {
         layoutDialog.dialog('open');
     }
 
-    $( "#box-border" ).button();
+    $("#box-border").button();
+    $('#location-radio').buttonset();
+    $('#location-address-opt, #location-coordinates-opt').on('click', function(){
+        if ($('#location-address-opt').is(':checked')) {
+            $('#location-address-div').show();
+            $('#location-coordinates-div').hide();
+        } else {
+            $('#location-coordinates-div').show();
+            $('#location-address-div').hide();
+        }
+    });
 
     function renderWidget(widget) {
         $.ajax({
@@ -345,9 +440,9 @@ $(document).ready(function() {
                 edit: true
             }),
             success: function(response) {
-                var container = widget.parent();
-                container.html(response);
-                bindWidget(container.children('.widget-test'));
+                var newWidget = $(response);
+                widget.replaceWith(newWidget);
+                bindWidget(newWidget);
             }
         });
     }

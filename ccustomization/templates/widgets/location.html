@@ -1,8 +1,59 @@
 {% extends 'widgets/_widget.html' %}
 
 {% block widget_style -%}
-    {% if not settings.content %}
+    {% if settings.empty %}
         background: url('http://upload.wikimedia.org/wikipedia/commons/f/f7/Soho_-_map_1.png') no-repeat center;
         background-size: 100%;
     {% endif %}
 {%- endblock %}
+
+{% block widget_content %}
+    {% if not settings.empty %}
+        <div id="map-canvas-{{ counter }}" data-type="{{ settings.content.type }}" {% if settings.content.type == 'address' %}data-address="{{ settings.content.address }}"{% else %}data-latitude="{{ settings.content.latitude }}" data-longitude="{{ settings.content.longitude }}"{% endif %} style="min-height: 400px;{% if edit %} z-index: -1;{% endif %}"></div>
+
+        <script>
+
+            $(document).ready(function() {
+                "use strict";
+
+                function geoCode(address) {
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode( { 'address': address}, function(results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            drawMap(results[0].geometry.location);
+                        } else {
+                            alert('Geocode was not successful for the following reason: ' + status);
+                        }
+                    });
+                }
+
+                function drawMap(coords) {
+                    var options = {
+                        zoom: 9,
+                        center: coords,
+                        mapTypeControl: false,
+                        navigationControlOptions: {
+                            style: google.maps.NavigationControlStyle.SMALL
+                        },
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+                    var map = new google.maps.Map(mapCanvas.get(0), options);
+                    var marker = new google.maps.Marker({
+                        position: coords,
+                        map: map
+                    });
+                }
+
+                var mapCanvas = $('#map-canvas-{{ counter }}');
+
+                if (mapCanvas.data('type') == 'address') {
+                    geoCode(mapCanvas.data('address'));
+                } else {
+                    drawMap(new google.maps.LatLng(mapCanvas.data('latitude'), mapCanvas.data('longitude')));
+                }
+
+            });
+
+        </script>
+    {% endif %}
+{% endblock %}
