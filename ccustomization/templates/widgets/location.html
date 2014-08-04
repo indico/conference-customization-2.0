@@ -42,6 +42,9 @@
                         position: coords,
                         map: map
                     });
+                    $('body').on('sortstop', function(){
+                        google.maps.event.trigger(map, 'resize');
+                    });
                 }
 
                 var mapCanvas = $('#map-canvas-{{ counter }}');

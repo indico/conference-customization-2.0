@@ -85,13 +85,14 @@ $min-height: 120px;
     min-height: $min-height;
     border-radius: 4px;
     text-align: center;
+    position: relative;
 }
 
 .container-test {
     width: 100%;
     min-height: $min-height;
-    margin-top: 2px;
-    margin-bottom: 2px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     text-align: center;
     background-color: transparent;
     border-radius: 4px;
@@ -121,9 +122,16 @@ $min-height: 120px;
     }
 }
 
+.widget-icons {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
 .widget-icons, .container-icons {
     float: right;
     display: inline-block;
+    z-index: 1;
 
     .ui-icon {
 
