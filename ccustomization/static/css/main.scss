@@ -46,6 +46,10 @@ $toolbar-color: lightblue;
     }
 }
 
+fieldset select {
+    width: 120px;
+}
+
 .modification-grid {
 
     .grid-row {
@@ -86,6 +90,8 @@ $min-height: 120px;
     border-radius: 4px;
     text-align: center;
     position: relative;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .container-test {
@@ -126,6 +132,8 @@ $min-height: 120px;
     position: absolute;
     right: 0;
     top: 0;
+    background-color: white;
+    border-bottom-left-radius: 4px;
 }
 
 .widget-icons, .container-icons {

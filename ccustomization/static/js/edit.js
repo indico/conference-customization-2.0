@@ -113,47 +113,58 @@ $(document).ready(function() {
     function openStyleDialog(widget) {
         var settings = widget.data('settings');
         if (settings.type == 'Box') {
+            var title = $('#box-title');
+            var color = $('#box-color');
+            var border = $('#box-border');
+            var content = $('#box-content');
             if (settings['style'] != undefined) {
-                $('#box-title').val(settings['style']['title'] || '');
-                $('#box-color').val(settings['style']['color'] || '');
-                $('#box-border').prop('checked', settings['style']['border'] || false).button('refresh');
-                $('#box-content').val(settings['content'] || '');
+                title.val(settings['style']['title'] || '');
+                color.val(settings['style']['color'] || '');
+                border.prop('checked', settings['style']['border'] || false).button('refresh');
+                content.val(settings['content'] || '');
             } else {
-                $('#box-title').val('');
-                $('#box-color').val('');
-                $('#box-border').prop('checked', false).button('refresh');
-                $('#box-content').val('');
+                title.val('');
+                color.val('');
+                border.prop('checked', false).button('refresh');
+                content.val('');
             }
             boxDialog.dialog("open");
         } else if (settings.type == 'Location') {
+            var addressOpt = $('#location-address-opt');
+            var coordinatesOpt = $('#location-coordinates-opt');
+            var latitude = $('#location-latitude');
+            var longitude = $('#location-longitude');
+            var address = $('#location-address');
+            var addressDiv = $('#location-address-div');
+            var coordinatesDiv = $('#location-coordinates-div');
             if (settings['content'] != undefined) {
                 if (settings['content']['type'] == 'address' || settings['content']['type'] == undefined) {
-                    $('#location-address-opt').trigger('click');
+                    addressOpt.trigger('click');
                 } else {
-                    $('#location-coordinates-opt').trigger('click');
+                    coordinatesOpt.trigger('click');
                 }
             }
-            if ($('#location-address-opt').is(':checked')) {
-                $('#location-latitude').val('');
-                $('#location-longitude').val('');
+            if (addressOpt.is(':checked')) {
+                latitude.val('');
+                longitude.val('');
                 if (settings['content'] != undefined) {
-                    $('#location-address').val(settings['content']['address'] || '');
+                    address.val(settings['content']['address'] || '');
                 } else {
-                    $('#location-address').val('');
+                    address.val('');
                 }
-                $('#location-address-div').show();
-                $('#location-coordinates-div').hide();
+                addressDiv.show();
+                coordinatesDiv.hide();
             } else {
-                $('#location-address').val('');
+                address.val('');
                 if (settings['content'] != undefined) {
-                    $('#location-latitude').val(settings['content']['latitude'] || '');
-                    $('#location-longitude').val(settings['content']['longitude'] || '');
+                    latitude.val(settings['content']['latitude'] || '');
+                    longitude.val(settings['content']['longitude'] || '');
                 } else {
-                    $('#location-latitude').val('');
-                    $('#location-longitude').val('');
+                    latitude.val('');
+                    longitude.val('');
                 }
-                $('#location-coordinates-div').show();
-                $('#location-address-div').hide();
+                coordinatesDiv.show();
+                addressDiv.hide();
             }
             locationDialog.dialog("open");
         }
