@@ -6,3 +6,75 @@
         background-size: auto 100%;
     {% endif %}
 {%- endblock %}
+
+{% block widget_content %}
+
+    {% if not settings.empty %}
+
+        
+
+    {% endif %}
+
+    {% if edit %}
+        <div id="style-dialog-{{ counter }}" title="Style and content customization" class="style-dialog">
+            <form>
+                <fieldset>
+                    <label for="radio-{{ counter }}">Style</label>
+                    <div id="radio-{{ counter }}">
+                        <input id="list-opt-{{ counter }}" type="radio" name="radio" checked="checked"><label for="list-opt-{{ counter }}">List</label>
+                        <input id="carousel-opt-{{ counter }}" type="radio" name="radio"><label for="carousel-opt-{{ counter }}">Carousel</label>
+                    </div>
+                    <label for="select-{{ counter }}">People</label>
+                    <select name="select-{{ counter }}" id="select-{{ counter }}">
+                      <option selected="selected">Speakers</option>
+                      <option>Authors</option>
+                    </select>
+                </fieldset>
+            </form>
+        </div>
+
+        <script>
+
+            $(document).ready(function() {
+                "use strict";
+
+                var styleDialog = $('#style-dialog-{{ counter }}');
+                var widget = styleDialog.parent('.widget-test');
+                var settings = widget.data('settings');
+                var radio = $('#radio-{{ counter }}');
+                var select = $('#select-{{ counter }}');
+                var listOpt = $('#list-opt-{{ counter }}');
+                var carouselOpt = $('#carousel-opt-{{ counter }}');
+                var options = {
+                    buttons: {
+                        "Save": function() {
+                            updateWidget(widget, settings);
+                            styleDialog.dialog("close");
+                        },
+                        Cancel: function() {
+                            styleDialog.dialog("close");
+                        }
+                    }
+                };
+
+                styleDialog.dialog(getDialogOptions(options));
+                radio.buttonset();
+                select.selectmenu();
+
+                widget.on('click', function(){
+                    if (settings['style'] != undefined) {
+                        if (settings['style']['type'] == 'list' || settings['content']['type'] == undefined) {
+                            listOpt.trigger('click');
+                        } else {
+                            carouselOpt.trigger('click');
+                        }
+                    }
+                    styleDialog.dialog("open");
+                });
+
+            });
+
+        </script>
+    {% endif %}
+
+{% endblock %}

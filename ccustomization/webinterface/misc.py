@@ -92,14 +92,14 @@ def render_widget(settings, edit=False):
     counter += 1
     wvars = {
         'settings': settings,
-        'edit': edit
+        'edit': edit,
+        'counter': counter
     }
     if settings['type'] == 'Box':
         if wvars.get('settings', {}).get('content', None):
             wvars['settings']['render_content'] = Markup(markdown.markdown(wvars['settings']['content']))
         return render_template('widgets/box.html', **wvars)
     elif settings['type'] == 'Location':
-        wvars['counter'] = counter
         return render_template('widgets/location.html', **wvars)
     elif settings['type'] == 'People':
         return render_template('widgets/people.html', **wvars)

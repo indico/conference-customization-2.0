@@ -8,6 +8,7 @@
 {%- endblock %}
 
 {% block widget_content %}
+
     {% if not settings.empty %}
         <div id="map-canvas-{{ counter }}" data-type="{{ settings.content.type }}" {% if settings.content.type == 'address' %}data-address="{{ settings.content.address }}"{% else %}data-latitude="{{ settings.content.latitude }}" data-longitude="{{ settings.content.longitude }}"{% endif %} style="min-height: 400px;{% if edit %} z-index: -1;{% endif %}"></div>
 
@@ -44,6 +45,7 @@
                     });
                     $('body').on('sortstop', function(){
                         google.maps.event.trigger(map, 'resize');
+                        map.setCenter(coords);
                     });
                 }
 
@@ -59,4 +61,122 @@
 
         </script>
     {% endif %}
+
+    {% if edit %}
+        <div id="style-dialog-{{ counter }}" title="Style and content customization" class="style-dialog">
+            <form>
+                <fieldset>
+                    <div id="radio-{{ counter }}">
+                        <input id="address-opt-{{ counter }}" type="radio" name="radio" checked="checked"><label for="address-opt-{{ counter }}">Address</label>
+                        <input id="coordinates-opt-{{ counter }}" type="radio" name="radio"><label for="coordinates-opt-{{ counter }}">Coordinates</label>
+                    </div>
+                    <div id="address-div-{{ counter }}">
+                        <label for="address-{{ counter }}">Address</label>
+                        <input type="text" name="address-{{ counter }}" id="address-{{ counter }}" class="text ui-widget-content ui-corner-all">
+                    </div>
+                    <div id="coordinates-div-{{ counter }}">
+                        <label for="latitude-{{ counter }}">Latitude</label>
+                        <input type="text" name="latitude-{{ counter }}" id="latitude-{{ counter }}" class="text ui-widget-content ui-corner-all">
+                        <label for="longitude-{{ counter }}">Longitude</label>
+                        <input type="text" name="longitude-{{ counter }}" id="longitude-{{ counter }}" class="text ui-widget-content ui-corner-all">
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+
+        <script>
+
+            $(document).ready(function() {
+                "use strict";
+
+                var styleDialog = $('#style-dialog-{{ counter }}');
+                var widget = styleDialog.parent('.widget-test');
+                var settings = widget.data('settings');
+                var radio = $('#radio-{{ counter }}');
+                var addressOpt = $('#address-opt-{{ counter }}');
+                var coordinatesOpt = $('#coordinates-opt-{{ counter }}');
+                var addressDiv = $('#address-div-{{ counter }}');
+                var coordinatesDiv = $('#coordinates-div-{{ counter }}');
+                var opts = addressOpt.add(coordinatesOpt);
+                var address = $('#address-{{ counter }}');
+                var latitude = $('#latitude-{{ counter }}');
+                var longitude = $('#longitude-{{ counter }}');
+                var options = {
+                    buttons: {
+                        "Save": function() {
+                            settings['content'] = {}
+                            settings['content']['address'] = '';
+                            settings['content']['latitude'] = '';
+                            settings['content']['longitude'] = '';
+                            if (addressOpt.is(':checked')) {
+                                settings['content']['type'] = 'address';
+                                settings['content']['address'] = address.val();
+                                settings['empty'] = address.val() == '';
+                            } else {
+                                settings['content']['type'] = 'coordinates';
+                                settings['content']['latitude'] = latitude.val();
+                                settings['content']['longitude'] = longitude.val();
+                                settings['empty'] = latitude.val() == '' || longitude.val() == '';
+                            }
+                            updateWidget(widget, settings);
+                            styleDialog.dialog("close");
+                        },
+                        Cancel: function() {
+                            styleDialog.dialog("close");
+                        }
+                    }
+                };
+
+                styleDialog.dialog(getDialogOptions(options));
+                radio.buttonset();
+                opts.on('click', function(){
+                    if (addressOpt.is(':checked')) {
+                        addressDiv.show();
+                        coordinatesDiv.hide();
+                    } else {
+                        coordinatesDiv.show();
+                        addressDiv.hide();
+                    }
+                });
+
+                widget.on('click', function(){
+                    $('.widget-test').removeClass('selected');
+                    widget.addClass('selected');
+                    if (settings['content'] != undefined) {
+                        if (settings['content']['type'] == 'address' || settings['content']['type'] == undefined) {
+                            addressOpt.trigger('click');
+                        } else {
+                            coordinatesOpt.trigger('click');
+                        }
+                    }
+                    if (addressOpt.is(':checked')) {
+                        latitude.val('');
+                        longitude.val('');
+                        if (settings['content'] != undefined) {
+                            address.val(settings['content']['address'] || '');
+                        } else {
+                            address.val('');
+                        }
+                        addressDiv.show();
+                        coordinatesDiv.hide();
+                    } else {
+                        address.val('');
+                        if (settings['content'] != undefined) {
+                            latitude.val(settings['content']['latitude'] || '');
+                            longitude.val(settings['content']['longitude'] || '');
+                        } else {
+                            latitude.val('');
+                            longitude.val('');
+                        }
+                        coordinatesDiv.show();
+                        addressDiv.hide();
+                    }
+                    styleDialog.dialog("open");
+                });
+
+            });
+
+        </script>
+    {% endif %}
+
 {% endblock %}

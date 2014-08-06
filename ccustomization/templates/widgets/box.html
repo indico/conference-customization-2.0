@@ -12,6 +12,7 @@
 {%- endblock %}
 
 {% block widget_content %}
+
     {% if not settings.empty %}
         {% if settings.style.title %}
             <h1 style="margin: 0;{% if settings.style.border %} border-bottom: 2px solid black; {% endif %}">{{ settings.style.title }}</h1>
@@ -20,4 +21,75 @@
             {{ settings.render_content }}
         </div>
     {% endif %}
+
+    {% if edit %}
+        <div id="style-dialog-{{ counter }}" title="Style and content customization" class="style-dialog">
+            <form>
+                <fieldset>
+                    <label for="title-{{ counter }}">Title</label>
+                    <input type="text" name="title-{{ counter }}" id="title-{{ counter }}" class="text ui-widget-content ui-corner-all">
+                    <label for="color-{{ counter }}">Background color</label>
+                    <input type="text" name="color-{{ counter }}" id="color-{{ counter }}" class="text ui-widget-content ui-corner-all">
+                    <input type="checkbox" id="border-{{ counter }}"><label for="border-{{ counter }}">Border</label>
+                    <label for="content-{{ counter }}">Content</label>
+                    <textarea id="content-{{ counter }}" rows="9" cols="55"></textarea>
+                </fieldset>
+            </form>
+        </div>
+
+        <script>
+
+            $(document).ready(function() {
+                "use strict";
+
+                var styleDialog = $('#style-dialog-{{ counter }}');
+                var widget = styleDialog.parent('.widget-test');
+                var settings = widget.data('settings');
+                var title = $('#title-{{ counter }}');
+                var color = $('#color-{{ counter }}');
+                var border = $('#border-{{ counter }}');
+                var content = $('#content-{{ counter }}');
+                var options = {
+                    buttons: {
+                        "Save": function() {
+                            settings['style'] = {}
+                            settings['style']['title'] = title.val();
+                            settings['style']['color'] = color.val();
+                            settings['style']['border'] = border.is(':checked');
+                            settings['content'] = content.val();
+                            settings['empty'] = content.val() == '';
+                            updateWidget(widget, settings);
+                            styleDialog.dialog("close");
+                        },
+                        Cancel: function() {
+                            styleDialog.dialog("close");
+                        }
+                    }
+                };
+
+                styleDialog.dialog(getDialogOptions(options));
+                border.button();
+
+                widget.on('click', function(){
+                    $('.widget-test').removeClass('selected');
+                    widget.addClass('selected');
+                    if (settings['style'] != undefined) {
+                        title.val(settings['style']['title'] || '');
+                        color.val(settings['style']['color'] || '');
+                        border.prop('checked', settings['style']['border'] || false).button('refresh');
+                        content.val(settings['content'] || '');
+                    } else {
+                        title.val('');
+                        color.val('');
+                        border.prop('checked', false).button('refresh');
+                        content.val('');
+                    }
+                    styleDialog.dialog("open");
+                });
+
+            });
+
+        </script>
+    {% endif %}
+
 {% endblock %}

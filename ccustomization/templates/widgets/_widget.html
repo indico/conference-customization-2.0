@@ -1,4 +1,4 @@
-<li class="widget-test" data-settings="{{ settings | tojson | forceescape }}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
+<li id="widget-{{ counter }}" class="widget-test" data-settings="{{ settings | tojson | forceescape }}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
     {% if edit %}
         <div class="widget-icons">
             <span class="ui-icon ui-icon-arrow-4"></span>
@@ -11,5 +11,15 @@
             </span>
         {% endif %}
     {% endif %}
+
+    {%- assets filters='rjsmin', output='assets/edit-widget.js', 'js/edit-widget.js' %}
+        <script src="{{ ASSET_URL|version_url }}"></script>
+    {%- endassets %}
+
+    <script>
+        var widget = $('#widget-{{ counter }}');
+        bindWidget(widget);
+    </script>
+
     {% block widget_content %}{% endblock %}
 </li>
