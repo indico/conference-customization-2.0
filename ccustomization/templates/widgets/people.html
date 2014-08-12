@@ -16,21 +16,54 @@
     {% endif %}
 
     {% if edit %}
-        <div id="style-dialog-{{ counter }}" title="Style and content customization" class="style-dialog">
-            <form>
-                <fieldset>
-                    <label for="radio-{{ counter }}">Style</label>
-                    <div id="radio-{{ counter }}">
-                        <input id="list-opt-{{ counter }}" type="radio" name="radio" checked="checked"><label for="list-opt-{{ counter }}">List</label>
-                        <input id="carousel-opt-{{ counter }}" type="radio" name="radio"><label for="carousel-opt-{{ counter }}">Carousel</label>
+        <div class="modal fade" id="style-dialog-{{ counter }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Style and content customization</h4>
                     </div>
-                    <label for="select-{{ counter }}">People</label>
-                    <select name="select-{{ counter }}" id="select-{{ counter }}">
-                      <option selected="selected">Speakers</option>
-                      <option>Authors</option>
-                    </select>
-                </fieldset>
-            </form>
+                    <div class="modal-body container-fluid">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="style" class="control-label input-group">Style</label>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="radio-{{ counter }}" class="btn-group" data-toggle="buttons">
+                                    <label id="list-opt-{{ counter }}" class="btn btn-default active">
+                                        <input type="radio" name="style" value="List">List
+                                    </label>
+                                    <label id="carousel-opt-{{ counter }}" class="btn btn-default">
+                                        <input type="radio" name="style" value="Carousel">Carousel
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="select-{{ counter }}">People</label>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="select-{{ counter }}" class="btn-group dropdown">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                      Speakers
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="#">Speakers</a></li>
+                                        <li><a href="#">Authors</a></li>
+                                    </ul>
+                                    <input type="hidden" value="Speakers">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary save-button">Save changes</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script>
@@ -45,31 +78,56 @@
                 var select = $('#select-{{ counter }}');
                 var listOpt = $('#list-opt-{{ counter }}');
                 var carouselOpt = $('#carousel-opt-{{ counter }}');
-                var options = {
-                    buttons: {
-                        "Save": function() {
-                            updateWidget(widget, settings);
-                            styleDialog.dialog("close");
-                        },
-                        Cancel: function() {
-                            styleDialog.dialog("close");
-                        }
-                    }
-                };
 
-                styleDialog.dialog(getDialogOptions(options));
-                radio.buttonset();
-                select.selectmenu();
+                styleDialog.detach().appendTo('body');
+
+                styleDialog.find('.save-button').on('click', function(){
+                    settings['style'] = {}
+                    settings['style']['type'] = radio.find('.active input').val()
+                    settings['content'] = {}
+                    settings['content']['type'] = select.children('input').val();
+                    settings['empty'] = false;
+                    updateWidget(widget, settings);
+                    styleDialog.trigger("hidden.bs.modal");
+                });
+
+                styleDialog.on('hidden.bs.modal', function() {
+                    styleDialog.modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                });
+
+                styleDialog.modal({
+                    show: false
+                });
 
                 widget.on('click', function(){
                     if (settings['style'] != undefined) {
-                        if (settings['style']['type'] == 'list' || settings['content']['type'] == undefined) {
+                        if (settings['style']['type'] == 'List' || settings['style']['type'] == undefined) {
                             listOpt.trigger('click');
                         } else {
                             carouselOpt.trigger('click');
                         }
                     }
-                    styleDialog.dialog("open");
+                    if (settings['content'] != undefined) {
+                        var type = settings['content']['type'] || 'Speakers';
+                        select.find('li a').each(function(){
+                            var $this = $(this);
+                            if (type == $this.text()) {
+                                $this.trigger('click');
+                            }
+                        });
+                    }
+                    styleDialog.modal('show');
+                });
+
+                select.find('li a').on('click', function(e){
+                    e.preventDefault();
+                    var $this = $(this);
+                    var selText = $this.text();
+                    var dropup = $this.parents('.dropdown');
+                    dropup.find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
+                    dropup.find('input').val(selText);
                 });
 
             });

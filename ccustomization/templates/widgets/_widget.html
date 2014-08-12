@@ -1,4 +1,4 @@
-<li id="widget-{{ counter }}" class="widget-test" data-settings="{{ settings | tojson | forceescape }}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
+<li id="widget-{{ counter }}" data-counter="{{ counter }}" class="widget-test" data-settings="{{ settings | tojson | forceescape }}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
     {% if edit %}
         <div class="widget-icons">
             <span class="ui-icon ui-icon-arrow-4"></span>

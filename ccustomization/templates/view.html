@@ -4,14 +4,6 @@
 
 {% block content -%}
 
-    <div class="page-header">
-        <h1>Page view</h1>
-
-        <div>
-            <a href="{{ url_for('.edit', id=page_id) }}">Layout modification</a>
-        </div>
-    </div>
-
     <div id="main-container" class="main-container" style="border: 1px solid transparent;">
         <ul class="main-list">
             {% for col, col_content in content | dictsort %}

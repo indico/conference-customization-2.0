@@ -63,25 +63,56 @@
     {% endif %}
 
     {% if edit %}
-        <div id="style-dialog-{{ counter }}" title="Style and content customization" class="style-dialog">
-            <form>
-                <fieldset>
-                    <div id="radio-{{ counter }}">
-                        <input id="address-opt-{{ counter }}" type="radio" name="radio" checked="checked"><label for="address-opt-{{ counter }}">Address</label>
-                        <input id="coordinates-opt-{{ counter }}" type="radio" name="radio"><label for="coordinates-opt-{{ counter }}">Coordinates</label>
+
+        <div class="modal fade" id="style-dialog-{{ counter }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Style and content customization</h4>
                     </div>
-                    <div id="address-div-{{ counter }}">
-                        <label for="address-{{ counter }}">Address</label>
-                        <input type="text" name="address-{{ counter }}" id="address-{{ counter }}" class="text ui-widget-content ui-corner-all">
+                    <div class="modal-body">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li id="address-opt-{{ counter }}" class="active"><a href="#address-div-{{ counter }}" role="tab" data-toggle="tab">Address</a></li>
+                            <li id="coordinates-opt-{{ counter }}"><a href="#coordinates-div-{{ counter }}" role="tab" data-toggle="tab">Coordinates</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active container-fluid" id="address-div-{{ counter }}">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label for="address-{{ counter }}">Address</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" name="address-{{ counter }}" id="address-{{ counter }}" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade container-fluid" id="coordinates-div-{{ counter }}">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label for="latitude-{{ counter }}">Latitude</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" name="latitude-{{ counter }}" id="latitude-{{ counter }}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label for="longitude-{{ counter }}">Longitude</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" name="longitude-{{ counter }}" id="longitude-{{ counter }}" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div id="coordinates-div-{{ counter }}">
-                        <label for="latitude-{{ counter }}">Latitude</label>
-                        <input type="text" name="latitude-{{ counter }}" id="latitude-{{ counter }}" class="text ui-widget-content ui-corner-all">
-                        <label for="longitude-{{ counter }}">Longitude</label>
-                        <input type="text" name="longitude-{{ counter }}" id="longitude-{{ counter }}" class="text ui-widget-content ui-corner-all">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary save-button">Save changes</button>
                     </div>
-                </fieldset>
-            </form>
+                </div>
+            </div>
         </div>
 
         <script>
@@ -97,46 +128,44 @@
                 var coordinatesOpt = $('#coordinates-opt-{{ counter }}');
                 var addressDiv = $('#address-div-{{ counter }}');
                 var coordinatesDiv = $('#coordinates-div-{{ counter }}');
-                var opts = addressOpt.add(coordinatesOpt);
                 var address = $('#address-{{ counter }}');
                 var latitude = $('#latitude-{{ counter }}');
                 var longitude = $('#longitude-{{ counter }}');
-                var options = {
-                    buttons: {
-                        "Save": function() {
-                            settings['content'] = {}
-                            settings['content']['address'] = '';
-                            settings['content']['latitude'] = '';
-                            settings['content']['longitude'] = '';
-                            if (addressOpt.is(':checked')) {
-                                settings['content']['type'] = 'address';
-                                settings['content']['address'] = address.val();
-                                settings['empty'] = address.val() == '';
-                            } else {
-                                settings['content']['type'] = 'coordinates';
-                                settings['content']['latitude'] = latitude.val();
-                                settings['content']['longitude'] = longitude.val();
-                                settings['empty'] = latitude.val() == '' || longitude.val() == '';
-                            }
-                            updateWidget(widget, settings);
-                            styleDialog.dialog("close");
-                        },
-                        Cancel: function() {
-                            styleDialog.dialog("close");
-                        }
-                    }
-                };
 
-                styleDialog.dialog(getDialogOptions(options));
-                radio.buttonset();
-                opts.on('click', function(){
-                    if (addressOpt.is(':checked')) {
-                        addressDiv.show();
-                        coordinatesDiv.hide();
+                styleDialog.detach().appendTo('body');
+
+                styleDialog.find('.save-button').on('click', function(){
+                    settings['content'] = {}
+                    settings['content']['address'] = '';
+                    settings['content']['latitude'] = '';
+                    settings['content']['longitude'] = '';
+                    if (addressOpt.hasClass('active')) {
+                        settings['content']['type'] = 'address';
+                        settings['content']['address'] = address.val();
+                        settings['empty'] = address.val() == '';
                     } else {
-                        coordinatesDiv.show();
-                        addressDiv.hide();
+                        settings['content']['type'] = 'coordinates';
+                        settings['content']['latitude'] = latitude.val();
+                        settings['content']['longitude'] = longitude.val();
+                        settings['empty'] = latitude.val() == '' || longitude.val() == '';
                     }
+                    updateWidget(widget, settings);
+                    styleDialog.trigger("hidden.bs.modal");
+                });
+
+                styleDialog.on('hidden.bs.modal', function() {
+                    styleDialog.modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                });
+
+                $('ul.nav-tabs li a').on('click', function(e){
+                    e.preventDefault();
+                    $(this).tab('show');
+                });
+
+                styleDialog.modal({
+                    show: false
                 });
 
                 widget.on('click', function(){
@@ -144,12 +173,12 @@
                     widget.addClass('selected');
                     if (settings['content'] != undefined) {
                         if (settings['content']['type'] == 'address' || settings['content']['type'] == undefined) {
-                            addressOpt.trigger('click');
+                            addressOpt.children('a').trigger('click');
                         } else {
-                            coordinatesOpt.trigger('click');
+                            coordinatesOpt.children('a').trigger('click');
                         }
                     }
-                    if (addressOpt.is(':checked')) {
+                    if (addressOpt.hasClass('active')) {
                         latitude.val('');
                         longitude.val('');
                         if (settings['content'] != undefined) {
@@ -157,8 +186,6 @@
                         } else {
                             address.val('');
                         }
-                        addressDiv.show();
-                        coordinatesDiv.hide();
                     } else {
                         address.val('');
                         if (settings['content'] != undefined) {
@@ -168,10 +195,8 @@
                             latitude.val('');
                             longitude.val('');
                         }
-                        coordinatesDiv.show();
-                        addressDiv.hide();
                     }
-                    styleDialog.dialog("open");
+                    styleDialog.modal('show');
                 });
 
             });

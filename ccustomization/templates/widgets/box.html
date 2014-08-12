@@ -23,18 +23,54 @@
     {% endif %}
 
     {% if edit %}
-        <div id="style-dialog-{{ counter }}" title="Style and content customization" class="style-dialog">
-            <form>
-                <fieldset>
-                    <label for="title-{{ counter }}">Title</label>
-                    <input type="text" name="title-{{ counter }}" id="title-{{ counter }}" class="text ui-widget-content ui-corner-all">
-                    <label for="color-{{ counter }}">Background color</label>
-                    <input type="text" name="color-{{ counter }}" id="color-{{ counter }}" class="text ui-widget-content ui-corner-all">
-                    <input type="checkbox" id="border-{{ counter }}"><label for="border-{{ counter }}">Border</label>
-                    <label for="content-{{ counter }}">Content</label>
-                    <textarea id="content-{{ counter }}" rows="9" cols="55"></textarea>
-                </fieldset>
-            </form>
+
+        <div class="modal fade" id="style-dialog-{{ counter }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Style and content customization</h4>
+                    </div>
+                    <div class="modal-body container-fluid">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="title-{{ counter }}">Title</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" name="title-{{ counter }}" id="title-{{ counter }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="color-{{ counter }}">Background color</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" name="color-{{ counter }}" id="color-{{ counter }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="border-{{ counter }}">Border</label>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="checkbox" id="border-{{ counter }}">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="content-{{ counter }}">Content</label>
+                            </div>
+                            <div class="col-md-12">
+                                <textarea id="content-{{ counter }}" rows="9" cols="55" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary save-button">Save changes</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script>
@@ -49,26 +85,29 @@
                 var color = $('#color-{{ counter }}');
                 var border = $('#border-{{ counter }}');
                 var content = $('#content-{{ counter }}');
-                var options = {
-                    buttons: {
-                        "Save": function() {
-                            settings['style'] = {}
-                            settings['style']['title'] = title.val();
-                            settings['style']['color'] = color.val();
-                            settings['style']['border'] = border.is(':checked');
-                            settings['content'] = content.val();
-                            settings['empty'] = content.val() == '';
-                            updateWidget(widget, settings);
-                            styleDialog.dialog("close");
-                        },
-                        Cancel: function() {
-                            styleDialog.dialog("close");
-                        }
-                    }
-                };
 
-                styleDialog.dialog(getDialogOptions(options));
-                border.button();
+                styleDialog.detach().appendTo('body');
+
+                styleDialog.find('.save-button').on('click', function(){
+                    settings['style'] = {}
+                    settings['style']['title'] = title.val();
+                    settings['style']['color'] = color.val();
+                    settings['style']['border'] = border.is(':checked');
+                    settings['content'] = content.val();
+                    settings['empty'] = content.val() == '';
+                    updateWidget(widget, settings);
+                    styleDialog.trigger("hidden.bs.modal");
+                });
+
+                styleDialog.on('hidden.bs.modal', function() {
+                    styleDialog.modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                });
+
+                styleDialog.modal({
+                    show: false
+                });
 
                 widget.on('click', function(){
                     $('.widget-test').removeClass('selected');
@@ -76,15 +115,15 @@
                     if (settings['style'] != undefined) {
                         title.val(settings['style']['title'] || '');
                         color.val(settings['style']['color'] || '');
-                        border.prop('checked', settings['style']['border'] || false).button('refresh');
+                        border.prop('checked', settings['style']['border'] || false);
                         content.val(settings['content'] || '');
                     } else {
                         title.val('');
                         color.val('');
-                        border.prop('checked', false).button('refresh');
+                        border.prop('checked', false);
                         content.val('');
                     }
-                    styleDialog.dialog("open");
+                    styleDialog.modal('show');
                 });
 
             });

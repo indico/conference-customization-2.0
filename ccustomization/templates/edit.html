@@ -2,35 +2,70 @@
 
 {% block title %}Layout modification{% endblock %}
 
+{% block assets %}
+    {%- assets filters='rjsmin', output='assets/edit.js', 'js/edit.js', 'js/edit-widget.js' %}
+        <script src="{{ ASSET_URL|version_url }}"></script>
+    {%- endassets %}
+{% endblock %}
+
+{% block navbars %}
+    <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation" style="z-index: 10;">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-edit">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <span class="navbar-brand">Toolbar</span>
+            </div>
+            <div id="navbar-collapse-edit" class="collapse navbar-collapse" style="z-index: 11; margin-top: 7px;">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <div class="btn-group">
+                            <div id="widget-select" class="btn-group dropup">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    Box
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Box</a></li>
+                                    <li><a href="#">Location</a></li>
+                                    <li><a href="#">People</a></li>
+                                </ul>
+                                <input type="hidden" value="Box">
+                            </div>
+                            <div id="col-select" class="btn-group dropup">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                  0
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    {% for col in range(0, cols) %}
+                                        <li><a href="#">{{ col }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                                <input type="hidden" value="0">
+                            </div>
+                            <button id="add-widget" type="button" class="btn btn-default">Add widget</button>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <div class="btn-group">
+                            <button id="save" type="button" class="btn btn-default" data-url="{{ url_for('.update', id=page_id) }}">Save</button>
+                            <button id="discard" type="button" class="btn btn-default">Discard changes</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
 {% block content -%}
-
-    <div class="page-header">
-        <h1>Layout modification</h1>
-
-        <div>
-            <a href="{{ url_for('.view', id=page_id) }}">Page view</a>
-        </div>
-    </div>
-
-    <div class="modification-toolbar">
-        <div class="actions">
-            <select id="widget-select">
-                <option>Box</option>
-                <option>Location</option>
-                <option>People</option>
-            </select>
-            <select id="col-select">
-                {% for col in range(0, cols) %}
-                    <option>{{ col }}</option>
-                {% endfor %}
-            </select>
-            <button id="add-widget" type="button">Add widget</button>
-        </div>
-        <div class="save-discard-buttons">
-            <button id="save" type="button" data-url="{{ url_for('.update', id=page_id) }}">Save</button>
-            <button id="discard" type="button">Discard changes</button>
-        </div>
-    </div>
 
     <div id="main-container" class="main-container" data-render-url="{{ url_for('.render') }}">
         <ul class="main-list">
@@ -75,9 +110,3 @@
     </div>
 
 {%- endblock %}
-
-{% block body_end %}
-    {%- assets filters='rjsmin', output='assets/edit.js', 'js/edit.js' %}
-        <script src="{{ ASSET_URL|version_url }}"></script>
-    {%- endassets %}
-{% endblock %}

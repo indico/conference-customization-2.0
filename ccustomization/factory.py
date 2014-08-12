@@ -2,6 +2,7 @@ from flask import Flask
 
 from .core import assets, db, babel
 from .assets import version_url, versioned_static_file
+from .menu import setup_breadcrumbs
 from .webinterface import bp as webinterface_bp
 # noinspection PyUnresolvedReferences
 from . import models  # registers db models
@@ -25,6 +26,8 @@ def register_core_funcs(app):
     # versioned assets
     app.add_url_rule('/static_v/<version>/<path:filename>', view_func=versioned_static_file)
     app.add_template_filter(version_url)
+    # breadcrumb nav
+    app.before_request(setup_breadcrumbs)
 
 
 def register_blueprints(app):

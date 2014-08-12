@@ -34,9 +34,7 @@ $(document).ready(function() {
 
                 columnList.sortable({
                     connectWith: '.column-list, .container-list',
-                    handle: '.ui-icon.ui-icon-arrow-4',
-                    placeholder: "ui-state-highlight",
-                    forcePlaceholderSize: true
+                    handle: '.ui-icon.ui-icon-arrow-4'
                 });
          
                 cols++;
@@ -114,9 +112,7 @@ $(document).ready(function() {
                 $this.parent().wrap(container);
                 $this.parent().sortable({
                     connectWith: '.column-list, .container-list',
-                    handle: '.ui-icon.ui-icon-arrow-4',
-                    placeholder: "ui-state-highlight",
-                    forcePlaceholderSize: true
+                    handle: '.ui-icon.ui-icon-arrow-4'
                 });
             }
         });
@@ -158,7 +154,7 @@ $(document).ready(function() {
 
     $('#add-widget').on('click', function(){
         var settings = {
-            type: $('#widget-select').val(),
+            type: $('#widget-select input').val(),
             empty: true
         };
         var container = $('<li>', {
@@ -167,7 +163,7 @@ $(document).ready(function() {
         var containerList = $('<ul>', {
             'class': 'container-list'
         });
-        var colNumber = $('#col-select').val();
+        var colNumber = $('#col-select input').val();
         var column = $('#column-'+colNumber+'-container .column-list');
         renderWidget(settings).done(function(newWidget){
             newWidget.appendTo(containerList);
@@ -190,18 +186,23 @@ $(document).ready(function() {
 
     $('.column-list, .container-list').sortable({
         connectWith: '.column-list, .container-list',
-        handle: '.ui-icon.ui-icon-arrow-4',
-        placeholder: "ui-state-highlight",
-        forcePlaceholderSize: true
+        handle: '.ui-icon.ui-icon-arrow-4'
     });
 
-    $('button').button();
-    $('select').selectmenu();
     $('#col-radio').buttonset();
     $('#menu-checkboxes').buttonset();
     $('#title-checkbox').button();
     if ($('.main-list').children().length < 1)  {
         layoutDialog.dialog('open');
     }
+
+    $('#widget-select li a, #col-select li a').on('click', function(e){
+        e.preventDefault();
+        var $this = $(this);
+        var selText = $this.text();
+        var dropup = $this.parents('.dropup');
+        dropup.find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
+        dropup.find('input').val(selText);
+    });
 
 });

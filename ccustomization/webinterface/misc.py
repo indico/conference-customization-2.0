@@ -2,12 +2,12 @@ import inspect
 import json
 import re
 
-from flask import render_template, redirect, url_for, jsonify, request, Markup
+from flask import render_template, redirect, url_for, jsonify, request, Markup, g
 import markdown
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..core import db
-from ..layout import widgets
+from ..menu import menu, breadcrumb, make_breadcrumb
 from ..models import Event, Page
 from . import bp
 
@@ -15,6 +15,7 @@ counter = 0
 
 
 @bp.route('/')
+@menu('index')
 def index():
     conference = Event.query.first()
     if conference is None or Page.query.filter_by(id=conference.main_page_id).first() is None:
@@ -27,12 +28,14 @@ def index():
         db.session.add(conference)
         db.session.commit()
     wvars = {
-        'main_page_id': conference.main_page_id
+        'main_page_id': conference.main_page_id,
+        'page_id': conference.main_page_id
     }
     return render_template('index.html', **wvars)
 
 
 @bp.route('/edit/<id>')
+@menu('edit')
 def edit(id):
     page = Page.query.filter_by(id=id).first_or_404()
     page_content = {}
@@ -67,6 +70,7 @@ def update(id):
 
 
 @bp.route('/view/<id>')
+@menu('view')
 def view(id):
     page = Page.query.filter_by(id=id).first_or_404()
     page_content = {}
