@@ -95,7 +95,7 @@
                     settings['style']['color'] = color.val();
                     settings['style']['border'] = border.is(':checked');
                     settings['content'] = content.val();
-                    settings['empty'] = content.val() == '';
+                    settings['empty'] = false;
                     updateWidget(widget, settings);
                     styleDialog.trigger("hidden.bs.modal");
                 });
@@ -124,6 +124,7 @@
                         border.prop('checked', false);
                         content.val('');
                     }
+                    content.trigger('input');
                     styleDialog.modal('show');
                 });
 
@@ -133,7 +134,7 @@
                     } else {
                         save.prop('disabled', false);
                     }
-                }).trigger('input');
+                });
 
             });
 

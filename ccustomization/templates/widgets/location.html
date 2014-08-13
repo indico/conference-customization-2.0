@@ -9,59 +9,41 @@
 
 {% block widget_content %}
 
-    <script>
-        function geoCode(mapCanvas, address) {
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode( { 'address': address}, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    drawMap(mapCanvas, results[0].geometry.location);
-                } else {
-                    alert('Geocode was not successful for the following reason: ' + status);
-                }
-            });
-        }
-
-        function drawMap(mapCanvas, coords) {
-            var options = {
-                zoom: 9,
-                center: coords,
-                mapTypeControl: false,
-                navigationControlOptions: {
-                    style: google.maps.NavigationControlStyle.SMALL
-                },
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            var map = new google.maps.Map(mapCanvas.get(0), options);
-            var marker = new google.maps.Marker({
-                position: coords,
-                map: map
-            });
-            $('body').on('sortstop', function(){
-                google.maps.event.trigger(map, 'resize');
-                map.setCenter(coords);
-            });
-        }
-    </script>
-
     {% if not settings.empty %}
-        <div id="map-canvas-{{ counter }}" data-type="{{ settings.content.type }}" {% if settings.content.type == 'address' %}data-address="{{ settings.content.address }}"{% else %}data-latitude="{{ settings.content.latitude }}" data-longitude="{{ settings.content.longitude }}"{% endif %} style="min-height: 400px;{% if edit %} z-index: -1;{% endif %}"></div>
+
+        <div id="map-canvas-{{ counter }}" data-address="{{ settings.content.address }}" data-latitude="{{ settings.content.latitude }}" data-longitude="{{ settings.content.longitude }}" data-zoom="{{ settings.style.zoom }}" style="min-height: 400px;{% if edit %} z-index: -1;{% endif %}"></div>
 
         <script>
-
             $(document).ready(function() {
                 "use strict";
 
-                var mapCanvas = $('#map-canvas-{{ counter }}');
-
-                if (mapCanvas.data('type') == 'address') {
-                    geoCode(mapCanvas, mapCanvas.data('address'));
-                } else {
-                    drawMap(mapCanvas, new google.maps.LatLng(mapCanvas.data('latitude'), mapCanvas.data('longitude')));
+                function drawMap(mapCanvas, coords, zoomLvl, address) {
+                    var options = {
+                        zoom: parseInt(zoomLvl || 9),
+                        center: coords,
+                        navigationControlOptions: {
+                            style: google.maps.NavigationControlStyle.SMALL
+                        },
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+                    var map = new google.maps.Map(mapCanvas.get(0), options);
+                    var marker = new google.maps.Marker({
+                        position: coords,
+                        map: map,
+                        title: address
+                    });
+                    $('body').on('sortstop', function(){
+                        google.maps.event.trigger(map, 'resize');
+                        map.setCenter(coords);
+                    });
                 }
 
-            });
+                var mapCanvas = $('#map-canvas-{{ counter }}');
+                drawMap(mapCanvas, new google.maps.LatLng(mapCanvas.data('latitude'), mapCanvas.data('longitude')), mapCanvas.data('zoom'), mapCanvas.data('address'));
 
+            });
         </script>
+
     {% endif %}
 
     {% if edit %}
@@ -73,40 +55,53 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4 class="modal-title">Style and content customization</h4>
                     </div>
-                    <div class="modal-body">
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li id="address-opt-{{ counter }}" class="active"><a href="#address-div-{{ counter }}" role="tab" data-toggle="tab">Address</a></li>
-                            <li id="coordinates-opt-{{ counter }}"><a href="#coordinates-div-{{ counter }}" role="tab" data-toggle="tab">Coordinates</a></li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane fade in active container-fluid" id="address-div-{{ counter }}">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <label for="address-{{ counter }}">Address</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="text" name="address-{{ counter }}" id="address-{{ counter }}" class="form-control">
-                                    </div>
-                                </div>
+                    <div class="modal-body container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>Address</h4>
                             </div>
-                            <div class="tab-pane fade container-fluid" id="coordinates-div-{{ counter }}">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <label for="latitude-{{ counter }}">Latitude</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="text" name="latitude-{{ counter }}" id="latitude-{{ counter }}" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <label for="longitude-{{ counter }}">Longitude</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="text" name="longitude-{{ counter }}" id="longitude-{{ counter }}" class="form-control">
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="address-{{ counter }}">Address</label>
                             </div>
+                            <div class="col-md-6">
+                                <input type="text" name="address-{{ counter }}" id="address-{{ counter }}" class="form-control">
+                            </div>
+                            <div class="col-md-offset-1 col-md-2">
+                                <button type="button" class="btn btn-default geocode-button">Geocode</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>Coordinates</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="latitude-{{ counter }}">Latitude</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" name="latitude-{{ counter }}" id="latitude-{{ counter }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="longitude-{{ counter }}">Longitude</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" name="longitude-{{ counter }}" id="longitude-{{ counter }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="preview-section{% if empty %} hidden{% endif %}">
+                            <hr>
+                            <input id="zoom-{{ counter }}" type="hidden">
+                            <div id="preview-canvas-{{ counter }}" style="min-height: 300px;"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -124,34 +119,70 @@
 
                 var styleDialog = $('#style-dialog-{{ counter }}');
                 var save = styleDialog.find('.save-button');
+                var geocode = styleDialog.find('.geocode-button');
+                var previewSection = styleDialog.find('.preview-section');
+                var previewCanvas = $('#preview-canvas-{{ counter }}');
                 var widget = styleDialog.parent('.widget-test');
                 var settings = widget.data('settings');
                 var radio = $('#radio-{{ counter }}');
-                var addressOpt = $('#address-opt-{{ counter }}');
-                var coordinatesOpt = $('#coordinates-opt-{{ counter }}');
                 var addressDiv = $('#address-div-{{ counter }}');
                 var coordinatesDiv = $('#coordinates-div-{{ counter }}');
                 var address = $('#address-{{ counter }}');
                 var latitude = $('#latitude-{{ counter }}');
                 var longitude = $('#longitude-{{ counter }}');
+                var coordinates = latitude.add(longitude);
+                var zoom = $('#zoom-{{ counter }}');
+
+                function geoCode(address) {
+                    var geocoder = new google.maps.Geocoder();
+                    var coordinatesResp = $.Deferred();
+                    geocoder.geocode( { 'address': address}, function(results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            coordinatesResp.resolve(results[0].geometry.location);
+                        } else {
+                            alert('Geocode was not successful for the following reason: ' + status);
+                            coordinatesResp.resolve(null);
+                        }
+                    });
+                    return coordinatesResp.promise();
+                }
+
+                function drawPreview(previewCanvas, coords, zoomLvl) {
+                    var options = {
+                        zoom: parseInt(zoomLvl || 9),
+                        center: coords,
+                        mapTypeControl: false,
+                        navigationControlOptions: {
+                            style: google.maps.NavigationControlStyle.SMALL
+                        },
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+                    var map = new google.maps.Map(previewCanvas.get(0), options);
+                    var marker = new google.maps.Marker({
+                        position: coords,
+                        map: map
+                    });
+                    google.maps.event.addListener(map, 'click', function(e) {
+                        var newCoords = e.latLng;
+                        latitude.val(newCoords.lat());
+                        longitude.val(newCoords.lng());
+                        drawPreview(previewCanvas, newCoords, map.getZoom());
+                    });
+                    google.maps.event.addListener(map, 'zoom_changed', function(e) {
+                        zoom.val(map.getZoom());
+                    });
+                }
 
                 styleDialog.detach().appendTo('body');
 
                 save.on('click', function(){
-                    settings['content'] = {}
-                    settings['content']['address'] = '';
-                    settings['content']['latitude'] = '';
-                    settings['content']['longitude'] = '';
-                    if (addressOpt.hasClass('active')) {
-                        settings['content']['type'] = 'address';
-                        settings['content']['address'] = address.val();
-                        settings['empty'] = address.val() == '';
-                    } else {
-                        settings['content']['type'] = 'coordinates';
-                        settings['content']['latitude'] = latitude.val();
-                        settings['content']['longitude'] = longitude.val();
-                        settings['empty'] = latitude.val() == '' || longitude.val() == '';
-                    }
+                    settings['content'] = {};
+                    settings['content']['address'] = address.val();
+                    settings['content']['latitude'] = latitude.val();
+                    settings['content']['longitude'] = longitude.val();
+                    settings['style'] = {};
+                    settings['style']['zoom'] = zoom.val();
+                    settings['empty'] = false;
                     updateWidget(widget, settings);
                     styleDialog.trigger("hidden.bs.modal");
                 });
@@ -162,9 +193,8 @@
                     $('.modal-backdrop').remove();
                 });
 
-                $('ul.nav-tabs li a').on('click', function(e){
-                    e.preventDefault();
-                    $(this).tab('show');
+                styleDialog.on('shown.bs.modal', function() {
+                    coordinates.add(address).trigger('input');
                 });
 
                 styleDialog.modal({
@@ -175,31 +205,49 @@
                     $('.widget-test').removeClass('selected');
                     widget.addClass('selected');
                     if (settings['content'] != undefined) {
-                        if (settings['content']['type'] == 'address' || settings['content']['type'] == undefined) {
-                            addressOpt.children('a').trigger('click');
-                        } else {
-                            coordinatesOpt.children('a').trigger('click');
-                        }
-                    }
-                    if (addressOpt.hasClass('active')) {
-                        latitude.val('');
-                        longitude.val('');
-                        if (settings['content'] != undefined) {
-                            address.val(settings['content']['address'] || '');
-                        } else {
-                            address.val('');
-                        }
+                        address.val(settings['content']['address'] || '');
+                        latitude.val(settings['content']['latitude'] || '');
+                        longitude.val(settings['content']['longitude'] || '');
                     } else {
                         address.val('');
-                        if (settings['content'] != undefined) {
-                            latitude.val(settings['content']['latitude'] || '');
-                            longitude.val(settings['content']['longitude'] || '');
-                        } else {
-                            latitude.val('');
-                            longitude.val('');
-                        }
+                        latitude.val('');
+                        longitude.val('');
+                    }
+                    if (settings['style'] != undefined) {
+                        zoom.val(settings['style']['zoom'] || '');
+                    } else {
+                        zoom.val('');
                     }
                     styleDialog.modal('show');
+                });
+
+                coordinates.on('input', function(){
+                    if (latitude.val() == '' || longitude.val() == '') {
+                        save.prop('disabled', true);
+                        previewSection.addClass('hidden');
+                    } else {
+                        save.prop('disabled', false);
+                        previewSection.removeClass('hidden');
+                        drawPreview(previewCanvas, new google.maps.LatLng(latitude.val(), longitude.val()), zoom.val());
+                    }
+                });
+
+                address.on('input', function(){
+                    if (address.val() == '') {
+                        geocode.prop('disabled', true);
+                    } else {
+                        geocode.prop('disabled', false);
+                    }
+                });
+
+                geocode.on('click', function(){
+                    geoCode(address.val()).done(function(coordinatesResp){
+                        if (coordinatesResp != null) {
+                            latitude.val(coordinatesResp.lat());
+                            longitude.val(coordinatesResp.lng());
+                            coordinates.trigger('input');
+                        }
+                    });
                 });
 
             });
