@@ -79,6 +79,7 @@
                 "use strict";
 
                 var styleDialog = $('#style-dialog-{{ counter }}');
+                var save = styleDialog.find('.save-button');
                 var widget = styleDialog.parent('.widget-test');
                 var settings = widget.data('settings');
                 var title = $('#title-{{ counter }}');
@@ -88,7 +89,7 @@
 
                 styleDialog.detach().appendTo('body');
 
-                styleDialog.find('.save-button').on('click', function(){
+                save.on('click', function(){
                     settings['style'] = {}
                     settings['style']['title'] = title.val();
                     settings['style']['color'] = color.val();
@@ -125,6 +126,14 @@
                     }
                     styleDialog.modal('show');
                 });
+
+                content.on('input', function(){
+                    if (content.val() == '') {
+                        save.prop('disabled', true);
+                    } else {
+                        save.prop('disabled', false);
+                    }
+                }).trigger('input');
 
             });
 

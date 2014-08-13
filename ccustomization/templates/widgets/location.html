@@ -9,6 +9,40 @@
 
 {% block widget_content %}
 
+    <script>
+        function geoCode(mapCanvas, address) {
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode( { 'address': address}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    drawMap(mapCanvas, results[0].geometry.location);
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
+
+        function drawMap(mapCanvas, coords) {
+            var options = {
+                zoom: 9,
+                center: coords,
+                mapTypeControl: false,
+                navigationControlOptions: {
+                    style: google.maps.NavigationControlStyle.SMALL
+                },
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(mapCanvas.get(0), options);
+            var marker = new google.maps.Marker({
+                position: coords,
+                map: map
+            });
+            $('body').on('sortstop', function(){
+                google.maps.event.trigger(map, 'resize');
+                map.setCenter(coords);
+            });
+        }
+    </script>
+
     {% if not settings.empty %}
         <div id="map-canvas-{{ counter }}" data-type="{{ settings.content.type }}" {% if settings.content.type == 'address' %}data-address="{{ settings.content.address }}"{% else %}data-latitude="{{ settings.content.latitude }}" data-longitude="{{ settings.content.longitude }}"{% endif %} style="min-height: 400px;{% if edit %} z-index: -1;{% endif %}"></div>
 
@@ -17,44 +51,12 @@
             $(document).ready(function() {
                 "use strict";
 
-                function geoCode(address) {
-                    var geocoder = new google.maps.Geocoder();
-                    geocoder.geocode( { 'address': address}, function(results, status) {
-                        if (status == google.maps.GeocoderStatus.OK) {
-                            drawMap(results[0].geometry.location);
-                        } else {
-                            alert('Geocode was not successful for the following reason: ' + status);
-                        }
-                    });
-                }
-
-                function drawMap(coords) {
-                    var options = {
-                        zoom: 9,
-                        center: coords,
-                        mapTypeControl: false,
-                        navigationControlOptions: {
-                            style: google.maps.NavigationControlStyle.SMALL
-                        },
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
-                    };
-                    var map = new google.maps.Map(mapCanvas.get(0), options);
-                    var marker = new google.maps.Marker({
-                        position: coords,
-                        map: map
-                    });
-                    $('body').on('sortstop', function(){
-                        google.maps.event.trigger(map, 'resize');
-                        map.setCenter(coords);
-                    });
-                }
-
                 var mapCanvas = $('#map-canvas-{{ counter }}');
 
                 if (mapCanvas.data('type') == 'address') {
-                    geoCode(mapCanvas.data('address'));
+                    geoCode(mapCanvas, mapCanvas.data('address'));
                 } else {
-                    drawMap(new google.maps.LatLng(mapCanvas.data('latitude'), mapCanvas.data('longitude')));
+                    drawMap(mapCanvas, new google.maps.LatLng(mapCanvas.data('latitude'), mapCanvas.data('longitude')));
                 }
 
             });
@@ -121,6 +123,7 @@
                 "use strict";
 
                 var styleDialog = $('#style-dialog-{{ counter }}');
+                var save = styleDialog.find('.save-button');
                 var widget = styleDialog.parent('.widget-test');
                 var settings = widget.data('settings');
                 var radio = $('#radio-{{ counter }}');
@@ -134,7 +137,7 @@
 
                 styleDialog.detach().appendTo('body');
 
-                styleDialog.find('.save-button').on('click', function(){
+                save.on('click', function(){
                     settings['content'] = {}
                     settings['content']['address'] = '';
                     settings['content']['latitude'] = '';
