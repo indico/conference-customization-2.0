@@ -1,23 +1,3 @@
-var defaultDialogOptions = {
-    autoOpen: false,
-    height: 500,
-    width: 500,
-    modal: true,
-    close: function() {
-        $('.widget-test').removeClass('selected');
-    },
-    show: {
-        duration: 400
-    },
-    hide: {
-        duration: 400
-    }
-};
-
-function getDialogOptions(options) {
-    return $.extend(defaultDialogOptions, options);
-}
-
 function bindWidget(widget) {
     widget.on('mouseenter', function(){
         var emptyMessage = widget.children('.empty-widget-message');

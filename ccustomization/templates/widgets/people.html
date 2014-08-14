@@ -83,10 +83,12 @@
                 styleDialog.detach().appendTo('body');
 
                 save.on('click', function(){
-                    settings['style'] = {}
-                    settings['style']['type'] = radio.find('.active input').val()
-                    settings['content'] = {}
-                    settings['content']['type'] = select.children('input').val();
+                    settings['style'] = {
+                        type: radio.find('.active input').val()
+                    };
+                    settings['content'] = {
+                        type: select.children('input').val()
+                    }
                     settings['empty'] = false;
                     updateWidget(widget, settings);
                     styleDialog.trigger("hidden.bs.modal");

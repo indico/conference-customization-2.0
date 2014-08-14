@@ -90,10 +90,11 @@
                 styleDialog.detach().appendTo('body');
 
                 save.on('click', function(){
-                    settings['style'] = {}
-                    settings['style']['title'] = title.val();
-                    settings['style']['color'] = color.val();
-                    settings['style']['border'] = border.is(':checked');
+                    settings['style'] = {
+                        title: title.val(),
+                        color: color.val(),
+                        border: border.is(':checked')
+                    };
                     settings['content'] = content.val();
                     settings['empty'] = false;
                     updateWidget(widget, settings);
@@ -139,6 +140,7 @@
             });
 
         </script>
+
     {% endif %}
 
 {% endblock %}

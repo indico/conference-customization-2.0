@@ -98,8 +98,9 @@
                                 <input type="text" name="longitude-{{ counter }}" id="longitude-{{ counter }}" class="form-control">
                             </div>
                         </div>
-                        <div class="preview-section{% if empty %} hidden{% endif %}">
+                        <div class="preview-section{% if settings.empty %} hidden{% endif %}">
                             <hr>
+                            <h4>Preview</h4>
                             <input id="zoom-{{ counter }}" type="hidden">
                             <div id="preview-canvas-{{ counter }}" style="min-height: 300px;"></div>
                         </div>
@@ -176,12 +177,14 @@
                 styleDialog.detach().appendTo('body');
 
                 save.on('click', function(){
-                    settings['content'] = {};
-                    settings['content']['address'] = address.val();
-                    settings['content']['latitude'] = latitude.val();
-                    settings['content']['longitude'] = longitude.val();
-                    settings['style'] = {};
-                    settings['style']['zoom'] = zoom.val();
+                    settings['content'] = {
+                        address: address.val(),
+                        latitude: latitude.val(),
+                        longitude: longitude.val()
+                    };
+                    settings['style'] = {
+                        zoom: zoom.val()
+                    };
                     settings['empty'] = false;
                     updateWidget(widget, settings);
                     styleDialog.trigger("hidden.bs.modal");
