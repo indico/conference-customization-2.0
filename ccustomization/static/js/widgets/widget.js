@@ -29,10 +29,7 @@ function bindWidget(widget) {
         });
     });
     var containerList = widget.parent('.container-list');
-    containerList.sortable({
-        connectWith: '.column-list, .container-list',
-        handle: '.ui-icon.ui-icon-arrow-4'
-    });
+    containerList.sortable(sortableOptions);
 }
 
 function updateWidget(widget, settings) {

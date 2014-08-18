@@ -65,10 +65,7 @@ $(document).ready(function() {
                 });
                 $this.wrap(containerList);
                 $this.parent().wrap(container);
-                $this.parent().sortable({
-                    connectWith: '.column-list, .container-list',
-                    handle: '.ui-icon.ui-icon-arrow-4'
-                });
+                $this.parent().sortable(sortableOptions);
             }
         });
     }
@@ -107,6 +104,16 @@ $(document).ready(function() {
         });
     }
 
+    function bindSelectMenus(element) {
+        element.on('click', function(e){
+            e.preventDefault();
+            var elemText = element.text();
+            var dropup = element.parents('.dropup');
+            dropup.find('.dropdown-toggle').html(elemText+' <span class="caret"></span>');
+            dropup.find('input').val(elemText.toLowerCase());
+        });
+    }
+
     $('#add-widget').on('click', function(){
         var settings = {
             type: $('#widget-select input').val(),
@@ -140,18 +147,10 @@ $(document).ready(function() {
         location.reload();
     });
 
-    $('.column-list, .container-list').sortable({
-        connectWith: '.column-list, .container-list',
-        handle: '.ui-icon.ui-icon-arrow-4'
-    });
+    $('.column-list, .container-list').sortable(sortableOptions);
 
-    $('#widget-select li a, #col-select li a').on('click', function(e){
-        e.preventDefault();
-        var $this = $(this);
-        var selText = $this.text();
-        var dropup = $this.parents('.dropup');
-        dropup.find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
-        dropup.find('input').val(selText.toLowerCase());
+    $('#widget-select li a, #col-select li a').each(function(){
+        bindSelectMenus($(this));
     });
 
     layoutDialog.detach().appendTo('body');
@@ -177,11 +176,9 @@ $(document).ready(function() {
             columnContainer.appendTo($('.main-list'));
             columnLink.appendTo(columnOption);
             columnOption.appendTo($('#col-select ul'));
+            bindSelectMenus(columnLink);
 
-            columnList.sortable({
-                connectWith: '.column-list, .container-list',
-                handle: '.ui-icon.ui-icon-arrow-4'
-            });
+            columnList.sortable(sortableOptions);
      
             cols++;
         }

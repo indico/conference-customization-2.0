@@ -17,7 +17,7 @@
  
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
         {%- assets filters='rjsmin', output='assets/bundle.js', 'js/jquery.js', 'js/jquery-ui.js',
-                   'js/bootstrap.js', 'js/widgets/*.js' %}
+                   'js/bootstrap.js', 'js/widgets/*.js', 'js/main.js' %}
             <script src="{{ ASSET_URL|version_url }}"></script>
         {%- endassets %}
 
