@@ -1,108 +1,5 @@
-
-.page-header {
-    border-bottom: 2px solid black;
-    margin-bottom: 10px;
-}
-
 $grid-border: 1px solid black;
-$toolbar-color: lightblue;
-
-.modification-toolbar {
-
-    width: 100%;
-    height: 60px;
-    border: $grid-border;
-    border-color: $toolbar-color;
-    background-color: $toolbar-color;
-
-    .actions, .save-discard-buttons {
-        margin-top: 18px;
-    }
-
-    .actions {
-        float: left;
-        margin-left: 40px;
-    }
-
-    .save-discard-buttons {
-        float: right;
-        margin-right: 40px;
-
-        div {
-            float: left;
-        }
-    }
-
-    .ui-selectmenu-button {
-
-        span.ui-selectmenu-text {
-            padding: 0 0 0 0.2em;
-            line-height: initial;
-        }
-
-        span.ui-icon {
-            right: 0.1em;
-        }
-    }
-}
-
-fieldset select {
-    width: 120px;
-}
-
-.modification-grid {
-
-    .grid-row {
-        width: 100%;
-        height: 200px;
-        border: $grid-border;
-        border-bottom: 0px;
-
-        &:last-child {
-            border-bottom: $grid-border;
-        }
-
-        .grid-cell {
-            float: left;
-            height: 100%;
-
-            &:not(:last-child) {
-                border-right: $grid-border;
-            }
-        }
-    }
-}
-
-.style-toolbar {
-    width: 200px;
-    height: 100%;
-    right: 6px;
-    top: 172px;
-    position: fixed;
-    background-color: $toolbar-color;
-}
-
 $min-height: 120px;
-
-.widget-test {
-    width: 100%;
-    min-height: $min-height;
-    border-radius: 4px;
-    text-align: center;
-    position: relative;
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
-.container-test {
-    width: 100%;
-    min-height: $min-height;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    text-align: center;
-    background-color: transparent;
-    border-radius: 4px;
-}
 
 .main-container {
     height: 100%;
@@ -122,81 +19,123 @@ $min-height: 120px;
             height: 100%;
             width: 100%;
             border: $grid-border;
+
+            &.view-mode {
+                border-color: transparent;
+            }
+
+            .container-cc, .widget-cc {
+                width: 100%;
+                min-height: $min-height;
+                text-align: center;
+            }
+
+            .container-cc {
+                margin-top: 10px;
+                margin-bottom: 10px;
+                background-color: transparent;
+
+                .widget-icons, .container-icons {
+                    float: right;
+                    display: inline-block;
+                    z-index: 1;
+
+                    .ui-icon {
+
+                        &.ui-icon-arrow-4 {
+                            cursor: move;
+                        }
+
+                        &.ui-icon-trash, &.ui-icon-copy {
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                .widget-cc {
+                    position: relative;
+                    margin-left: 5px;
+                    margin-right: 5px;
+                    border-radius: 4px;
+
+                    .widget-icons {
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                        background-color: white;
+                        border-bottom-left-radius: 4px;
+
+                        .ui-icon {
+
+                            &.ui-icon-arrow-4, &.ui-icon-trash, &.ui-icon-copy {
+                                float: right;
+                            }
+                        }
+                    }
+
+                    .empty-widget-message {
+                        margin-top: 50px;
+                        background-color: white;
+                        border-radius: 4px;
+                        display: none;
+                    }
+
+                    &.box-widget {
+                        background-color: white;
+
+                        &.empty-widget {
+                            background: url('http://hackathon-in-a-box.org/img/box.png') repeat center;
+                        }
+
+                        &:not(.empty-widget) {
+
+                            &.bordered {
+                                border: 2px solid black;
+
+                                .box-title {
+                                    border-bottom: 2px solid black;
+                                }
+                            }
+
+                            .box-title {
+                                margin: 0;
+                            }
+
+                            .box-content {
+                                float: left;
+                                margin-left: 30px;
+                                text-align: left;
+                            }
+                        }
+                    }
+
+                    &.location-widget {
+
+                        &.empty-widget {
+                            background: url('http://upload.wikimedia.org/wikipedia/commons/f/f7/Soho_-_map_1.png') no-repeat center;
+                            background-size: 100%;
+                        }
+
+                        .we-map-canvas {
+                            min-height: 400px;
+
+                            &.blocked {
+                                z-index: -1;
+                            }
+                        }
+                    }
+
+                    &.people-widget {
+
+                        &.empty-widget {
+                            background: url('http://www.risk.net/IMG/315/86315/people-outline.jpg') repeat center;
+                            background-size: auto 100%;
+                        }
+                    }
+                }
+            }
         }
     }
-}
-
-.widget-icons {
-    position: absolute;
-    right: 0;
-    top: 0;
-    background-color: white;
-    border-bottom-left-radius: 4px;
-}
-
-.widget-icons, .container-icons {
-    float: right;
-    display: inline-block;
-    z-index: 1;
-
-    .ui-icon {
-
-        &.ui-icon-arrow-4 {
-            cursor: move;
-        }
-
-        &.ui-icon-trash, &.ui-icon-copy {
-            cursor: pointer;
-        }
-    }
-}
-
-.widget-icons {
-
-    .ui-icon {
-
-        &.ui-icon-arrow-4, &.ui-icon-trash {
-            float: right;
-        }
-    }
-}
-
-.style-dialog, .layout-dialog {
-    font-size: 80%;
-
-    input.text {
-        margin-bottom: 12px;
-        width: 95%;
-        padding: .4em;
-    }
-
-    fieldset {
-        padding: 0;
-        border: 0;
-        margin-top: 25px;
-    }
-
-    div {
-        margin-bottom: 20px;
-    }
-}
-
-.style-dialog {
-
-    label, input {
-        display: block;
-    }
-}
-
-.widget-content {
-    height: 100%;
-}
-
-.empty-widget-message {
-    margin-top: 50px;
-    background-color: white;
-    border-radius: 4px;
-    display: none;
 }
 
 .modal {
@@ -206,6 +145,23 @@ $min-height: 120px;
     }
 }
 
-.tab-content {
-    margin-top: 30px;
+.navbar {
+    z-index: 10;
+
+    &.navbar-fixed-bottom .navbar-collapse {
+        margin-top: 7px;
+    }
+
+    .navbar-collapse {
+        z-index: 11;
+    }
+}
+
+.page-content-container {
+    margin-top: 71px;
+    margin-bottom: 71px;
+}
+
+.we-preview-canvas {
+    min-height: 300px;
 }

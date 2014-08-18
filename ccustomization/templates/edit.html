@@ -1,15 +1,15 @@
-{% extends '_layout.html' %}
+{% extends '_page.html' %}
 
 {% block title %}Layout modification{% endblock %}
 
 {% block assets %}
-    {%- assets filters='rjsmin', output='assets/edit.js', 'js/edit.js', 'js/edit-widget.js' %}
+    {%- assets filters='rjsmin', output='assets/edit.js', 'js/edit.js' %}
         <script src="{{ ASSET_URL|version_url }}"></script>
     {%- endassets %}
 {% endblock %}
 
 {% block navbars %}
-    <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation" style="z-index: 10;">
+    <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-edit">
@@ -20,7 +20,7 @@
                 </button>
                 <span class="navbar-brand">Toolbar</span>
             </div>
-            <div id="navbar-collapse-edit" class="collapse navbar-collapse" style="z-index: 11; margin-top: 7px;">
+            <div id="navbar-collapse-edit" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li>
                         <div class="btn-group">
@@ -34,11 +34,11 @@
                                     <li><a href="#">Location</a></li>
                                     <li><a href="#">People</a></li>
                                 </ul>
-                                <input type="hidden" value="Box">
+                                <input type="hidden" value="box">
                             </div>
                             <div id="col-select" class="btn-group dropup">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                  0
+                                    0
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
@@ -65,48 +65,66 @@
     </nav>
 {% endblock %}
 
-{% block content -%}
+{% block page_content -%}
 
-    <div id="main-container" class="main-container" data-render-url="{{ url_for('.render') }}">
-        <ul class="main-list">
-            {% for col, col_content in content | dictsort %}
-                <li id="column-{{ col }}-container" class="column-container" data-column="{{ col }}">
-                    <ul class="column-list">
-                        {% for container in col_content %}
-                            <li class="container-test">
-                                <ul class="container-list">
-                                    {% for widget in container %}
-                                        {{ widget | safe }}
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div id="layout-dialog" title="Choose a layout!" class="layout-dialog">
-        <form>
-            <fieldset>
-                <label>Columns</label>
-                <div id="col-radio">
-                    <input id="col1" type="radio" name="radio" data-col="1"><label for="col1">1 column</label>
-                    <input id="col2" type="radio" name="radio" data-col="2" checked="checked"><label for="col2">2 columns</label>
-                    <input id="col3" type="radio" name="radio" data-col="3"><label for="col3">3 columns</label>
+    <div id="layout-dialog" class="layout-dialog modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Choose a layout</h4>
                 </div>
-
-                <label>Menu(s)</label>
-                <div id="menu-checkboxes">
-                    <input type="checkbox" id="menu-left"><label for="menu-left">Left</label>
-                    <input type="checkbox" id="menu-top"><label for="menu-top">Top</label>
-                    <input type="checkbox" id="menu-right"><label for="menu-right">Right</label>
+                <div class="modal-body container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Column(s)</label>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="col-radio" class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-default">
+                                    <input type="radio" name="radio" value="1">1
+                                </label>
+                                <label class="btn btn-default active">
+                                    <input type="radio" name="radio" value="2">2
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" name="radio" value="3">3
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Menu(s)</label>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="menu-checkboxes" class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-default active">
+                                    <input type="checkbox" value="left">Left
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="checkbox" value="top">Top
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="checkbox" value="right">Right
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Title</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" value="title" checked>
+                        </div>
+                    </div>
                 </div>
-
-                <input type="checkbox" id="title-checkbox"><label for="title-checkbox">Title</label>
-            </fieldset>
-        </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Continue</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 {%- endblock %}

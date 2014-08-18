@@ -13,7 +13,7 @@ function bindWidget(widget) {
     widget.find('.ui-icon.ui-icon-trash').on('click', function(e){
         e.stopPropagation();
         $('#style-dialog-'+widget.data('counter')).remove();
-        if (!widget.siblings('.widget-test').length) {
+        if (!widget.siblings('.widget-cc').length) {
             widget.parent().parent().remove();
         } else {
             widget.remove();
@@ -25,7 +25,7 @@ function bindWidget(widget) {
         var settings = widget.data('settings');
         renderWidget(settings).done(function(newWidget){
             widget.parent().parent().after(newWidget);
-            $('body').trigger('sortstop');
+            $('body').trigger('sortstop').trigger('inizialize-widgets');
         });
     });
     var containerList = widget.parent('.container-list');
@@ -39,6 +39,7 @@ function updateWidget(widget, settings) {
     renderWidget(settings).done(function(newWidget){
         $('#style-dialog-'+widget.data('counter')).remove();
         widget.replaceWith(newWidget);
+        $('body').trigger('inizialize-widgets');
     });
 }
 
@@ -59,8 +60,44 @@ function renderWidget(settings) {
             edit: true
         }),
         success: function(response) {
-            newWidget.resolve($(response)); // to change to $($.parseHTML(....)); when get rid of inline JS
+            newWidget.resolve($($.parseHTML(response)));
         }
     });
     return newWidget.promise();
 }
+
+function widgetFactory(widgetElem) {
+    var settings = widgetElem.data('settings');
+    var type = settings['type'];
+    type = type.charAt(0).toUpperCase() + type.slice(1);
+    var widget = new window[type+'Widget'](widgetElem);
+    return widget;
+}
+
+function initialize(widgetElem) {
+    var edit = widgetElem.data('edit');
+    var settings = widgetElem.data('settings');
+    var empty = settings['empty'];
+    var widget = widgetFactory(widgetElem);
+    if (!empty) {
+        widget.run();
+    }
+    if (edit) {
+        bindWidget(widgetElem);
+        widget.runEdit();
+    }
+    widgetElem.removeClass('uninitialized');
+}
+
+$(document).ready(function() {
+    "use strict";
+
+    $('body').on('inizialize-widgets', function(){
+        var uninitializedWidgets = $('.widget-cc.uninitialized');
+        uninitializedWidgets.each(function(){
+            var widgetElem = $(this);
+            initialize(widgetElem);
+        });
+    }).trigger('inizialize-widgets');
+
+});

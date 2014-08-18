@@ -2,56 +2,11 @@ $(document).ready(function() {
     "use strict";
 
     var cols = $('.main-list').children().length;
-    var layoutDialog = $("#layout-dialog").dialog({
-        autoOpen: false,
-        height: 400,
-        width: 350,
-        modal: true,
-        buttons: {
-            "Continue": function() {
-                layoutDialog.dialog("close");
-            }
-        },
-        close: function() {
-            var columnNumber = $('#col-radio input:checked').data('col');
-            for (var i=0; i<columnNumber; i++) {
-                var columnContainer = $('<li>', {
-                    id: 'column-'+cols+'-container',
-                    'class': 'column-container',
-                    'data-column': cols
-                });
-                var columnList = $('<ul>', {
-                    'class': 'column-list'
-                });
-                var option = $('<option>', {
-                    text: cols
-                });
-
-                columnList.appendTo(columnContainer);
-                columnContainer.appendTo($('.main-list'));
-                option.appendTo($('.actions select'));
-                $('.actions select').selectmenu('refresh');
-
-                columnList.sortable({
-                    connectWith: '.column-list, .container-list',
-                    handle: '.ui-icon.ui-icon-arrow-4'
-                });
-         
-                cols++;
-            }
-            saveLayout();
-        },
-        show: {
-            duration: 400
-        },
-        hide: {
-            duration: 400
-        }
-    });
+    var layoutDialog = $("#layout-dialog");
 
     // The refresh functions are used to refresh the widgets/containers aspect (icons, not content) after each sortstop
     function refreshContainers() {
-        $('.container-test').each(function(){
+        $('.container-cc').each(function(){
             var $this = $(this);
             var list = $this.children('.container-list');
             if (list.children().length < 1) {
@@ -78,7 +33,7 @@ $(document).ready(function() {
                     var newContainer = $(this).parent().parent().clone();
                     $this.after(newContainer);
                     newContainer.children('.container-icons').remove();
-                    newContainer.find('.widget-test').each(function(){
+                    newContainer.find('.widget-cc').each(function(){
                         reloadWidget($(this));
                     });
                     refreshContainers();
@@ -99,11 +54,11 @@ $(document).ready(function() {
         });
     }
     function refreshWidgets() {
-        $('.widget-test').each(function(){
+        $('.widget-cc').each(function(){
             var $this = $(this);
             if (!$this.parent().hasClass('container-list')) {
                 var container = $('<li>', {
-                    'class': 'container-test'
+                    'class': 'container-cc'
                 });
                 var containerList = $('<ul>', {
                     'class': 'container-list'
@@ -125,11 +80,11 @@ $(document).ready(function() {
                 col = columnContainer.data('column');
             data[col] = [];
             var containerCounter = 0;
-            columnContainer.find('.column-list .container-test').each(function(){
+            columnContainer.find('.column-list .container-cc').each(function(){
                 var container = $(this);
                 data[col][containerCounter] = [];
                 var widgetCounter = 0;
-                container.find('.container-list .widget-test').each(function(){
+                container.find('.container-list .widget-cc').each(function(){
                     var widget = $(this);
                     data[col][containerCounter][widgetCounter] = widget.data('settings');
                     widgetCounter++;
@@ -158,7 +113,7 @@ $(document).ready(function() {
             empty: true
         };
         var container = $('<li>', {
-            'class': 'container-test'
+            'class': 'container-cc'
         });
         var containerList = $('<ul>', {
             'class': 'container-list'
@@ -169,6 +124,7 @@ $(document).ready(function() {
             newWidget.appendTo(containerList);
             containerList.appendTo(container);
             container.appendTo(column);
+            $('body').trigger('inizialize-widgets');
         });
     });
 
@@ -189,20 +145,59 @@ $(document).ready(function() {
         handle: '.ui-icon.ui-icon-arrow-4'
     });
 
-    $('#col-radio').buttonset();
-    $('#menu-checkboxes').buttonset();
-    $('#title-checkbox').button();
-    if ($('.main-list').children().length < 1)  {
-        layoutDialog.dialog('open');
-    }
-
     $('#widget-select li a, #col-select li a').on('click', function(e){
         e.preventDefault();
         var $this = $(this);
         var selText = $this.text();
         var dropup = $this.parents('.dropup');
         dropup.find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
-        dropup.find('input').val(selText);
+        dropup.find('input').val(selText.toLowerCase());
     });
+
+    layoutDialog.detach().appendTo('body');
+
+    layoutDialog.on('hidden.bs.modal', function() {
+        var columnNumber = $('#col-radio label.active input').val();
+        for (var i=0; i<columnNumber; i++) {
+            var columnContainer = $('<li>', {
+                id: 'column-'+cols+'-container',
+                'class': 'column-container',
+                'data-column': cols
+            });
+            var columnList = $('<ul>', {
+                'class': 'column-list'
+            });
+            var columnLink = $('<a>', {
+                href: '#',
+                text: cols
+            });
+            var columnOption = $('<li>');
+
+            columnList.appendTo(columnContainer);
+            columnContainer.appendTo($('.main-list'));
+            columnLink.appendTo(columnOption);
+            columnOption.appendTo($('#col-select ul'));
+
+            columnList.sortable({
+                connectWith: '.column-list, .container-list',
+                handle: '.ui-icon.ui-icon-arrow-4'
+            });
+     
+            cols++;
+        }
+        saveLayout();
+
+        layoutDialog.modal('hide');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });
+
+    layoutDialog.modal({
+        show: false
+    });
+
+    if ($('.main-list').children().length < 1)  {
+        layoutDialog.modal('show');
+    }
 
 });

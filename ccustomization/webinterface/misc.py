@@ -51,7 +51,8 @@ def edit(id):
     wvars = {
         'cols': page.columns,
         'content': page_content,
-        'page_id': id
+        'page_id': id,
+        'edit': True
     }
     return render_template('edit.html', **wvars)
 
@@ -82,11 +83,12 @@ def view(id):
             new_container = []
             page_content[col].append(new_container)
             for widget in container:
-                new_container.append(render_widget(widget))
+                new_container.append(render_widget(widget, False))
     wvars = {
         'cols': page.columns,
         'content': page_content,
-        'page_id': id
+        'page_id': id,
+        'edit': False
     }
     return render_template('view.html', **wvars)
 
@@ -99,15 +101,9 @@ def render_widget(settings, edit=False):
         'edit': edit,
         'counter': counter
     }
-    if settings['type'] == 'Box':
-        if wvars.get('settings', {}).get('content', None):
-            wvars['settings']['render_content'] = Markup(markdown.markdown(wvars['settings']['content']))
-        return render_template('widgets/box.html', **wvars)
-    elif settings['type'] == 'Location':
-        return render_template('widgets/location.html', **wvars)
-    elif settings['type'] == 'People':
-        return render_template('widgets/people.html', **wvars)
-    return None
+    if settings['type'] == 'box' and wvars.get('settings', {}).get('content', None):
+        wvars['settings']['render_content'] = Markup(markdown.markdown(wvars['settings']['content']))
+    return render_template('widgets/{0}.html'.format(settings['type']), **wvars)
 
 
 @bp.route('/render/', methods=('POST',))

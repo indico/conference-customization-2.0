@@ -1,13 +1,19 @@
 {% extends 'widgets/_widget.html' %}
 
-{% block widget_style -%}
+{% block widget_classes -%}
+    box-widget
     {% if settings.empty %}
-        background: url('http://hackathon-in-a-box.org/img/box.png') repeat center;
+        empty-widget
     {% else %}
-        background-color: {{ settings.style.color }};
         {% if settings.style.border %}
-            border: 2px solid black;
+            bordered
         {% endif %}
+    {% endif %}
+{%- endblock %}
+
+{% block widget_style -%}
+    {% if not settings.empty %}
+        background-color: {{ settings.style.color }};
     {% endif %}
 {%- endblock %}
 
@@ -15,132 +21,48 @@
 
     {% if not settings.empty %}
         {% if settings.style.title %}
-            <h1 style="margin: 0;{% if settings.style.border %} border-bottom: 2px solid black; {% endif %}">{{ settings.style.title }}</h1>
+            <h1 class="box-title">{{ settings.style.title }}</h1>
         {% endif %}
-        <div style="float: left; margin-left: 30px; text-align: left;">
+        <div class="box-content">
             {{ settings.render_content }}
         </div>
     {% endif %}
 
-    {% if edit %}
+{% endblock %}
 
-        <div class="modal fade" id="style-dialog-{{ counter }}">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Style and content customization</h4>
-                    </div>
-                    <div class="modal-body container-fluid">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label for="title-{{ counter }}">Title</label>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="text" name="title-{{ counter }}" id="title-{{ counter }}" class="form-control">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label for="color-{{ counter }}">Background color</label>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="text" name="color-{{ counter }}" id="color-{{ counter }}" class="form-control">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label for="border-{{ counter }}">Border</label>
-                            </div>
-                            <div class="col-md-2">
-                                <input type="checkbox" id="border-{{ counter }}">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label for="content-{{ counter }}">Content</label>
-                            </div>
-                            <div class="col-md-12">
-                                <textarea id="content-{{ counter }}" rows="9" cols="55" class="form-control"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary save-button">Save changes</button>
-                    </div>
-                </div>
-            </div>
+{% block widget_dialog_body %}
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="title-{{ counter }}">Title</label>
         </div>
-
-        <script>
-
-            $(document).ready(function() {
-                "use strict";
-
-                var styleDialog = $('#style-dialog-{{ counter }}');
-                var save = styleDialog.find('.save-button');
-                var widget = styleDialog.parent('.widget-test');
-                var settings = widget.data('settings');
-                var title = $('#title-{{ counter }}');
-                var color = $('#color-{{ counter }}');
-                var border = $('#border-{{ counter }}');
-                var content = $('#content-{{ counter }}');
-
-                styleDialog.detach().appendTo('body');
-
-                save.on('click', function(){
-                    settings['style'] = {
-                        title: title.val(),
-                        color: color.val(),
-                        border: border.is(':checked')
-                    };
-                    settings['content'] = content.val();
-                    settings['empty'] = false;
-                    updateWidget(widget, settings);
-                    styleDialog.trigger("hidden.bs.modal");
-                });
-
-                styleDialog.on('hidden.bs.modal', function() {
-                    styleDialog.modal('hide');
-                    $('body').removeClass('modal-open');
-                    $('.modal-backdrop').remove();
-                });
-
-                styleDialog.modal({
-                    show: false
-                });
-
-                widget.on('click', function(){
-                    $('.widget-test').removeClass('selected');
-                    widget.addClass('selected');
-                    if (settings['style'] != undefined) {
-                        title.val(settings['style']['title'] || '');
-                        color.val(settings['style']['color'] || '');
-                        border.prop('checked', settings['style']['border'] || false);
-                        content.val(settings['content'] || '');
-                    } else {
-                        title.val('');
-                        color.val('');
-                        border.prop('checked', false);
-                        content.val('');
-                    }
-                    content.trigger('input');
-                    styleDialog.modal('show');
-                });
-
-                content.on('input', function(){
-                    if (content.val() == '') {
-                        save.prop('disabled', true);
-                    } else {
-                        save.prop('disabled', false);
-                    }
-                });
-
-            });
-
-        </script>
-
-    {% endif %}
+        <div class="col-md-6">
+            <input type="text" id="title-{{ counter }}" class="we-widget-title form-control">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="color-{{ counter }}">Background color</label>
+        </div>
+        <div class="col-md-6">
+            <input type="text" id="color-{{ counter }}" class="we-widget-color form-control">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="border-{{ counter }}">Border</label>
+        </div>
+        <div class="col-md-2">
+            <input type="checkbox" id="border-{{ counter }}" class="we-widget-border">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="content-{{ counter }}">Content</label>
+        </div>
+        <div class="col-md-12">
+            <textarea id="content-{{ counter }}" rows="12" cols="55" class="we-widget-content form-control"></textarea>
+        </div>
+    </div>
 
 {% endblock %}

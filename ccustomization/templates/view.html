@@ -1,27 +1,3 @@
-{% extends '_layout.html' %}
+{% extends '_page.html' %}
 
 {% block title %}Page view{% endblock %}
-
-{% block content -%}
-
-    <div id="main-container" class="main-container" style="border: 1px solid transparent;">
-        <ul class="main-list">
-            {% for col, col_content in content | dictsort %}
-                <li id="column-{{ col }}-container" class="column-container" data-column="{{ col }}" style="border: 1px solid transparent;">
-                    <ul class="column-list">
-                        {% for container in col_content %}
-                            <li class="container-test">
-                                <ul class="container-list">
-                                    {% for widget in container %}
-                                        {{ widget | safe }}
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-{%- endblock %}
