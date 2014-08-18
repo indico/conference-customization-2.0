@@ -32,36 +32,47 @@
 
 {% block widget_dialog_body %}
 
-    <div class="row">
-        <div class="col-md-2">
-            <label for="title-{{ counter }}">Title</label>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#content-pane-{{ counter }}" role="tab" data-toggle="tab">Content</a></li>
+        <li><a href="#style-pane-{{ counter }}" role="tab" data-toggle="tab">Style</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade in active container-fluid" id="content-pane-{{ counter }}">
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="title-{{ counter }}">Title</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" id="title-{{ counter }}" class="we-widget-title form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="content-{{ counter }}">Content</label>
+                </div>
+                <div class="col-md-12">
+                    <textarea id="content-{{ counter }}" rows="12" cols="55" class="we-widget-content form-control"></textarea>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <input type="text" id="title-{{ counter }}" class="we-widget-title form-control">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <label for="color-{{ counter }}">Background color</label>
-        </div>
-        <div class="col-md-6">
-            <input type="text" id="color-{{ counter }}" class="we-widget-color form-control">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <label for="border-{{ counter }}">Border</label>
-        </div>
-        <div class="col-md-2">
-            <input type="checkbox" id="border-{{ counter }}" class="we-widget-border">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <label for="content-{{ counter }}">Content</label>
-        </div>
-        <div class="col-md-12">
-            <textarea id="content-{{ counter }}" rows="12" cols="55" class="we-widget-content form-control"></textarea>
+        <div class="tab-pane fade container-fluid" id="style-pane-{{ counter }}">
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="color-{{ counter }}">Background color</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" id="color-{{ counter }}" class="we-widget-color form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="border-{{ counter }}">Border</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="checkbox" id="border-{{ counter }}" class="we-widget-border">
+                </div>
+            </div>
         </div>
     </div>
 
