@@ -1,6 +1,15 @@
 $grid-border: 1px solid black;
 $min-height: 120px;
 
+.sortable-placeholder {
+    min-height: $min-height;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 4px;
+    background-color: #FCFC9A;
+    border: $grid-border;
+}
+
 .main-container {
     height: 100%;
 
