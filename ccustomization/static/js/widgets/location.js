@@ -40,23 +40,24 @@ $.extend(LocationWidget.prototype, {
         var self = this;
         var dialog = self.widgetElem.find('.widget-dialog');
         var save = dialog.find('.we-save-button');
-        var geocode = dialog.find('.we-geocode-button');
+        var search = dialog.find('.we-search-button');
         var address = dialog.find('.we-address');
-        var latitude = dialog.find('.we-latitude');
-        var longitude = dialog.find('.we-longitude');
-        var coordinates = latitude.add(longitude);
         var previewSection = dialog.find('.we-preview-section');
         var previewCanvas = previewSection.find('.we-preview-canvas');
+        var latitude = previewSection.find('.we-latitude');
+        var longitude = previewSection.find('.we-longitude');
+        var coordinates = latitude.add(longitude);
         var zoom = previewSection.find('.we-zoom');
+        var defaultZoom = 9;
 
         function geoCode(address) {
             var geocoder = new google.maps.Geocoder();
             var coordinatesResp = $.Deferred();
-            geocoder.geocode( { 'address': address}, function(results, status) {
+            geocoder.geocode({'address': address}, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                     coordinatesResp.resolve(results[0].geometry.location);
                 } else {
-                    alert('Geocode was not successful for the following reason: ' + status);
+                    alert('Address search was not successful for the following reason: ' + status);
                     coordinatesResp.resolve(null);
                 }
             });
@@ -65,7 +66,7 @@ $.extend(LocationWidget.prototype, {
 
         function drawPreview(previewCanvas, coords, zoomLvl) {
             var options = {
-                zoom: parseInt(zoomLvl || 9),
+                zoom: parseInt(zoomLvl || defaultZoom),
                 center: coords,
                 mapTypeControl: false,
                 navigationControlOptions: {
@@ -80,12 +81,12 @@ $.extend(LocationWidget.prototype, {
             });
             google.maps.event.addListener(map, 'click', function(e) {
                 var newCoords = e.latLng;
-                latitude.val(newCoords.lat());
-                longitude.val(newCoords.lng());
+                latitude.text(newCoords.lat());
+                longitude.text(newCoords.lng());
                 drawPreview(previewCanvas, newCoords, map.getZoom());
             });
             google.maps.event.addListener(map, 'zoom_changed', function(e) {
-                zoom.val(map.getZoom());
+                zoom.text(map.getZoom());
             });
         }
 
@@ -94,11 +95,11 @@ $.extend(LocationWidget.prototype, {
         save.on('click', function(){
             self.settings.content = {
                 address: address.val(),
-                latitude: latitude.val(),
-                longitude: longitude.val()
+                latitude: latitude.text(),
+                longitude: longitude.text()
             };
             self.settings.style = {
-                zoom: zoom.val()
+                zoom: zoom.text()
             };
             self.settings.empty = false;
             updateWidget(self.widgetElem, self.settings);
@@ -121,45 +122,45 @@ $.extend(LocationWidget.prototype, {
         self.widgetElem.on('click', function(){
             if (self.settings.content != undefined) {
                 address.val(self.settings.content.address || '');
-                latitude.val(self.settings.content.latitude || '');
-                longitude.val(self.settings.content.longitude || '');
+                latitude.text(self.settings.content.latitude || '');
+                longitude.text(self.settings.content.longitude || '');
             } else {
                 address.val('');
-                latitude.val('');
-                longitude.val('');
+                latitude.text('');
+                longitude.text('');
             }
             if (self.settings.style != undefined) {
-                zoom.val(self.settings.style.zoom || '');
+                zoom.text(self.settings.style.zoom || defaultZoom);
             } else {
-                zoom.val('');
+                zoom.text(defaultZoom);
             }
             dialog.modal('show');
         });
 
         coordinates.on('input', function(){
-            if (latitude.val() == '' || longitude.val() == '') {
+            if (latitude.text() == '' || longitude.text() == '') {
                 save.prop('disabled', true);
                 previewSection.addClass('hidden');
             } else {
                 save.prop('disabled', false);
                 previewSection.removeClass('hidden');
-                drawPreview(previewCanvas, new google.maps.LatLng(latitude.val(), longitude.val()), zoom.val());
+                drawPreview(previewCanvas, new google.maps.LatLng(latitude.text(), longitude.text()), zoom.text());
             }
         });
 
         address.on('input', function(){
             if (address.val() == '') {
-                geocode.prop('disabled', true);
+                search.prop('disabled', true);
             } else {
-                geocode.prop('disabled', false);
+                search.prop('disabled', false);
             }
         });
 
-        geocode.on('click', function(){
+        search.on('click', function(){
             geoCode(address.val()).done(function(coordinatesResp){
                 if (coordinatesResp != null) {
-                    latitude.val(coordinatesResp.lat());
-                    longitude.val(coordinatesResp.lng());
+                    latitude.text(coordinatesResp.lat());
+                    longitude.text(coordinatesResp.lng());
                     coordinates.trigger('input');
                 }
             });

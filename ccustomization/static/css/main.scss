@@ -140,7 +140,7 @@ $min-height: 120px;
 
 .modal {
 
-    .row {
+    .row:not(.no-spacing) {
         margin-bottom: 15px;
     }
 }
@@ -167,5 +167,6 @@ $min-height: 120px;
 }
 
 .we-preview-canvas {
+    margin-top: 20px;
     min-height: 300px;
 }

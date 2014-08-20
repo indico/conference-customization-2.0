@@ -2,8 +2,8 @@ import inspect
 import json
 import re
 
-from flask import render_template, redirect, url_for, jsonify, request, Markup, g
 import markdown
+from flask import render_template, redirect, url_for, jsonify, request, Markup, g
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..core import db
@@ -21,11 +21,13 @@ def index():
     if conference is None or Page.query.filter_by(id=conference.main_page_id).first() is None:
         db.drop_all()
         db.create_all()
-        page = Page()
+        conference = Event()
+        db.session.add(conference)
+        db.session.commit()
+        page = Page(event_id=conference.id)
         db.session.add(page)
         db.session.commit()
-        conference = Event(page.id)
-        db.session.add(conference)
+        conference.main_page_id = page.id
         db.session.commit()
     wvars = {
         'main_page_id': conference.main_page_id,
@@ -34,7 +36,7 @@ def index():
     return render_template('index.html', **wvars)
 
 
-@bp.route('/edit/<id>')
+@bp.route('/edit/<int:id>')
 @menu('edit')
 def edit(id):
     page = Page.query.filter_by(id=id).first_or_404()
@@ -57,7 +59,7 @@ def edit(id):
     return render_template('edit.html', **wvars)
 
 
-@bp.route('/edit/<id>', methods=('PATCH',))
+@bp.route('/edit/<int:id>', methods=('PATCH',))
 def update(id):
     page = Page.query.filter_by(id=id).first_or_404()
     page.content = request.get_json()
@@ -70,7 +72,7 @@ def update(id):
     return jsonify()
 
 
-@bp.route('/view/<id>')
+@bp.route('/view/<int:id>')
 @menu('view')
 def view(id):
     page = Page.query.filter_by(id=id).first_or_404()
@@ -110,3 +112,15 @@ def render_widget(settings, edit=False):
 def render():
     data = request.get_json()
     return render_widget(data['settings'], data['edit'])
+
+
+def fetch_data(page_id, data_type):
+    page = Page.query.filter_by(id=page_id).first_or_404()
+    event = Event.query.filter_by(id=page.event_id).first_or_404()
+    return event.fetch(data_type)
+
+
+@bp.route('/fetch/<int:id>')
+def fetch(id):
+    data_type = request.args['data_type']
+    return jsonify(data=fetch_data(id, data_type))

@@ -15,6 +15,7 @@ $.extend(PeopleWidget.prototype, {
         var listOpt = radio.find('.we-list-opt');
         var carouselOpt = radio.find('.we-carousel-opt');
         var peopleType = select.find('.we-people-type');
+        var fetch = dialog.find('.we-fetch-button');
 
         dialog.detach().appendTo('body');
 
@@ -65,6 +66,20 @@ $.extend(PeopleWidget.prototype, {
             var selText = $this.text();
             select.find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
             peopleType.val(selText.toLowerCase());
+        });
+
+        fetch.on('click', function(){
+            $.ajax({
+                type: 'GET',
+                url: $('.main-container').data('fetch-url'),
+                dataType: 'json',
+                data: {
+                    data_type: peopleType.val()
+                },
+                success: function(response) {
+                    
+                }
+            });
         });
     }
 });

@@ -27,42 +27,44 @@
             <label for="address-{{ counter }}">Address</label>
         </div>
         <div class="col-md-6">
-            <input type="text" id="address-{{ counter }}" class="we-address form-control">
+            <input type="text" id="address-{{ counter }}" class="we-address form-control" placeholder="Address or coordinates">
         </div>
         <div class="col-md-offset-1 col-md-2">
-            <button type="button" class="we-geocode-button btn btn-default">Geocode</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <hr>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h4>Coordinates</h4>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <label for="latitude-{{ counter }}">Latitude</label>
-        </div>
-        <div class="col-md-6">
-            <input type="text" id="latitude-{{ counter }}" class="we-latitude form-control">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <label for="longitude-{{ counter }}">Longitude</label>
-        </div>
-        <div class="col-md-6">
-            <input type="text" id="longitude-{{ counter }}" class="we-longitude form-control">
+            <button type="button" class="we-search-button btn btn-default">Search</button>
         </div>
     </div>
     <div class="we-preview-section{% if settings.empty %} hidden{% endif %}">
         <hr>
         <h4>Preview</h4>
-        <input class="we-zoom" type="hidden">
+        <div class="row no-spacing">
+            <div class="col-md-2">
+                <label>Zoom</label>
+            </div>
+            <div class="col-md-6">
+                <span class="we-zoom"></span>
+            </div>
+        </div>
+        <div class="row no-spacing">
+            <div class="col-md-2">
+                <label>Latitude</label>
+            </div>
+            <div class="col-md-6">
+                <span class="we-latitude"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label>Longitude</label>
+            </div>
+            <div class="col-md-6">
+                <span class="we-longitude"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <span>Adjust zoom and position of the location:</span>
+            </div>
+        </div>
         <div class="we-preview-canvas"></div>
     </div>
 
