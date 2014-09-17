@@ -1,9 +1,11 @@
 import inspect
 import json
+import os
 import re
+import time
 
 import markdown
-from flask import render_template, redirect, url_for, jsonify, request, Markup, g
+from flask import render_template, redirect, url_for, jsonify, request, Markup, g, current_app
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..core import db
@@ -123,4 +125,19 @@ def fetch_data(page_id, data_type):
 @bp.route('/fetch/<int:id>')
 def fetch(id):
     data_type = request.args['data_type']
-    return jsonify(data=fetch_data(id, data_type))
+    query = request.args['query'].lower()
+    fetched_data = fetch_data(id, data_type)
+    matching_data = [data for data in fetched_data if query in data['name'].lower()]
+    return jsonify(data=matching_data)
+
+
+@bp.route('/upload/', methods=('POST',))
+def upload():
+    picture = request.files['file']
+    file_name, file_extension = os.path.splitext(picture.filename)
+    file_url = 'pics/{0}{1}'.format(time.time(), file_extension)
+    try:
+        picture.save(os.path.join(str(current_app.static_folder), file_url))
+    except IOError:
+        return jsonify(), 501
+    return os.path.join(str(current_app.static_url_path), file_url)

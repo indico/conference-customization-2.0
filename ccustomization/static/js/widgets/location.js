@@ -101,7 +101,7 @@ $.extend(LocationWidget.prototype, {
             self.settings.style = {
                 zoom: zoom.text()
             };
-            self.settings.empty = false;
+            self.settings.empty = (self.settings.content.latitude == '' || self.settings.content.longitude == '');
             updateWidget(self.widgetElem, self.settings);
         });
 
@@ -139,10 +139,8 @@ $.extend(LocationWidget.prototype, {
 
         coordinates.on('input', function(){
             if (latitude.text() == '' || longitude.text() == '') {
-                save.prop('disabled', true);
                 previewSection.addClass('hidden');
             } else {
-                save.prop('disabled', false);
                 previewSection.removeClass('hidden');
                 drawPreview(previewCanvas, new google.maps.LatLng(latitude.text(), longitude.text()), zoom.text());
             }
@@ -165,5 +163,7 @@ $.extend(LocationWidget.prototype, {
                 }
             });
         });
+
+        clickOnEnter(address, search, false);
     }
 });

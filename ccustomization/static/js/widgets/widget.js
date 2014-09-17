@@ -72,7 +72,7 @@ function widgetFactory(widgetElem) {
 }
 
 function initialize(widgetElem) {
-    var edit = widgetElem.data('edit');
+    var edit = widgetElem.data('edit').toLowerCase() === 'true';
     var settings = widgetElem.data('settings');
     var empty = settings['empty'];
     var widget = widgetFactory(widgetElem);

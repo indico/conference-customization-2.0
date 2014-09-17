@@ -24,7 +24,7 @@ $.extend(BoxWidget.prototype, {
                 border: border.is(':checked')
             };
             self.settings.content = content.val();
-            self.settings.empty = false;
+            self.settings.empty = self.settings.content == '';
             updateWidget(self.widgetElem, self.settings);
         });
 
@@ -52,14 +52,6 @@ $.extend(BoxWidget.prototype, {
             }
             content.trigger('input');
             dialog.modal('show');
-        });
-
-        content.on('input', function(){
-            if (content.val() == '') {
-                save.prop('disabled', true);
-            } else {
-                save.prop('disabled', false);
-            }
         });
     }
 });

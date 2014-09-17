@@ -3,7 +3,7 @@
 {% block title %}Layout modification{% endblock %}
 
 {% block assets %}
-    {%- assets filters='rjsmin', output='assets/edit.js', 'js/edit.js' %}
+    {%- assets filters='rjsmin', output='assets/edit.js', 'js/edit.js', 'js/typeahead.bundle.js', 'js/twig.js', 'js/jquery.form.js' %}
         <script src="{{ ASSET_URL|version_url }}"></script>
     {%- endassets %}
 {% endblock %}

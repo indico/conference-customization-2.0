@@ -1,0 +1,24 @@
+{% extends 'person.html' %}
+
+{% block row %}
+    <div class="we-person row">
+        <div class="col-md-2">
+            {% if person.picture.set %}
+                <img src="{{ person.picture.path }}" alt="{{ person.name }}" style="height: 63px; width: 63px;">
+            {% else %}
+                <span class="glyphicon glyphicon-user" style="font-size: 63px;"></span>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <span class="we-person-displayed-name" style="font-size: 18px;">{{ person.name }}</span>
+        </div>
+        <div class="col-md-2 btn-group btn-group-xs">
+            <button type="button" title="Customize this person" class="we-customize-button btn btn-default">
+                <span class="glyphicon glyphicon-cog"></span>
+            </button>
+            <button type="button" title="Remove this person" class="we-remove-button btn btn-default">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+    </div>
+{% endblock %}

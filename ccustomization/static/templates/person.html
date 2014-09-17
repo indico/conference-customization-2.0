@@ -1,0 +1,91 @@
+<div class="we-person-container">
+
+    {% block row %}{% endblock %}
+
+    <div class="{{ dialogClass }} modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">{{ title }}</h4>
+                </div>
+                <div class="modal-body container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Picture</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Preview</label>
+                        </div>
+                        <div class="we-picture-preview col-md-2">
+                            <span class="glyphicon glyphicon-user" style="font-size: 63px;"></span>
+                            <img class="hidden" style="height: 63px; width: 63px;">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="we-remove-picture-button btn btn-default">
+                                <span class="glyphicon glyphicon-remove"></span>Remove
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Upload</label>
+                        </div>
+                        <div class="col-md-6">
+                            <form action="{{ uploadURL }}" method="post">
+                                <input type="file" name="file" class="we-person-picture-file">
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Url</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="we-person-picture-url form-control"{% if person.picture.set %} value="{{ person.picture.path }}"{% endif %}>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="we-load-picture-button btn btn-default">Load</button>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Person details</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Full name</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="we-person-name form-control" value="{{ person.name }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Email</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="we-person-email form-control" value="{{ person.email }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Organisation</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="we-person-organisation form-control" value="{{ person.organisation }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="we-save-button btn btn-primary" data-dismiss="modal">{{ buttonLabel }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

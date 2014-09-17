@@ -25,27 +25,52 @@
     <div class="tab-content">
         <div class="tab-pane fade in active container-fluid" id="content-pane-{{ counter }}">
             <div class="row">
-                <div class="col-md-2">
-                    <label for="select-{{ counter }}">People</label>
+                <div class="col-md-12">
+                    <h4>Select people</h4>
                 </div>
-                <div class="col-md-6">
-                    <div id="select-{{ counter }}" class="we-select btn-group dropdown">
+            </div>
+            <div class="row">
+                <div id="typeahead-{{ counter }}" class="col-md-6 we-people-typeahead">
+                    <div class="input-group">
+                        <input class="typeahead form-control" type="text" placeholder="Name">
+                        <span class="input-group-btn">
+                            <button class="we-add-button btn btn-default" type="button">Add</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="we-add-all-button btn-group">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                            Speakers
+                            Add all
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">Speakers</a></li>
-                            <li><a href="#">Authors</a></li>
+                            <li>
+                                <a href="#">Speakers</a>
+                            </li>
+                            <li>
+                                <a href="#">Authors</a>
+                            </li>
                         </ul>
-                        <input class="we-people-type" type="hidden" value="speakers">
                     </div>
                 </div>
                 <div class="col-md-offset-1 col-md-2">
-                    <button type="button" class="we-fetch-button btn btn-default">Fetch/Reload</button>
+                    <button type="button" class="we-add-new-person-button btn btn-default">
+                        <span class="glyphicon glyphicon-plus"></span>Add new
+                    </button>
                 </div>
             </div>
+            <div class="we-people-list-section{% if settings.empty %} hidden{% endif %}">
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Customize people</h4>
+                    </div>
+                </div>
+                <div class="we-people-list"></div>
+            </div>
         </div>
+
         <div class="tab-pane fade container-fluid" id="style-pane-{{ counter }}">
             <div class="row">
                 <div class="col-md-2">

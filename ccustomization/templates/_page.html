@@ -2,7 +2,7 @@
 
 {% block content -%}
 
-    <div id="main-container" class="main-container" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}">
+    <div id="main-container" class="main-container" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}" data-upload-url="{{ url_for('.upload') }}">
         <ul class="main-list">
             {% for col, col_content in content | dictsort %}
                 <li id="column-{{ col }}-container" class="column-container{% if not edit %} view-mode{% endif %}" data-column="{{ col }}">
