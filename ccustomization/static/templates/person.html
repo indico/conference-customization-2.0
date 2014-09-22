@@ -20,8 +20,9 @@
                             <label>Preview</label>
                         </div>
                         <div class="we-picture-preview col-md-2">
-                            <span class="glyphicon glyphicon-user" style="font-size: 63px;"></span>
-                            <img class="hidden" style="height: 63px; width: 63px;">
+                            <span class="we-picture preview glyphicon glyphicon-user"></span>
+                            <div class="we-picture preview hidden" style="background: url({{ person.picture.path }}) no-repeat center center;"></div>
+                            <img class="hidden">
                         </div>
                         <div class="col-md-2">
                             <button type="button" class="we-remove-picture-button btn btn-default">
@@ -44,7 +45,7 @@
                             <label>Url</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="we-person-picture-url form-control"{% if person.picture.set %} value="{{ person.picture.path }}"{% endif %}>
+                            <input type="text" class="we-person-picture-url form-control">
                         </div>
                         <div class="col-md-2">
                             <button type="button" class="we-load-picture-button btn btn-default">Load</button>

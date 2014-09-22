@@ -1,5 +1,8 @@
 $grid-border: 1px solid black;
 $min-height: 120px;
+$pic-size-preview: 63px;
+$pic-size: 100px;
+$pic-size-big: 200px;
 
 .sortable-placeholder {
     min-height: $min-height;
@@ -126,10 +129,6 @@ $min-height: 120px;
 
                         .we-map-canvas {
                             min-height: 400px;
-
-                            &.blocked {
-                                z-index: -1;
-                            }
                         }
                     }
 
@@ -139,6 +138,65 @@ $min-height: 120px;
                             background: url('http://www.risk.net/IMG/315/86315/people-outline.jpg') repeat center;
                             background-size: auto 100%;
                         }
+
+                        .we-person-details {
+                            text-align: left;
+                            font-size: 18px;
+                            display: flex;
+                            flex-direction: column;
+
+                            .we-person-name {
+                                font-size: 24px;
+                            }
+                        }
+
+                        .we-carousel-picture-container {
+                            margin-left: auto;
+                            margin-right: auto;
+                            height: $pic-size-big + 140px;
+                            width: $pic-size-big;
+                            padding-top: 20px;
+                        }
+
+                        .carousel-indicators {
+                            bottom: 10px;
+
+                            li {
+                                border: 1px solid #3c3c3c;
+
+                                &.active {
+                                    background-color: #3c3c3c;
+                                }
+                            }
+                        }
+
+                        .carousel-caption {
+                            bottom: 5px;
+                            left: 15%;
+                            right: 15%;
+                            color: #3c3c3c;
+                            text-shadow: none;
+
+                            .we-person-name {
+                                font-size: 24px;
+                            }
+                        }
+
+                        .carousel-control {
+                            text-shadow: 0 2px 1px rgba(0, 0, 0, 0.6);
+
+                            &.left {
+                                background-image: linear-gradient(to right, rgba(241, 231, 231, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
+                            }
+
+                            &.right {
+                                background-image: linear-gradient(to left, rgba(241, 231, 231, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
+                            }
+                        }
+                    }
+
+                    .blocked {
+                        z-index: -1;
                     }
                 }
             }
@@ -239,4 +297,50 @@ $min-height: 120px;
     max-height: 250px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.we-picture {
+
+    &.preview {
+
+        &span {
+            font-size: $pic-size-preview;
+        }
+
+        &div {
+            width: $pic-size-preview;
+            height: $pic-size-preview;
+        }
+    }
+
+    &:not(.preview) {
+
+        &span {
+            font-size: $pic-size;
+        }
+
+        &div {
+            width: $pic-size;
+            height: $pic-size;
+        }
+    }
+
+    &.big-picture {
+
+        &span {
+            font-size: $pic-size-big;
+        }
+
+        &div {
+            height: $pic-size-big;
+            width: $pic-size-big;
+        }
+    }
+
+    &div {
+        -webkit-background-size: cover !important;
+        -moz-background-size: cover !important;
+        -o-background-size: cover !important;
+        background-size: cover !important;
+    }
 }

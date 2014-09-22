@@ -117,6 +117,10 @@ $.extend(PeopleWidget.prototype, {
             iconPreview.addClass('hidden');
         }
 
+        function updateBackground(imagePreview, url) {
+            imagePreview.css('background-image', 'url(' + url + ')');
+        }
+
         function bindPerson(container, person) {
             var personDialog = container.find('.person-dialog');
             var personElem = container.find('.we-person');
@@ -133,7 +137,7 @@ $.extend(PeopleWidget.prototype, {
             var personRemovePictureButton = personDialog.find('.we-remove-picture-button');
             var personPicturePreview = personDialog.find('.we-picture-preview');
             var iconPreview = personPicturePreview.find('span');
-            var imagePreview = personPicturePreview.find('img');
+            var imagePreview = personPicturePreview.find('div');
             var fileForm = personPictureFile.parent('form');
             var picURL = null;
 
@@ -159,7 +163,7 @@ $.extend(PeopleWidget.prototype, {
             personCustomizeButton.on('click', function(){
                 if (person.picture != null && person.picture.set == true) {
                     showImagePreview(iconPreview, imagePreview);
-                    imagePreview.prop('src', person.picture.path);
+                    updateBackground(imagePreview, person.picture.path);
                     if (person.picture.type == 'url') {
                         personPictureURL.val(person.picture.path);
                     }
@@ -179,7 +183,7 @@ $.extend(PeopleWidget.prototype, {
                 var pathType = 'none';
                 var path = 'none';
                 if (!imagePreview.hasClass('hidden')) {
-                    path = imagePreview.prop('src');
+                    path = imagePreview.css('background-image').slice(4, -1);
                     pathType = personPictureURL.val() != '' ? 'url' : 'file';
                 }
                 var settings = {
@@ -199,19 +203,18 @@ $.extend(PeopleWidget.prototype, {
                 bindPerson(newContainer, settings);
             });
             personLoadPictureButton.on('click', function(){
-                var ok = true
-                var oldURL = imagePreview.prop('src');
-                imagePreview.prop('src', personPictureURL.val());
-                imagePreview.error(function(){
-                    alert('The specified URL is invalid!');
-                    imagePreview.prop('src', oldURL);
-                    personPictureURL.val('');
-                    ok = false;
+                $('<img>', {
+                    src: personPictureURL.val(),
+                    error: function() {
+                        alert('The specified URL is invalid!');
+                        personPictureURL.val('');
+                    },
+                    load: function() {
+                        updateBackground(imagePreview, personPictureURL.val());
+                        showImagePreview(iconPreview, imagePreview);
+                        personPictureFile.val('');
+                    }
                 });
-                if (ok) {
-                    showImagePreview(iconPreview, imagePreview);
-                }
-                personPictureFile.val('');
             });
             personPictureFile.on('change', function(){
                 var ok = personPictureFile[0].files[0].type.match('^image/.*');
@@ -219,7 +222,7 @@ $.extend(PeopleWidget.prototype, {
                     fileForm.submit();
                     if (picURL != null) {
                         showImagePreview(iconPreview, imagePreview);
-                        imagePreview.prop('src', picURL);
+                        updateBackground(imagePreview, picURL);
                     }
                 } else {
                     alert('The specified file is invalid!');

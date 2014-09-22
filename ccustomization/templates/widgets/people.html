@@ -11,6 +11,97 @@
 
     {% if not settings.empty %}
 
+        {% if settings.style.type == 'list' %}
+
+            <div class="container-fluid">
+                {% set i = 0 %}
+                {% for person in settings.content.people %}
+                    {% if i != 0 %}
+                        <hr>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-3">
+                            {% if person.picture and person.picture.set %}
+                                <div class="we-picture" style="background: url({{ person.picture.path }}) no-repeat center center;"></div>
+                            {% else %}
+                                <span class="we-picture glyphicon glyphicon-user"></span>
+                            {% endif %}
+                        </div>
+                        <div class="we-person-details col-md-8">
+                            <div class="we-person-name">
+                                <span>{{ person.name }}</span>
+                            </div>
+                            {% if person.organisation %}
+                                <div>
+                                    <span>{{ person.organisation }}</span>
+                                </div>
+                            {% endif %}
+                            {% if person.email %}
+                                <div>
+                                    <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% set i = i + 1 %}
+                {% endfor %}
+            </div>
+
+        {% else %}
+
+            <div id="carousel-{{ counter }}" class="carousel slide{% if edit %} blocked{% endif %}" data-ride="carousel">
+              <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    {% set i = 0 %}
+                    {% for person in settings.content.people %}
+                        <li data-target="#carousel-{{ counter }}" data-slide-to="{{ i }}" {% if i == 0 %}class="active"{% endif %}></li>
+                        {% set i = i + 1 %}
+                    {% endfor %}
+                </ol>
+
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+                    {% set i = 0 %}
+                    {% for person in settings.content.people %}
+                        <div class="item{% if i == 0 %} active{% endif %}">
+                            <div class="we-carousel-picture-container">
+                                {% if person.picture and person.picture.set %}
+                                    <div class="we-picture big-picture" style="background: url({{ person.picture.path }}) no-repeat center center;"></div>
+                                {% else %}
+                                    <span class="we-picture big-picture glyphicon glyphicon-user"></span>
+                                {% endif %}
+                            </div>
+                            <div class="carousel-caption">
+                                <div class="we-person-name">
+                                    {{ person.name }}
+                                </div>
+                                {% if person.organisation %}
+                                    <div>
+                                        <span>{{ person.organisation }}</span>
+                                    </div>
+                                {% endif %}
+                                {% if person.email %}
+                                    <div>
+                                        <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% set i = i + 1 %}
+                    {% endfor %}
+                </div>
+
+                <!-- Controls -->
+                <a class="left carousel-control" href="#carousel-{{ counter }}" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                </a>
+                <a class="right carousel-control" href="#carousel-{{ counter }}" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </a>
+            </div>
+
+        {% endif %}
+
     {% endif %}
 
 {% endblock %}

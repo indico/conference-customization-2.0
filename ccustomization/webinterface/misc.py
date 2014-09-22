@@ -139,5 +139,5 @@ def upload():
     try:
         picture.save(os.path.join(str(current_app.static_folder), file_url))
     except IOError:
-        return jsonify(), 501
+        return jsonify(), 400
     return os.path.join(str(current_app.static_url_path), file_url)
