@@ -126,11 +126,43 @@ $.extend(PeopleWidget.prototype, {
             var personElem = container.find('.we-person');
             var personCustomizeButton = personElem.find('.we-customize-button');
             var removePersonButton = personElem.find('.we-remove-button');
+            var personDisplayedName = personElem.find('.we-person-displayed-name');
+            var personPictureURL = personDialog.find('.we-person-picture-url');
+            var personPicturePreview = personDialog.find('.we-picture-preview');
+            var iconPreview = personPicturePreview.find('span');
+            var imagePreview = personPicturePreview.find('div');
+
+
+            personElem.data('settings', person);
+            personCustomizeButton.on('click', function(){
+                if (person.picture != null && person.picture.set == true) {
+                    showImagePreview(iconPreview, imagePreview);
+                    updateBackground(imagePreview, person.picture.path);
+                    if (person.picture.type == 'url') {
+                        personPictureURL.val(person.picture.path);
+                    }
+                } else {
+                    showIconPreview(iconPreview, imagePreview);
+                }
+                personDialog.modal('show');
+            });
+
+            removePersonButton.on('click', function(){
+                container.remove();
+                var selectedPeople = peopleList.children('.we-person-container');
+                if (selectedPeople.length == 0) {
+                    peopleListSection.addClass('hidden');
+                }
+            });
+
+            bindPersonDialog(personDialog, personElem);
+        }
+
+        function bindPersonDialog (personDialog, personElem) {
             var personName = personDialog.find('.we-person-name');
             var personEmail = personDialog.find('.we-person-email');
             var personOrganisation = personDialog.find('.we-person-organisation');
             var personSaveButton = personDialog.find('.we-save-button');
-            var personDisplayedName = personElem.find('.we-person-displayed-name');
             var personPictureURL = personDialog.find('.we-person-picture-url');
             var personPictureFile = personDialog.find('.we-person-picture-file');
             var personLoadPictureButton = personDialog.find('.we-load-picture-button');
@@ -155,39 +187,30 @@ $.extend(PeopleWidget.prototype, {
                 });
                 return false;
             });
+
             personDialog.detach().appendTo('body');
             personDialog.modal({
                 show: false
             });
-            personElem.data('settings', person);
-            personCustomizeButton.on('click', function(){
-                if (person.picture != null && person.picture.set == true) {
-                    showImagePreview(iconPreview, imagePreview);
-                    updateBackground(imagePreview, person.picture.path);
-                    if (person.picture.type == 'url') {
-                        personPictureURL.val(person.picture.path);
-                    }
+
+            personName.on('input', function(){
+                if (personName.val() == '') {
+                    personSaveButton.attr('disabled', true);
                 } else {
-                    showIconPreview(iconPreview, imagePreview);
-                }
-                personDialog.modal('show');
-            });
-            removePersonButton.on('click', function(){
-                container.remove();
-                var selectedPeople = peopleList.children('.we-person-container');
-                if (selectedPeople.length == 0) {
-                    peopleListSection.addClass('hidden');
+                    personSaveButton.attr('disabled', false);
                 }
             });
+
             personSaveButton.on('click', function(){
                 var pathType = 'none';
                 var path = 'none';
+                var personID = personElem == null ? -1 : personElem.data('settings').id;
                 if (!imagePreview.hasClass('hidden')) {
                     path = imagePreview.css('background-image').slice(4, -1);
                     pathType = personPictureURL.val() != '' ? 'url' : 'file';
                 }
                 var settings = {
-                    id: personElem.data('settings').id,
+                    id: personID,
                     name: personName.val(),
                     email: personEmail.val(),
                     organisation: personOrganisation.val(),
@@ -197,11 +220,16 @@ $.extend(PeopleWidget.prototype, {
                         path: path
                     }
                 };
-                var newContainerHTML = getPersonRowHTML(settings);
-                var newContainer = $(newContainerHTML);
-                container.replaceWith(newContainer);
-                bindPerson(newContainer, settings);
+                if (personElem == null) {
+                    addPerson(settings);
+                } else {
+                    var newContainerHTML = getPersonRowHTML(settings);
+                    var newContainer = $(newContainerHTML);
+                    container.replaceWith(newContainer);
+                    bindPerson(newContainer, settings);
+                }
             });
+
             personLoadPictureButton.on('click', function(){
                 $('<img>', {
                     src: personPictureURL.val(),
@@ -216,6 +244,7 @@ $.extend(PeopleWidget.prototype, {
                     }
                 });
             });
+
             personPictureFile.on('change', function(){
                 var ok = personPictureFile[0].files[0].type.match('^image/.*');
                 if (ok) {
@@ -230,6 +259,7 @@ $.extend(PeopleWidget.prototype, {
                 }
                 personPictureURL.val('');
             });
+
             personRemovePictureButton.on('click', function(){
                 showIconPreview(iconPreview, imagePreview);
                 personPictureFile.val('');
@@ -238,7 +268,10 @@ $.extend(PeopleWidget.prototype, {
         }
 
         dialog.detach().appendTo('body');
-        newPersonDialog.appendTo('body');
+        dialog.modal({
+            show: false
+        });
+        bindPersonDialog(newPersonDialog, null);
 
         save.on('click', function(){
             self.settings.style = {
@@ -253,13 +286,6 @@ $.extend(PeopleWidget.prototype, {
             };
             self.settings.empty = people.length == 0;
             updateWidget(self.widgetElem, self.settings);
-        });
-
-        dialog.modal({
-            show: false
-        });
-        newPersonDialog.modal({
-            show: false
         });
 
         self.widgetElem.on('click', function(){
@@ -314,25 +340,6 @@ $.extend(PeopleWidget.prototype, {
             newPersonEmail.val('');
             newPersonOrganisation.val('');
             newPersonDialog.modal('show');
-        });
-
-        newPersonName.on('input', function(){
-            if (newPersonName.val() == '') {
-                addNewPersonButtonFinish.attr('disabled', true);
-            } else {
-                addNewPersonButtonFinish.attr('disabled', false);
-            }
-        });
-
-        addNewPersonButtonFinish.on('click', function(){
-            var person = {
-                id: -1,
-                picture: newPersonPicture.val(),
-                name: newPersonName.val(),
-                email: newPersonEmail.val(),
-                organisation: newPersonOrganisation.val()
-            };
-            addPerson(person);
         });
     }
 });
