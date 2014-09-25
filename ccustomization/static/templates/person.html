@@ -19,9 +19,8 @@
                         <div class="col-md-2">
                             <label>Preview</label>
                         </div>
-                        <div class="we-picture-preview col-md-2">
-                            <span class="we-picture preview glyphicon glyphicon-user"></span>
-                            <div class="we-picture preview hidden" style="background: url({{ person.picture.path }}) no-repeat center center;"></div>
+                        <div class="we-picture-preview col-md-3">
+                            <div class="we-picture" style="background-image: url({% if person.picture.set %}{{ person.picture.path }}{% else %}{{ iconURL }}{% endif %});"></div>
                         </div>
                         <div class="col-md-2">
                             <button type="button" class="we-remove-picture-button btn btn-default">
@@ -82,7 +81,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     <button type="button" class="we-save-button btn btn-primary" data-dismiss="modal">{{ buttonLabel }}</button>
                 </div>
             </div>

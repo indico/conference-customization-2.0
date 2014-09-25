@@ -107,6 +107,8 @@ def render_widget(settings, edit=False):
     }
     if settings['type'] == 'box' and wvars.get('settings', {}).get('content', None):
         wvars['settings']['render_content'] = Markup(markdown.markdown(wvars['settings']['content']))
+    elif settings['type'] == 'people':
+        wvars['icon_url'] = os.path.join(str(current_app.static_url_path), 'pics/glyphicons_003_user.png')
     return render_template('widgets/{0}.html'.format(settings['type']), **wvars)
 
 

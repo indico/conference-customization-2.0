@@ -3,11 +3,32 @@ function PeopleWidget(widgetElem) {
     this.settings = widgetElem.data('settings');
 }
 
+function updateBackground(pictureElem, url) {
+    pictureElem.css('background-image', 'url(' + url + ')');
+}
+
+function replaceMissingPicture(pictureElem, defaultPicURL) {
+    $('<img>', {
+        src: pictureElem.css('background-image').slice(4, -1),
+        error: function() {
+            updateBackground(pictureElem, defaultPicURL);
+        }
+    });
+}
+
 $.extend(PeopleWidget.prototype, {
-    run: function run() {},
+    run: function run() {
+        var self = this;
+        var iconURL = self.widgetElem.find('.we-icon-url').val();
+        var pictures = self.widgetElem.find('.we-picture');
+        pictures.each(function(){
+            replaceMissingPicture($(this), iconURL);
+        });
+    },
 
     runEdit: function runEdit() {
         var self = this;
+        var iconURL = self.widgetElem.find('.we-icon-url').val();
         var dialog = self.widgetElem.find('.widget-dialog');
         var save = dialog.find('.we-save-button');
         var radio = dialog.find('.we-radio');
@@ -35,10 +56,12 @@ $.extend(PeopleWidget.prototype, {
         var newPersonDialogHTML = twig({
             ref: "person-"+self.widgetElem.data('counter')
         }).render({
+            person: null,
             dialogClass: "new-person-dialog",
             title: "Add new person",
             buttonLabel: "Add",
-            uploadURL: $('#main-container').data('upload-url')
+            uploadURL: $('#main-container').data('upload-url'),
+            iconURL: iconURL
         });
         var newPersonDialog = $(newPersonDialogHTML).children('.modal');
         var newPersonPicture = newPersonDialog.find('.we-person-picture');
@@ -102,47 +125,34 @@ $.extend(PeopleWidget.prototype, {
                     person: person,
                     dialogClass: "person-dialog",
                     title: "Customize person details",
-                    buttonLabel: "Save",
-                    uploadURL: $('#main-container').data('upload-url')
+                    buttonLabel: "OK",
+                    uploadURL: $('#main-container').data('upload-url'),
+                    iconURL: iconURL
                 })
         }
 
-        function showIconPreview(iconPreview, imagePreview) {
-            imagePreview.addClass('hidden');
-            iconPreview.removeClass('hidden');
-        }
-
-        function showImagePreview(iconPreview, imagePreview) {
-            imagePreview.removeClass('hidden');
-            iconPreview.addClass('hidden');
-        }
-
-        function updateBackground(imagePreview, url) {
-            imagePreview.css('background-image', 'url(' + url + ')');
+        function showIconPreview(imagePreview) {
+            updateBackground(imagePreview, iconURL);
         }
 
         function bindPerson(container, person) {
             var personDialog = container.find('.person-dialog');
             var personElem = container.find('.we-person');
+            var imagePreviewRow = personElem.find('.we-picture');
             var personCustomizeButton = personElem.find('.we-customize-button');
             var removePersonButton = personElem.find('.we-remove-button');
             var personDisplayedName = personElem.find('.we-person-displayed-name');
             var personPictureURL = personDialog.find('.we-person-picture-url');
-            var personPicturePreview = personDialog.find('.we-picture-preview');
-            var iconPreview = personPicturePreview.find('span');
-            var imagePreview = personPicturePreview.find('div');
-
+            var imagePreview = personDialog.find('.we-picture');
 
             personElem.data('settings', person);
+            replaceMissingPicture(imagePreviewRow, iconURL);
+
             personCustomizeButton.on('click', function(){
-                if (person.picture != null && person.picture.set == true) {
-                    showImagePreview(iconPreview, imagePreview);
-                    updateBackground(imagePreview, person.picture.path);
-                    if (person.picture.type == 'url') {
-                        personPictureURL.val(person.picture.path);
-                    }
+                if (person.picture != null && person.picture.set == true && person.picture.type == 'url') {
+                    personPictureURL.val(person.picture.path);
                 } else {
-                    showIconPreview(iconPreview, imagePreview);
+                    showIconPreview(imagePreview);
                 }
                 personDialog.modal('show');
             });
@@ -155,10 +165,11 @@ $.extend(PeopleWidget.prototype, {
                 }
             });
 
-            bindPersonDialog(personDialog, personElem);
+            bindPersonDialog(personDialog, container);
         }
 
-        function bindPersonDialog (personDialog, personElem) {
+        function bindPersonDialog (personDialog, container) {
+            var personElem = container == null ? null : container.find('.we-person');
             var personName = personDialog.find('.we-person-name');
             var personEmail = personDialog.find('.we-person-email');
             var personOrganisation = personDialog.find('.we-person-organisation');
@@ -167,11 +178,11 @@ $.extend(PeopleWidget.prototype, {
             var personPictureFile = personDialog.find('.we-person-picture-file');
             var personLoadPictureButton = personDialog.find('.we-load-picture-button');
             var personRemovePictureButton = personDialog.find('.we-remove-picture-button');
-            var personPicturePreview = personDialog.find('.we-picture-preview');
-            var iconPreview = personPicturePreview.find('span');
-            var imagePreview = personPicturePreview.find('div');
+            var imagePreview = personDialog.find('.we-picture');
             var fileForm = personPictureFile.parent('form');
             var picURL = null;
+
+            replaceMissingPicture(imagePreview, iconURL);
 
             fileForm.submit(function() {
                 fileForm.ajaxSubmit({
@@ -239,7 +250,6 @@ $.extend(PeopleWidget.prototype, {
                     },
                     load: function() {
                         updateBackground(imagePreview, personPictureURL.val());
-                        showImagePreview(iconPreview, imagePreview);
                         personPictureFile.val('');
                     }
                 });
@@ -250,7 +260,6 @@ $.extend(PeopleWidget.prototype, {
                 if (ok) {
                     fileForm.submit();
                     if (picURL != null) {
-                        showImagePreview(iconPreview, imagePreview);
                         updateBackground(imagePreview, picURL);
                     }
                 } else {
@@ -261,10 +270,25 @@ $.extend(PeopleWidget.prototype, {
             });
 
             personRemovePictureButton.on('click', function(){
-                showIconPreview(iconPreview, imagePreview);
+                showIconPreview(imagePreview);
                 personPictureFile.val('');
                 personPictureURL.val('');
             });
+        }
+
+        if (self.settings.style != undefined) {
+            if (self.settings.style.type == 'list' || self.settings.style.type == undefined) {
+                listOpt.trigger('click');
+            } else {
+                carouselOpt.trigger('click');
+            }
+        }
+        if (self.settings.content != undefined) {
+            if (!self.settings.empty) {
+                self.settings.content.people.forEach(function(person){
+                    addPerson(person);
+                });
+            }
         }
 
         dialog.detach().appendTo('body');
@@ -289,20 +313,6 @@ $.extend(PeopleWidget.prototype, {
         });
 
         self.widgetElem.on('click', function(){
-            if (self.settings.style != undefined) {
-                if (self.settings.style.type == 'list' || self.settings.style.type == undefined) {
-                    listOpt.trigger('click');
-                } else {
-                    carouselOpt.trigger('click');
-                }
-            }
-            if (self.settings.content != undefined) {
-                if (!self.settings.empty) {
-                    self.settings.content.people.forEach(function(person){
-                        addPerson(person);
-                    });
-                }
-            }
             dialog.modal('show');
         });
 

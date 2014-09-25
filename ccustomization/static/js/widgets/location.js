@@ -90,7 +90,25 @@ $.extend(LocationWidget.prototype, {
             });
         }
 
+        if (self.settings.content != undefined) {
+            address.val(self.settings.content.address || '');
+            latitude.text(self.settings.content.latitude || '');
+            longitude.text(self.settings.content.longitude || '');
+        } else {
+            address.val('');
+            latitude.text('');
+            longitude.text('');
+        }
+        if (self.settings.style != undefined) {
+            zoom.text(self.settings.style.zoom || defaultZoom);
+        } else {
+            zoom.text(defaultZoom);
+        }
+
         dialog.detach().appendTo('body');
+        dialog.modal({
+            show: false
+        });
 
         save.on('click', function(){
             self.settings.content = {
@@ -105,35 +123,11 @@ $.extend(LocationWidget.prototype, {
             updateWidget(self.widgetElem, self.settings);
         });
 
-        dialog.on('hidden.bs.modal', function() {
-            dialog.modal('hide');
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
-        });
-
         dialog.on('shown.bs.modal', function() {
             coordinates.add(address).trigger('input');
         });
 
-        dialog.modal({
-            show: false
-        });
-
         self.widgetElem.on('click', function(){
-            if (self.settings.content != undefined) {
-                address.val(self.settings.content.address || '');
-                latitude.text(self.settings.content.latitude || '');
-                longitude.text(self.settings.content.longitude || '');
-            } else {
-                address.val('');
-                latitude.text('');
-                longitude.text('');
-            }
-            if (self.settings.style != undefined) {
-                zoom.text(self.settings.style.zoom || defaultZoom);
-            } else {
-                zoom.text(defaultZoom);
-            }
             dialog.modal('show');
         });
 

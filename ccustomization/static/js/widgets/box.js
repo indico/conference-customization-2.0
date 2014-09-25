@@ -15,7 +15,23 @@ $.extend(BoxWidget.prototype, {
         var border = dialog.find('.we-widget-border');
         var content = dialog.find('.we-widget-content');
 
+        if (self.settings.style != undefined) {
+            title.val(self.settings.style.title || '');
+            color.val(self.settings.style.color || '');
+            border.prop('checked', self.settings.style.border || false);
+            content.val(self.settings.content || '');
+        } else {
+            title.val('');
+            color.val('');
+            border.prop('checked', false);
+            content.val('');
+        }
+        content.trigger('input');
+
         dialog.detach().appendTo('body');
+        dialog.modal({
+            show: false
+        });
 
         save.on('click', function(){
             self.settings['style'] = {
@@ -28,29 +44,7 @@ $.extend(BoxWidget.prototype, {
             updateWidget(self.widgetElem, self.settings);
         });
 
-        dialog.on('hidden.bs.modal', function() {
-            dialog.modal('hide');
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
-        });
-
-        dialog.modal({
-            show: false
-        });
-
         self.widgetElem.on('click', function(){
-            if (self.settings.style != undefined) {
-                title.val(self.settings.style.title || '');
-                color.val(self.settings.style.color || '');
-                border.prop('checked', self.settings.style.border || false);
-                content.val(self.settings.content || '');
-            } else {
-                title.val('');
-                color.val('');
-                border.prop('checked', false);
-                content.val('');
-            }
-            content.trigger('input');
             dialog.modal('show');
         });
     }

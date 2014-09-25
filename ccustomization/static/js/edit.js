@@ -157,6 +157,7 @@ $(document).ready(function() {
 
     layoutDialog.on('hidden.bs.modal', function() {
         var columnNumber = $('#col-radio label.active input').val();
+        var titleSelected = $('.title-checkbox').prop('checked');
         for (var i=0; i<columnNumber; i++) {
             var columnContainer = $('<li>', {
                 id: 'column-'+cols+'-container',

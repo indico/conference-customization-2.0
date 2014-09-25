@@ -1,8 +1,5 @@
 $grid-border: 1px solid black;
 $min-height: 120px;
-$pic-size-preview: 63px;
-$pic-size: 100px;
-$pic-size-big: 200px;
 
 .sortable-placeholder {
     min-height: $min-height;
@@ -140,22 +137,30 @@ $pic-size-big: 200px;
                         }
 
                         .we-person-details {
-                            text-align: left;
                             font-size: 18px;
+
+                            .we-person-organisation {
+                                font-size: 16px;
+                                color: gray;
+                            }
+                        }
+
+                        .we-person-list .we-person-details {
+                            text-align: left;
                             display: flex;
                             flex-direction: column;
 
-                            .we-person-name {
-                                font-size: 24px;
+                            .we-person-organisation {
+                                margin-top: 15px;
                             }
                         }
 
                         .we-carousel-picture-container {
                             margin-left: auto;
                             margin-right: auto;
-                            height: $pic-size-big + 140px;
-                            width: $pic-size-big;
+                            width: 30%;
                             padding-top: 20px;
+                            padding-bottom: 100px;
                         }
 
                         .carousel-indicators {
@@ -176,10 +181,6 @@ $pic-size-big: 200px;
                             right: 15%;
                             color: #3c3c3c;
                             text-shadow: none;
-
-                            .we-person-name {
-                                font-size: 24px;
-                            }
                         }
 
                         .carousel-control {
@@ -300,47 +301,23 @@ $pic-size-big: 200px;
 }
 
 .we-picture {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    -webkit-background-size: cover !important;
+    -moz-background-size: cover !important;
+    -o-background-size: cover !important;
+    background-size: cover !important;
+    background-position: 50% 50%;
+    background-repeat: no-repeat no-repeat;
 
-    &.preview {
-
-        &span {
-            font-size: $pic-size-preview;
-        }
-
-        &div {
-            width: $pic-size-preview;
-            height: $pic-size-preview;
-        }
+    &:after {
+        content: '';
+        display: block;
+        margin-top: 100%;
     }
+}
 
-    &:not(.preview) {
-
-        &span {
-            font-size: $pic-size;
-        }
-
-        &div {
-            width: $pic-size;
-            height: $pic-size;
-        }
-    }
-
-    &.big-picture {
-
-        &span {
-            font-size: $pic-size-big;
-        }
-
-        &div {
-            height: $pic-size-big;
-            width: $pic-size-big;
-        }
-    }
-
-    &div {
-        -webkit-background-size: cover !important;
-        -moz-background-size: cover !important;
-        -o-background-size: cover !important;
-        background-size: cover !important;
-    }
+.new-person-dialog, .person-dialog {
+    z-index: 1051;
 }
