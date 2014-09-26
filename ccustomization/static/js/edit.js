@@ -138,6 +138,15 @@ $(document).ready(function() {
     $('body').on('sortstop', function(){
         refreshContainers();
         refreshWidgets();
+        var carousels = $('.we-people-carousel');
+        carousels.each(function(){
+            var carousel = $(this);
+            var carouselOptions = {
+                slidesToShow: carousel.slickGetOption('slidesToShow'),
+                dots: carousel.slickGetOption('dots')
+            };
+            carousel.unslick().slick(carouselOptions);
+        });
     }).trigger('sortstop');
 
     $('#save').on('click', function(){

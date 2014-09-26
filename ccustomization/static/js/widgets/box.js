@@ -19,13 +19,12 @@ $.extend(BoxWidget.prototype, {
             title.val(self.settings.style.title || '');
             color.val(self.settings.style.color || '');
             border.prop('checked', self.settings.style.border || false);
-            content.val(self.settings.content || '');
         } else {
             title.val('');
             color.val('');
             border.prop('checked', false);
-            content.val('');
         }
+        content.val(self.settings.content || '');
         content.trigger('input');
 
         dialog.detach().appendTo('body');

@@ -96,6 +96,7 @@ $min-height: 120px;
                         }
 
                         &:not(.empty-widget) {
+                            text-align: left;
 
                             &.bordered {
                                 border: 2px solid black;
@@ -107,12 +108,13 @@ $min-height: 120px;
 
                             .box-title {
                                 margin: 0;
+                                padding-bottom: 5px;
+                                padding-left: 20px;
                             }
 
                             .box-content {
                                 float: left;
-                                margin-left: 30px;
-                                text-align: left;
+                                padding-left: 30px;
                             }
                         }
                     }
@@ -136,6 +138,13 @@ $min-height: 120px;
                             background-size: auto 100%;
                         }
 
+                        .we-people-title {
+                            margin-top: 0;
+                            margin-bottom: 20px;
+                            padding-left: 20px;
+                            text-align: left;
+                        }
+
                         .we-person-details {
                             font-size: 18px;
 
@@ -145,7 +154,7 @@ $min-height: 120px;
                             }
                         }
 
-                        .we-person-list .we-person-details {
+                        .we-people-list .we-person-details {
                             text-align: left;
                             display: flex;
                             flex-direction: column;
@@ -155,43 +164,46 @@ $min-height: 120px;
                             }
                         }
 
-                        .we-carousel-picture-container {
+                        .we-people-carousel {
+                            width: 100%;
                             margin-left: auto;
                             margin-right: auto;
-                            width: 30%;
-                            padding-top: 20px;
-                            padding-bottom: 100px;
-                        }
+                            padding-left: 20px;
+                            padding-right: 20px;
 
-                        .carousel-indicators {
-                            bottom: 10px;
+                            .we-carousel-element {
+                                width: 100%;
 
-                            li {
-                                border: 1px solid #3c3c3c;
+                                .we-carousel-picture-container {
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    width: 30%;
+                                }
 
-                                &.active {
-                                    background-color: #3c3c3c;
+                                .we-person-details {
+                                    margin-top: 20px;
                                 }
                             }
-                        }
 
-                        .carousel-caption {
-                            bottom: 5px;
-                            left: 15%;
-                            right: 15%;
-                            color: #3c3c3c;
-                            text-shadow: none;
-                        }
+                            .slick-prev, .slick-next {
+                                z-index: 2;
 
-                        .carousel-control {
-                            text-shadow: 0 2px 1px rgba(0, 0, 0, 0.6);
-
-                            &.left {
-                                background-image: linear-gradient(to right, rgba(241, 231, 231, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
+                                &:before {
+                                    color: black;
+                                }
                             }
 
-                            &.right {
-                                background-image: linear-gradient(to left, rgba(241, 231, 231, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
+                            .slick-prev {
+                                left: 0;
+                            }
+
+                            .slick-next {
+                                right: 0;
+                            }
+
+                            .slick-dots {
+                                left: 0;
+                                bottom: initial;
                             }
                         }
                     }
@@ -294,7 +306,7 @@ $min-height: 120px;
     }
 }
 
-.we-people-list {
+.we-people-list-preview {
     max-height: 250px;
     overflow-y: auto;
     overflow-x: hidden;

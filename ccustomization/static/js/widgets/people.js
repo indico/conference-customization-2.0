@@ -21,15 +21,25 @@ $.extend(PeopleWidget.prototype, {
         var self = this;
         var iconURL = self.widgetElem.find('.we-icon-url').val();
         var pictures = self.widgetElem.find('.we-picture');
+        var carousel = self.widgetElem.find('.we-people-carousel');
+
         pictures.each(function(){
             replaceMissingPicture($(this), iconURL);
         });
+
+        if (carousel.length > 0) {
+            carousel.slick({
+                slidesToShow: 1,
+                dots: true
+            });
+        }
     },
 
     runEdit: function runEdit() {
         var self = this;
         var iconURL = self.widgetElem.find('.we-icon-url').val();
         var dialog = self.widgetElem.find('.widget-dialog');
+        var title = dialog.find('.we-widget-title');
         var save = dialog.find('.we-save-button');
         var radio = dialog.find('.we-radio');
         var listOpt = radio.find('.we-list-opt');
@@ -39,7 +49,7 @@ $.extend(PeopleWidget.prototype, {
         var add = dialog.find('.we-add-button');
         var addAllOpts = dialog.find('.we-add-all-button').find('li a');
         var peopleListSection = dialog.find('.we-people-list-section');
-        var peopleList = peopleListSection.find('.we-people-list');
+        var peopleList = peopleListSection.find('.we-people-list-preview');
         var addNewPersonButton = dialog.find('.we-add-new-person-button');
 
         var personTemplate = twig({
@@ -277,11 +287,15 @@ $.extend(PeopleWidget.prototype, {
         }
 
         if (self.settings.style != undefined) {
-            if (self.settings.style.type == 'list' || self.settings.style.type == undefined) {
-                listOpt.trigger('click');
-            } else {
+            if (self.settings.style.type == 'carousel' || self.settings.style.type == undefined) {
                 carouselOpt.trigger('click');
+            } else {
+                listOpt.trigger('click');
             }
+            title.val(self.settings.style.title || '');
+        } else {
+            carouselOpt.trigger('click');
+            title.val('');
         }
         if (self.settings.content != undefined) {
             if (!self.settings.empty) {
@@ -299,6 +313,7 @@ $.extend(PeopleWidget.prototype, {
 
         save.on('click', function(){
             self.settings.style = {
+                title: title.val(),
                 type: radio.find('.active input').val()
             };
             var people = [];

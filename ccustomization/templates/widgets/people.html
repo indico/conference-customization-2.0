@@ -13,9 +13,13 @@
 
     {% if not settings.empty %}
 
+        {% if settings.style.title %}
+            <h1 class="we-people-title">{{ settings.style.title }}</h1>
+        {% endif %}
+
         {% if settings.style.type == 'list' %}
 
-            <div class="we-person-list container-fluid{% if edit %} blocked{% endif %}">
+            <div class="we-people-list container-fluid{% if edit %} blocked{% endif %}">
                 {% set i = 0 %}
                 {% for person in settings.content.people %}
                     {% if i != 0 %}
@@ -46,50 +50,28 @@
 
         {% else %}
 
-            <div id="carousel-{{ counter }}" class="carousel slide{% if edit %} blocked{% endif %}" data-ride="carousel" data-interval="false">
-                <!-- Indicators -->
-                <ol class="carousel-indicators">
-                    {% set i = 0 %}
-                    {% for person in settings.content.people %}
-                        <li data-target="#carousel-{{ counter }}" data-slide-to="{{ i }}" {% if i == 0 %}class="active"{% endif %}></li>
-                        {% set i = i + 1 %}
-                    {% endfor %}
-                </ol>
-
-                <!-- Wrapper for slides -->
-                <div class="carousel-inner">
-                    {% set i = 0 %}
-                    {% for person in settings.content.people %}
-                        <div class="item{% if i == 0 %} active{% endif %}">
-                            <div class="we-carousel-picture-container">
-                                {% if person.picture and person.picture.set %}
-                                    <div class="we-picture" style="background: url({{ person.picture.path }})"></div>
-                                {% else %}
-                                    <div class="we-picture" style="background-image: url({{ icon_url }});"></div>
-                                {% endif %}
-                            </div>
-                            <div class="carousel-caption we-person-details">
-                                <div>
-                                    <span>{{ person.name }}</span>
-                                </div>
-                                {% if person.organisation %}
-                                    <div class="we-person-organisation">
-                                        <span>{{ person.organisation }}</span>
-                                    </div>
-                                {% endif %}
-                            </div>
+            <div class="we-people-carousel">
+                {% for person in settings.content.people %}
+                    <div class="we-carousel-element">
+                        <div class="we-carousel-picture-container">
+                            {% if person.picture and person.picture.set %}
+                                <div class="we-picture" style="background: url({{ person.picture.path }})"></div>
+                            {% else %}
+                                <div class="we-picture" style="background-image: url({{ icon_url }});"></div>
+                            {% endif %}
                         </div>
-                        {% set i = i + 1 %}
-                    {% endfor %}
-                </div>
-
-                <!-- Controls -->
-                <a class="left carousel-control" href="#carousel-{{ counter }}" role="button" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                </a>
-                <a class="right carousel-control" href="#carousel-{{ counter }}" role="button" data-slide="next">
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                </a>
+                        <div class="we-person-details">
+                            <div>
+                                <span>{{ person.name }}</span>
+                            </div>
+                            {% if person.organisation %}
+                                <div class="we-person-organisation">
+                                    <span>{{ person.organisation }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
 
         {% endif %}
@@ -150,22 +132,30 @@
                         <h4>Customize people</h4>
                     </div>
                 </div>
-                <div class="we-people-list"></div>
+                <div class="we-people-list-preview"></div>
             </div>
         </div>
 
         <div class="tab-pane fade container-fluid" id="style-pane-{{ counter }}">
             <div class="row">
                 <div class="col-md-2">
+                    <label for="title-{{ counter }}">Title</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" id="title-{{ counter }}" class="we-widget-title form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
                     <label for="style" class="control-label input-group">Style</label>
                 </div>
                 <div class="col-md-6">
                     <div class="we-radio btn-group" data-toggle="buttons">
-                        <label class="we-list-opt btn btn-default active">
-                            <input type="radio" name="style" value="list">List
-                        </label>
-                        <label class="we-carousel-opt btn btn-default">
+                        <label class="we-carousel-opt btn btn-default active">
                             <input type="radio" name="style" value="carousel">Carousel
+                        </label>
+                        <label class="we-list-opt btn btn-default">
+                            <input type="radio" name="style" value="list">List
                         </label>
                     </div>
                 </div>

@@ -5,6 +5,7 @@
 /ccustomization/static/.webassets-cache
 /ccustomization/static/assets/
 /ccustomization/static/locale/*.js
+/ccustomization/static/pics/*
 .*.swp
 *.pyc
 *.cfg
