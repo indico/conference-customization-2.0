@@ -42,18 +42,15 @@ def index():
 @menu('edit')
 def edit(id):
     page = Page.query.filter_by(id=id).first_or_404()
-    page_content = {}
     global counter
     counter = 0
-    for col in page.content:
-        page_content[col] = []
-        for container in page.content[col]:
-            new_container = []
-            page_content[col].append(new_container)
-            for widget in container:
-                new_container.append(render_widget(widget, True))
+    page_content = []
+    for container in page.content:
+        new_container = []
+        page_content.append(new_container)
+        for widget in container:
+            new_container.append(render_widget(widget, True))
     wvars = {
-        'cols': page.columns,
         'content': page_content,
         'page_id': id,
         'edit': True
@@ -78,18 +75,15 @@ def update(id):
 @menu('view')
 def view(id):
     page = Page.query.filter_by(id=id).first_or_404()
-    page_content = {}
     global counter
     counter = 0
-    for col in page.content:
-        page_content[col] = []
-        for container in page.content[col]:
-            new_container = []
-            page_content[col].append(new_container)
-            for widget in container:
-                new_container.append(render_widget(widget, False))
+    page_content = []
+    for container in page.content:
+        new_container = []
+        page_content.append(new_container)
+        for widget in container:
+            new_container.append(render_widget(widget, False))
     wvars = {
-        'cols': page.columns,
         'content': page_content,
         'page_id': id,
         'edit': False

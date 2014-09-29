@@ -4,24 +4,20 @@
 
     <div id="main-container" class="main-container" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}" data-upload-url="{{ url_for('.upload') }}">
         <ul class="main-list">
-            {% for col, col_content in content | dictsort %}
-                <li id="column-{{ col }}-container" class="column-container{% if not edit %} view-mode{% endif %}" data-column="{{ col }}">
-                    <ul class="column-list">
-                        {% for container in col_content %}
-                            <li class="container-cc">
-                                <ul class="container-list">
-                                    {% for widget in container %}
-                                        {{ widget | safe }}
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
+            <li class="column-container{% if not edit %} view-mode{% endif %}">
+                <ul class="column-list">
+                    {% for container in content %}
+                        <li class="container-cc">
+                            <ul class="container-list">
+                                {% for widget in container %}
+                                    {{ widget | safe }}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
         </ul>
     </div>
-
-    {% block page_content %}{% endblock %}
 
 {%- endblock %}

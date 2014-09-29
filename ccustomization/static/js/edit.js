@@ -1,9 +1,6 @@
 $(document).ready(function() {
     "use strict";
 
-    var cols = $('.main-list').children().length;
-    var layoutDialog = $("#layout-dialog");
-
     // The refresh functions are used to refresh the widgets/containers aspect (icons, not content) after each sortstop
     function refreshContainers() {
         $('.container-cc').each(function(){
@@ -71,23 +68,19 @@ $(document).ready(function() {
     }
 
     function getSerializedLayout() {
-        var data = {};
-        $('.column-container').each(function(){
-            var columnContainer = $(this),
-                col = columnContainer.data('column');
-            data[col] = [];
-            var containerCounter = 0;
-            columnContainer.find('.column-list .container-cc').each(function(){
-                var container = $(this);
-                data[col][containerCounter] = [];
-                var widgetCounter = 0;
-                container.find('.container-list .widget-cc').each(function(){
-                    var widget = $(this);
-                    data[col][containerCounter][widgetCounter] = widget.data('settings');
-                    widgetCounter++;
-                });
-                containerCounter++;
+        var data = [];
+        var columnContainer = $('.column-container');
+        var containerCounter = 0;
+        columnContainer.find('.column-list .container-cc').each(function(){
+            var container = $(this);
+            data[containerCounter] = [];
+            var widgetCounter = 0;
+            container.find('.container-list .widget-cc').each(function(){
+                var widget = $(this);
+                data[containerCounter][widgetCounter] = widget.data('settings');
+                widgetCounter++;
             });
+            containerCounter++;
         });
         return JSON.stringify(data);
     }
@@ -125,8 +118,7 @@ $(document).ready(function() {
         var containerList = $('<ul>', {
             'class': 'container-list'
         });
-        var colNumber = $('#col-select input').val();
-        var column = $('#column-'+colNumber+'-container .column-list');
+        var column = $('.column-container .column-list');
         renderWidget(settings).done(function(newWidget){
             newWidget.appendTo(containerList);
             containerList.appendTo(container);
@@ -162,53 +154,8 @@ $(document).ready(function() {
 
     $('.column-list, .container-list').sortable(sortableOptions);
 
-    $('#widget-select li a, #col-select li a').each(function(){
+    $('#widget-select li a').each(function(){
         bindSelectMenus($(this));
     });
-
-    layoutDialog.detach().appendTo('body');
-
-    layoutDialog.on('hidden.bs.modal', function() {
-        var columnNumber = $('#col-radio label.active input').val();
-        var titleSelected = $('.title-checkbox').prop('checked');
-        for (var i=0; i<columnNumber; i++) {
-            var columnContainer = $('<li>', {
-                id: 'column-'+cols+'-container',
-                'class': 'column-container',
-                'data-column': cols
-            });
-            var columnList = $('<ul>', {
-                'class': 'column-list'
-            });
-            var columnLink = $('<a>', {
-                href: '#',
-                text: cols
-            });
-            var columnOption = $('<li>');
-
-            columnList.appendTo(columnContainer);
-            columnContainer.appendTo($('.main-list'));
-            columnLink.appendTo(columnOption);
-            columnOption.appendTo($('#col-select ul'));
-            bindSelectMenus(columnLink);
-
-            columnList.sortable(sortableOptions);
-     
-            cols++;
-        }
-        saveLayout();
-
-        layoutDialog.modal('hide');
-        $('body').removeClass('modal-open');
-        $('.modal-backdrop').remove();
-    });
-
-    layoutDialog.modal({
-        show: false
-    });
-
-    if ($('.main-list').children().length < 1)  {
-        layoutDialog.modal('show');
-    }
 
 });

@@ -36,18 +36,6 @@
                                 </ul>
                                 <input type="hidden" value="box">
                             </div>
-                            <div id="col-select" class="btn-group dropup">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    0
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    {% for col in range(0, cols) %}
-                                        <li><a href="#">{{ col }}</a></li>
-                                    {% endfor %}
-                                </ul>
-                                <input type="hidden" value="0">
-                            </div>
                             <button id="add-widget" type="button" class="btn btn-default">Add widget</button>
                         </div>
                     </li>
@@ -64,67 +52,3 @@
         </div>
     </nav>
 {% endblock %}
-
-{% block page_content -%}
-
-    <div id="layout-dialog" class="layout-dialog modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Choose a layout</h4>
-                </div>
-                <div class="modal-body container-fluid">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label>Column(s)</label>
-                        </div>
-                        <div class="col-md-6">
-                            <div id="col-radio" class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-default">
-                                    <input type="radio" name="radio" value="1">1
-                                </label>
-                                <label class="btn btn-default active">
-                                    <input type="radio" name="radio" value="2">2
-                                </label>
-                                <label class="btn btn-default">
-                                    <input type="radio" name="radio" value="3">3
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label>Menu(s)</label>
-                        </div>
-                        <div class="col-md-6">
-                            <div id="menu-checkboxes" class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-default active">
-                                    <input type="checkbox" value="left">Left
-                                </label>
-                                <label class="btn btn-default">
-                                    <input type="checkbox" value="top">Top
-                                </label>
-                                <label class="btn btn-default">
-                                    <input type="checkbox" value="right">Right
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label>Title</label>
-                        </div>
-                        <div class="col-md-6">
-                            <input class="title-checkbox" type="checkbox" value="title" checked>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Continue</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-{%- endblock %}
