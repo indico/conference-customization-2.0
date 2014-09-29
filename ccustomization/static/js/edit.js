@@ -141,10 +141,14 @@ $(document).ready(function() {
         var carousels = $('.we-people-carousel');
         carousels.each(function(){
             var carousel = $(this);
-            var carouselOptions = {
-                slidesToShow: carousel.slickGetOption('slidesToShow'),
-                dots: carousel.slickGetOption('dots')
-            };
+            var peopleWidget = carousel.parents('.people-widget');
+            var carouselSettings = peopleWidget.data('settings');
+            var carouselOptions = carouselDefaultOptions;
+            if (carouselSettings.style != undefined) {
+                carouselOptions.autoplay = carouselSettings.style.autoplay || carouselOptions.autoplay;
+                carouselOptions.slidesToShow = parseInt(carouselSettings.style.slidesToShow) || carouselOptions.slidesToShow;
+                carouselOptions.slidesToScroll = parseInt(carouselSettings.style.slidesToScroll) || carouselOptions.slidesToScroll;
+            }
             carousel.unslick().slick(carouselOptions);
         });
     }).trigger('sortstop');

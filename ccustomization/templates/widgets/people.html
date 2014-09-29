@@ -147,7 +147,7 @@
             </div>
             <div class="row">
                 <div class="col-md-2">
-                    <label for="style" class="control-label input-group">Style</label>
+                    <label for="style" class="control-label input-group">Type</label>
                 </div>
                 <div class="col-md-6">
                     <div class="we-radio btn-group" data-toggle="buttons">
@@ -157,6 +157,34 @@
                         <label class="we-list-opt btn btn-default">
                             <input type="radio" name="style" value="list">List
                         </label>
+                    </div>
+                </div>
+            </div>
+            <div class="we-carousel-options-section">
+                <hr>
+                <h4>Carousel options</h4>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="slides-to-show-{{ counter }}">People per slide</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" id="slides-to-show-{{ counter }}" class="we-carousel-slides-to-show form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="slides-to-scroll-{{ counter }}">Scroll by</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" id="slides-to-scroll-{{ counter }}" class="we-carousel-slides-to-scroll form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="autoplay-{{ counter }}">Autoscroll</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="checkbox" id="autoplay-{{ counter }}" class="we-carousel-autoplay">
                     </div>
                 </div>
             </div>

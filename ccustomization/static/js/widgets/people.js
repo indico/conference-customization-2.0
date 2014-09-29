@@ -28,10 +28,13 @@ $.extend(PeopleWidget.prototype, {
         });
 
         if (carousel.length > 0) {
-            carousel.slick({
-                slidesToShow: 1,
-                dots: true
-            });
+            var carouselOptions = carouselDefaultOptions;
+            if (self.settings.style != undefined) {
+                carouselOptions.autoplay = self.settings.style.autoplay || carouselOptions.autoplay;
+                carouselOptions.slidesToShow = parseInt(self.settings.style.slidesToShow) || carouselOptions.slidesToShow;
+                carouselOptions.slidesToScroll = parseInt(self.settings.style.slidesToScroll) || carouselOptions.slidesToScroll;
+            }
+            carousel.slick(carouselOptions);
         }
     },
 
@@ -44,6 +47,10 @@ $.extend(PeopleWidget.prototype, {
         var radio = dialog.find('.we-radio');
         var listOpt = radio.find('.we-list-opt');
         var carouselOpt = radio.find('.we-carousel-opt');
+        var carouselOptionsSection = dialog.find('.we-carousel-options-section');
+        var autoplay = carouselOptionsSection.find('.we-carousel-autoplay');
+        var slidesToShow = carouselOptionsSection.find('.we-carousel-slides-to-show');
+        var slidesToScroll = carouselOptionsSection.find('.we-carousel-slides-to-scroll');
         var fetch = dialog.find('.we-fetch-button');
         var typeahead = dialog.find('.typeahead');
         var add = dialog.find('.we-add-button');
@@ -286,6 +293,14 @@ $.extend(PeopleWidget.prototype, {
             });
         }
 
+        listOpt.on('click', function(){
+            carouselOptionsSection.addClass('hidden');
+        });
+
+        carouselOpt.on('click', function(){
+            carouselOptionsSection.removeClass('hidden');
+        });
+
         if (self.settings.style != undefined) {
             if (self.settings.style.type == 'carousel' || self.settings.style.type == undefined) {
                 carouselOpt.trigger('click');
@@ -293,9 +308,15 @@ $.extend(PeopleWidget.prototype, {
                 listOpt.trigger('click');
             }
             title.val(self.settings.style.title || '');
+            autoplay.prop('checked', self.settings.style.autoplay || carouselDefaultOptions.autoplay);
+            slidesToShow.val(self.settings.style.slidesToShow || carouselDefaultOptions.slidesToShow);
+            slidesToScroll.val(self.settings.style.slidesToScroll || carouselDefaultOptions.slidesToScroll);
         } else {
             carouselOpt.trigger('click');
             title.val('');
+            autoplay.prop('checked', carouselDefaultOptions.autoplay);
+            slidesToShow.val(carouselDefaultOptions.slidesToShow);
+            slidesToScroll.val(carouselDefaultOptions.slidesToScroll);
         }
         if (self.settings.content != undefined) {
             if (!self.settings.empty) {
@@ -314,7 +335,10 @@ $.extend(PeopleWidget.prototype, {
         save.on('click', function(){
             self.settings.style = {
                 title: title.val(),
-                type: radio.find('.active input').val()
+                type: radio.find('.active input').val(),
+                autoplay: autoplay.prop('checked'),
+                slidesToShow: slidesToShow.val(),
+                slidesToScroll: slidesToScroll.val()
             };
             var people = [];
             peopleList.find('.we-person').each(function(){
