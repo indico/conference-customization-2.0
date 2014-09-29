@@ -149,6 +149,7 @@ $.extend(PeopleWidget.prototype, {
         }
 
         function showIconPreview(imagePreview) {
+            imagePreview.find('span.glyphicon').addClass('hidden');
             updateBackground(imagePreview, iconURL);
         }
 
@@ -166,8 +167,10 @@ $.extend(PeopleWidget.prototype, {
             replaceMissingPicture(imagePreviewRow, iconURL);
 
             personCustomizeButton.on('click', function(){
-                if (person.picture != null && person.picture.set == true && person.picture.type == 'url') {
-                    personPictureURL.val(person.picture.path);
+                if (person.picture != null && person.picture.set == true) {
+                    if (person.picture.type == 'url') {
+                        personPictureURL.val(person.picture.path);
+                    }
                 } else {
                     showIconPreview(imagePreview);
                 }
@@ -200,6 +203,14 @@ $.extend(PeopleWidget.prototype, {
             var picURL = null;
 
             replaceMissingPicture(imagePreview, iconURL);
+
+            imagePreview.on('mouseenter', function(){
+                if (imagePreview.css('background-image').indexOf(iconURL) < 0) {
+                    personRemovePictureButton.removeClass('hidden');
+                }
+            }).on('mouseleave', function(){
+                personRemovePictureButton.addClass('hidden');
+            });
 
             fileForm.submit(function() {
                 fileForm.ajaxSubmit({

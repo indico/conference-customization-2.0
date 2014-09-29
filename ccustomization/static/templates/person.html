@@ -20,12 +20,9 @@
                             <label>Preview</label>
                         </div>
                         <div class="we-picture-preview col-md-3">
-                            <div class="we-picture" style="background-image: url({% if person.picture.set %}{{ person.picture.path }}{% else %}{{ iconURL }}{% endif %});"></div>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" class="we-remove-picture-button btn btn-default">
-                                <span class="glyphicon glyphicon-remove"></span>Remove
-                            </button>
+                            <div class="we-picture" style="background-image: url({% if person.picture.set %}{{ person.picture.path }}{% else %}{{ iconURL }}{% endif %});">
+                                <span class="we-remove-picture-button glyphicon glyphicon-remove hidden" title="Remove picture"></span>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
