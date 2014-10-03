@@ -1,9 +1,12 @@
-var sortableOptions = {
-    connectWith: '.column-list, .container-list',
+var mainSortableOpts = {
     handle: '.ui-icon.ui-icon-arrow-4',
     placeholder: 'sortable-placeholder',
-    forcePlaceholderSize: true
+    forcePlaceholderSize: true,
+    revert: true,
+    tolerance: 'pointer'
 };
+var firstLvlSortableOpts = $.extend({connectWith: '.main-cnt>ul, .lvl-1-cnt>ul'}, mainSortableOpts);
+var secondLvlSortableOpts = $.extend({connectWith: '.main-cnt>ul, .lvl-1-cnt>ul, .lvl-2-cnt>ul'}, mainSortableOpts);
 
 var carouselDefaultOptions = {
     dots: true,

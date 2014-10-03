@@ -1,4 +1,7 @@
 function bindWidget(widget) {
+    var trash = widget.find('.ui-icon.ui-icon-trash');
+    var copy = widget.find('.ui-icon.ui-icon-copy');
+    var gear = widget.find('.ui-icon.ui-icon-gear');
     widget.on('mouseenter', function(){
         var emptyMessage = widget.children('.empty-widget-message');
         if(emptyMessage.length > 0) {
@@ -10,31 +13,34 @@ function bindWidget(widget) {
             emptyMessage.hide(100);
         }
     });
-    widget.find('.ui-icon.ui-icon-trash').on('click', function(e){
-        e.stopPropagation();
-        $('#style-dialog-'+widget.data('counter')).remove();
-        if (!widget.siblings('.widget-cc').length) {
-            widget.parent().parent().remove();
-        } else {
-            widget.remove();
-        }
+    trash.on('click', function(){
+        widget.remove();
         $('body').trigger('sortstop');
     });
-    widget.find('.ui-icon.ui-icon-copy').on('click', function(e){
-        e.stopPropagation();
+    copy.on('click', function(){
         var settings = widget.data('settings');
         renderWidget(settings).done(function(newWidget){
-            widget.parent().parent().after(newWidget);
+            widget.after(newWidget);
             $('body').trigger('sortstop').trigger('inizialize-widgets');
         });
     });
-    var containerList = widget.parent('.container-list');
-    containerList.sortable(sortableOptions);
+    gear.on('click', function(){
+        var widgetDialog = $('#widget-dialog-'+widget.data('counter'));
+        widgetDialog.modal('show');
+    });
+
+    var dialog = widget.find('.widget-dialog');
+    dialog.detach().appendTo('body');
+    dialog.modal({
+        show: false
+    });
+
+    widget.parents('.lvl-1-cnt>ul').sortable(firstLvlSortableOpts);
+    widget.parents('.lvl-2-cnt>ul').sortable(secondLvlSortableOpts);
 }
 
 function updateWidget(widget, settings) {
     renderWidget(settings).done(function(newWidget){
-        $('#style-dialog-'+widget.data('counter')).remove();
         widget.replaceWith(newWidget);
         $('body').trigger('inizialize-widgets');
     });
@@ -49,7 +55,7 @@ function renderWidget(settings) {
     var newWidget = $.Deferred();
     $.ajax({
         type: 'POST',
-        url: $('.main-container').data('render-url'),
+        url: $('.main-cnt').data('render-url'),
         contentType: 'application/json',
         dataType: 'html',
         data: JSON.stringify({
@@ -90,7 +96,7 @@ $(document).ready(function() {
     "use strict";
 
     $('body').on('inizialize-widgets', function(){
-        var uninitializedWidgets = $('.widget-cc.uninitialized');
+        var uninitializedWidgets = $('.widget.uninitialized');
         uninitializedWidgets.each(function(){
             var widgetElem = $(this);
             initialize(widgetElem);

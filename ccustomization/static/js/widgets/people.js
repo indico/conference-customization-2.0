@@ -41,7 +41,7 @@ $.extend(PeopleWidget.prototype, {
     runEdit: function runEdit() {
         var self = this;
         var iconURL = self.widgetElem.find('.we-icon-url').val();
-        var dialog = self.widgetElem.find('.widget-dialog');
+        var dialog = $('#widget-dialog-'+self.widgetElem.data('counter'));
         var title = dialog.find('.we-widget-title');
         var save = dialog.find('.we-save-button');
         var radio = dialog.find('.we-radio');
@@ -77,7 +77,7 @@ $.extend(PeopleWidget.prototype, {
             dialogClass: "new-person-dialog",
             title: "Add new person",
             buttonLabel: "Add",
-            uploadURL: $('#main-container').data('upload-url'),
+            uploadURL: $('.main-cnt').data('upload-url'),
             iconURL: iconURL
         });
         var newPersonDialog = $(newPersonDialogHTML).children('.modal');
@@ -90,7 +90,7 @@ $.extend(PeopleWidget.prototype, {
         function fetchPeople(query, type, success) {
             $.ajax({
                 type: 'GET',
-                url: $('.main-container').data('fetch-url'),
+                url: $('.main-cnt').data('fetch-url'),
                 dataType: 'json',
                 data: {
                     data_type: type,
@@ -143,7 +143,7 @@ $.extend(PeopleWidget.prototype, {
                     dialogClass: "person-dialog",
                     title: "Customize person details",
                     buttonLabel: "OK",
-                    uploadURL: $('#main-container').data('upload-url'),
+                    uploadURL: $('.main-cnt').data('upload-url'),
                     iconURL: iconURL
                 })
         }
@@ -312,6 +312,22 @@ $.extend(PeopleWidget.prototype, {
             carouselOptionsSection.removeClass('hidden');
         });
 
+        $('body').on('refreshFinished', function(){
+            var carousels = $('.we-people-carousel');
+            carousels.each(function(){
+                var carousel = $(this);
+                var peopleWidget = carousel.parents('.people-widget');
+                var carouselSettings = peopleWidget.data('settings');
+                var carouselOptions = carouselDefaultOptions;
+                if (carouselSettings.style != undefined) {
+                    carouselOptions.autoplay = carouselSettings.style.autoplay || carouselOptions.autoplay;
+                    carouselOptions.slidesToShow = parseInt(carouselSettings.style.slidesToShow) || carouselOptions.slidesToShow;
+                    carouselOptions.slidesToScroll = parseInt(carouselSettings.style.slidesToScroll) || carouselOptions.slidesToScroll;
+                }
+                carousel.unslick().slick(carouselOptions);
+            });
+        });
+
         if (self.settings.style != undefined) {
             if (self.settings.style.type == 'carousel' || self.settings.style.type == undefined) {
                 carouselOpt.trigger('click');
@@ -337,10 +353,6 @@ $.extend(PeopleWidget.prototype, {
             }
         }
 
-        dialog.detach().appendTo('body');
-        dialog.modal({
-            show: false
-        });
         bindPersonDialog(newPersonDialog, null);
 
         save.on('click', function(){
@@ -360,10 +372,6 @@ $.extend(PeopleWidget.prototype, {
             };
             self.settings.empty = people.length == 0;
             updateWidget(self.widgetElem, self.settings);
-        });
-
-        self.widgetElem.on('click', function(){
-            dialog.modal('show');
         });
 
         typeahead.typeahead({

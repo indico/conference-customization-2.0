@@ -1,89 +1,141 @@
 $(document).ready(function() {
     "use strict";
 
-    // The refresh functions are used to refresh the widgets/containers aspect (icons, not content) after each sortstop
-    function refreshContainers() {
-        $('.container-cc').each(function(){
-            var $this = $(this);
-            var list = $this.children('.container-list');
-            if (list.children().length < 1) {
-                $this.remove();
-            } else if (list.children().length > 1 && $this.children('.container-icons').length < 1) {
-                list.detach();
-                var containerIcons = $('<div>', {
-                    'class': 'container-icons'
-                });
-                var drag = $('<span>', {
-                    'class': 'ui-icon ui-icon-arrow-4'
-                });
-                var trash = $('<span>', {
-                    'class': 'ui-icon ui-icon-trash'
-                }).on('click', function(e){
-                    e.stopPropagation();
-                    var container = $(this).parent().parent();
-                    container.remove();
-                });
-                var copy = $('<span>', {
-                    'class': 'ui-icon ui-icon-copy'
-                }).on('click', function(e){
-                    e.stopPropagation();
-                    var newContainer = $(this).parent().parent().clone();
-                    $this.after(newContainer);
-                    newContainer.children('.container-icons').remove();
-                    newContainer.find('.widget-cc').each(function(){
-                        reloadWidget($(this));
-                    });
-                    refreshContainers();
-                });
-                drag.appendTo(containerIcons);
-                trash.appendTo(containerIcons);
-                copy.appendTo(containerIcons);
-                containerIcons.appendTo($this);
-                list.appendTo($this);
-            } else if (list.children().length == 1) {
-                $this.children('.container-icons').remove();
-            }
+    var mainCnt = $('.main-cnt');
+    var mainCntList = mainCnt.children('ul');
 
-            if ($this.parent().hasClass('container-list')) {
-                $this.children('.container-icons').remove();
-                $this.children().children().unwrap().unwrap();
+    function getContainerIcons() {
+        var iconsContainer = $('<div>', {
+            'class': 'container-icons'
+        });
+        var drag = $('<span>', {
+            'class': 'ui-icon ui-icon-arrow-4'
+        });
+        var trash = $('<span>', {
+            'class': 'ui-icon ui-icon-trash'
+        });
+        var copy = $('<span>', {
+            'class': 'ui-icon ui-icon-copy'
+        });
+        drag.appendTo(iconsContainer);
+        trash.appendTo(iconsContainer);
+        copy.appendTo(iconsContainer);
+        bindContainerIcons(iconsContainer);
+        return iconsContainer;
+    }
+    function bindContainerIcons(iconsContainer) {
+        var trash = iconsContainer.find('.ui-icon.ui-icon-trash');
+        var copy = iconsContainer.find('.ui-icon.ui-icon-copy');
+        trash.on('click', function(){
+            var iconsContainer = $(this).parent('.container-icons');
+            var container = iconsContainer.parent('li');
+            container.remove();
+            refreshElements();
+        });
+        copy.on('click', function(){
+            var iconsContainer = $(this).parent('.container-icons');
+            var container = iconsContainer.parent('li');
+            var newContainer = container.clone(true);
+            container.after(newContainer);
+            newContainer.find('.widget').each(function(){
+                reloadWidget($(this));
+            });
+            refreshElements();
+        });
+    }
+
+    // The refresh functions are used to refresh the widgets/containers aspect (icons, not content) after each sortstop
+    function refreshElements() {
+        refreshContainers();
+        refreshWidgets();
+        $('.lvl-1-cnt, .lvl-2-cnt').toggleClass('hidden-cnt', mainCnt.hasClass('hidden-cnt'));
+        $('body').trigger('refreshFinished');
+    }
+    function refreshContainers() {
+        $('.lvl-1-cnt, .lvl-2-cnt').each(function(){
+            var container = $(this);
+            if (!container.find('.widget').length) {
+                container.remove();
+            } else if ((container.hasClass('.lvl-1-cnt') && container.parents('.lvl-1-cnt').length) || (container.hasClass('.lvl-2-cnt') && container.parents('.lvl-2-cnt').length)) {
+                container.children('.container-icons').remove();
+                container.children('ul').children('li').unwrap().unwrap();
             }
         });
     }
     function refreshWidgets() {
-        $('.widget-cc').each(function(){
-            var $this = $(this);
-            if (!$this.parent().hasClass('container-list')) {
-                var container = $('<li>', {
-                    'class': 'container-cc'
-                });
-                var containerList = $('<ul>', {
-                    'class': 'container-list'
-                });
-                $this.wrap(containerList);
-                $this.parent().wrap(container);
-                $this.parent().sortable(sortableOptions);
-            }
+        wrapWidgets();
+        moveWidgets();
+    }
+    function wrapWidgets() {
+        $('.widget').each(function(){
+            var widget = $(this);
+            wrapWidget(widget);
+        });
+    }
+    function wrapWidget(widget) {
+        if (!widget.parents('.lvl-2-cnt').length) {
+            var secondLvlCnt = $('<li>', {
+                'class': 'lvl-2-cnt'
+            });
+            var secondLvlCntList = $('<ul>');
+            var containerIcons = getContainerIcons();
+            widget.wrap(secondLvlCntList);
+            secondLvlCntList = widget.parent();
+            secondLvlCntList.wrap(secondLvlCnt);
+            secondLvlCntList.before(containerIcons);
+            secondLvlCntList.sortable(secondLvlSortableOpts);
+        }
+        if (!widget.parents('.lvl-1-cnt').length) {
+            var firstLvlCnt = $('<li>', {
+                'class': 'lvl-1-cnt'
+            });
+            var firstLvlCntList = $('<ul>');
+            var secondLvlCnt = widget.parents('.lvl-2-cnt');
+            var containerIcons = getContainerIcons();
+            secondLvlCnt.wrap(firstLvlCntList);
+            firstLvlCntList = secondLvlCnt.parent();
+            firstLvlCntList.wrap(firstLvlCnt);
+            firstLvlCntList.before(containerIcons);
+            firstLvlCntList.sortable(firstLvlSortableOpts);
+        }
+    }
+    function moveWidgets() {
+        $('.lvl-2-cnt:only-child').each(function(){
+            var secondLvlCnt = $(this);
+            var widgets = secondLvlCnt.find('.widget:not(:last-child)');
+            widgets.each(function(){
+                var widget = $(this);
+                var firstLvlCnt = widget.parents('.lvl-1-cnt');
+                widget.detach();
+                firstLvlCnt.before(widget);
+                wrapWidget(widget);
+            });
         });
     }
 
     function getSerializedLayout() {
-        var data = [];
-        var columnContainer = $('.column-container');
-        var containerCounter = 0;
-        columnContainer.find('.column-list .container-cc').each(function(){
-            var container = $(this);
-            data[containerCounter] = [];
-            var widgetCounter = 0;
-            container.find('.container-list .widget-cc').each(function(){
-                var widget = $(this);
-                data[containerCounter][widgetCounter] = widget.data('settings');
-                widgetCounter++;
+        var content = [];
+        var firstLvlCntCount = 0;
+        mainCnt.find('li.lvl-1-cnt').each(function(){
+            var firstLvlCnt = $(this);
+            content[firstLvlCntCount] = [];
+            var secondLvlCntCount = 0;
+            firstLvlCnt.find('li.lvl-2-cnt').each(function(){
+                var secondLvlCnt = $(this);
+                content[firstLvlCntCount][secondLvlCntCount] = [];
+                var widgetCount = 0;
+                secondLvlCnt.find('li.widget').each(function(){
+                    var widget = $(this);
+                    content[firstLvlCntCount][secondLvlCntCount][widgetCount] = widget.data('settings');
+                    widgetCount++;
+                });
+                secondLvlCntCount++;
             });
-            containerCounter++;
+            firstLvlCntCount++;
         });
-        return JSON.stringify(data);
+        return JSON.stringify(content);
     }
+
     function saveLayout() {
         $.ajax({
             type: 'PATCH',
@@ -112,37 +164,34 @@ $(document).ready(function() {
             type: $('#widget-select input').val(),
             empty: true
         };
-        var container = $('<li>', {
-            'class': 'container-cc'
+        var secondLvlCnt = $('<li>', {
+            'class': 'lvl-2-cnt'
         });
-        var containerList = $('<ul>', {
-            'class': 'container-list'
+        var secondLvlCntList = $('<ul>');
+        var containerIcons = getContainerIcons();
+        containerIcons.appendTo(secondLvlCnt);
+        secondLvlCntList.appendTo(secondLvlCnt);
+        var firstLvlCnt = $('<li>', {
+            'class': 'lvl-1-cnt'
         });
-        var column = $('.column-container .column-list');
+        var firstLvlCntList = $('<ul>');
+        containerIcons = getContainerIcons();
+        containerIcons.appendTo(firstLvlCnt);
+        firstLvlCntList.appendTo(firstLvlCnt);
+        secondLvlCnt.appendTo(firstLvlCntList);
         renderWidget(settings).done(function(newWidget){
-            newWidget.appendTo(containerList);
-            containerList.appendTo(container);
-            container.appendTo(column);
+            newWidget.appendTo(secondLvlCntList);
+            firstLvlCnt.appendTo(mainCntList);
             $('body').trigger('inizialize-widgets');
         });
     });
 
+    $('#show-layout').on('click', function(){
+        $('.main-cnt, .lvl-1-cnt, .lvl-2-cnt').toggleClass('hidden-cnt');
+    });
+
     $('body').on('sortstop', function(){
-        refreshContainers();
-        refreshWidgets();
-        var carousels = $('.we-people-carousel');
-        carousels.each(function(){
-            var carousel = $(this);
-            var peopleWidget = carousel.parents('.people-widget');
-            var carouselSettings = peopleWidget.data('settings');
-            var carouselOptions = carouselDefaultOptions;
-            if (carouselSettings.style != undefined) {
-                carouselOptions.autoplay = carouselSettings.style.autoplay || carouselOptions.autoplay;
-                carouselOptions.slidesToShow = parseInt(carouselSettings.style.slidesToShow) || carouselOptions.slidesToShow;
-                carouselOptions.slidesToScroll = parseInt(carouselSettings.style.slidesToScroll) || carouselOptions.slidesToScroll;
-            }
-            carousel.unslick().slick(carouselOptions);
-        });
+        refreshElements();
     }).trigger('sortstop');
 
     $('#save').on('click', function(){
@@ -152,10 +201,16 @@ $(document).ready(function() {
         location.reload();
     });
 
-    $('.column-list, .container-list').sortable(sortableOptions);
+    $('.main-cnt>ul').sortable(mainSortableOpts);
+    $('.lvl-1-cnt>ul').sortable(firstLvlSortableOpts);
+    $('.lvl-2-cnt>ul').sortable(secondLvlSortableOpts);
 
     $('#widget-select li a').each(function(){
         bindSelectMenus($(this));
+    });
+
+    $('.container-icons').each(function(){
+        bindContainerIcons($(this));
     });
 
 });

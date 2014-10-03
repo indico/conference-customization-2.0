@@ -1,15 +1,41 @@
 $grid-border: 1px solid black;
 $min-height: 120px;
+$edit-margin: 20px;
+$widget-margin: 5px;
 
 .sortable-placeholder {
     min-height: $min-height;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: $edit-margin;
     border-radius: 4px;
     border: 2px dotted black;
 }
 
-.main-container {
+.edit-mode {
+
+    &.main-cnt, .lvl-1-cnt:not(.hidden-cnt), .lvl-2-cnt:not(.hidden-cnt), .widget {
+        border: $grid-border;
+    }
+
+    &.main-cnt {
+
+        .lvl-1-cnt:not(.hidden-cnt), .lvl-2-cnt:not(.hidden-cnt), .widget {
+            margin: $edit-margin;
+        }
+
+        .lvl-1-cnt.hidden-cnt, .lvl-2-cnt.hidden-cnt {
+
+            .container-icons {
+                display: none;
+            }
+        }
+    }
+}
+
+.widget {
+    margin: $widget-margin;
+}
+
+.main-cnt {
     height: 100%;
 
     ul {
@@ -20,201 +46,192 @@ $min-height: 120px;
         padding: 0;
     }
 
-    .main-list, .container-list {
-        display: flex;
+    >ul {
 
-        .column-container {
-            height: 100%;
-            width: 100%;
-            border: $grid-border;
+        .lvl-1-cnt {
 
-            &.view-mode {
-                border-color: transparent;
-            }
+            .widget-icons, .container-icons {
+                float: right;
+                display: inline-block;
+                z-index: 1;
 
-            .container-cc, .widget-cc {
-                width: 100%;
-                min-height: $min-height;
-                text-align: center;
-            }
+                .ui-icon {
 
-            .container-cc {
-                margin-top: 10px;
-                margin-bottom: 10px;
-                background-color: transparent;
+                    &.ui-icon-arrow-4 {
+                        cursor: move;
+                    }
 
-                .widget-icons, .container-icons {
-                    float: right;
-                    display: inline-block;
-                    z-index: 1;
-
-                    .ui-icon {
-
-                        &.ui-icon-arrow-4 {
-                            cursor: move;
-                        }
-
-                        &.ui-icon-trash, &.ui-icon-copy {
-                            cursor: pointer;
-                        }
+                    &.ui-icon-trash, &.ui-icon-copy, &.ui-icon-gear {
+                        cursor: pointer;
                     }
                 }
+            }
 
-                .widget-cc {
-                    position: relative;
-                    margin-left: 5px;
-                    margin-right: 5px;
-                    border-radius: 4px;
+            >ul {
+                display: flex;
 
-                    .widget-icons {
-                        position: absolute;
-                        right: 0;
-                        top: 0;
-                        background-color: white;
-                        border-bottom-left-radius: 4px;
+                .lvl-2-cnt {
+                    width: 100%;
 
-                        .ui-icon {
+                    >ul {
+                        display: flex;
+                        flex-direction: column;
 
-                            &.ui-icon-arrow-4, &.ui-icon-trash, &.ui-icon-copy {
-                                float: right;
-                            }
-                        }
-                    }
+                        .widget {
+                            position: relative;
+                            min-height: $min-height;
+                            text-align: center;
 
-                    .empty-widget-message {
-                        margin-top: 50px;
-                        background-color: white;
-                        border-radius: 4px;
-                        display: none;
-                    }
+                            .widget-icons {
+                                position: absolute;
+                                right: 0;
+                                top: 0;
+                                background-color: white;
+                                border-bottom-left-radius: 4px;
 
-                    &.box-widget {
-                        background-color: white;
-
-                        &.empty-widget {
-                            background: url('http://hackathon-in-a-box.org/img/box.png') repeat center;
-                        }
-
-                        &:not(.empty-widget) {
-                            text-align: left;
-
-                            &.bordered {
-                                border: 2px solid black;
-
-                                .box-title {
-                                    border-bottom: 2px solid black;
+                                .ui-icon {
+                                    float: right;
                                 }
                             }
 
-                            .box-title {
-                                margin: 0;
-                                padding-bottom: 5px;
-                                padding-left: 20px;
+                            .empty-widget-message {
+                                margin-top: 50px;
+                                background-color: white;
+                                border-radius: 4px;
+                                display: none;
                             }
 
-                            .box-content {
-                                float: left;
-                                padding-left: 30px;
+                            &.box-widget {
+                                background-color: white;
+                                overflow: auto;
+
+                                &.empty-widget {
+                                    background: url('http://hackathon-in-a-box.org/img/box.png') repeat center;
+                                }
+
+                                &:not(.empty-widget) {
+                                    text-align: left;
+
+                                    &.bordered {
+                                        border-radius: 4px;
+                                        border: 2px solid black;
+
+                                        .box-title {
+                                            border-bottom: 2px solid black;
+                                        }
+                                    }
+
+                                    .box-title {
+                                        margin: 0;
+                                        padding-bottom: 5px;
+                                        padding-left: 20px;
+                                    }
+
+                                    .box-content {
+                                        float: left;
+                                        padding-left: 30px;
+                                    }
+                                }
                             }
-                        }
-                    }
 
-                    &.location-widget {
+                            &.location-widget {
 
-                        &.empty-widget {
-                            background: url('http://upload.wikimedia.org/wikipedia/commons/f/f7/Soho_-_map_1.png') no-repeat center;
-                            background-size: 100%;
-                        }
+                                &.empty-widget {
+                                    background: url('http://upload.wikimedia.org/wikipedia/commons/f/f7/Soho_-_map_1.png') no-repeat center;
+                                    background-size: 100%;
+                                }
 
-                        .we-map-canvas {
-                            min-height: 400px;
-                        }
-                    }
-
-                    &.people-widget {
-
-                        &.empty-widget {
-                            background: url('http://www.risk.net/IMG/315/86315/people-outline.jpg') repeat center;
-                            background-size: auto 100%;
-                        }
-
-                        .we-people-title {
-                            margin-top: 0;
-                            margin-bottom: 20px;
-                            padding-left: 20px;
-                            text-align: left;
-                        }
-
-                        .we-person-details {
-                            font-size: 18px;
-
-                            .we-person-organisation {
-                                font-size: 16px;
-                                color: gray;
+                                .we-map-canvas {
+                                    min-height: 400px;
+                                }
                             }
-                        }
 
-                        .we-people-list .we-person-details {
-                            text-align: left;
-                            display: flex;
-                            flex-direction: column;
+                            &.people-widget {
 
-                            .we-person-organisation {
-                                margin-top: 15px;
-                            }
-                        }
+                                &.empty-widget {
+                                    background: url('http://www.risk.net/IMG/315/86315/people-outline.jpg') repeat center;
+                                    background-size: auto 100%;
+                                }
 
-                        .we-people-carousel {
-                            width: 100%;
-                            margin-left: auto;
-                            margin-right: auto;
-                            padding-left: 20px;
-                            padding-right: 20px;
-
-                            .we-carousel-element {
-                                width: 100%;
-
-                                .we-carousel-picture-container {
-                                    margin-left: auto;
-                                    margin-right: auto;
-                                    width: 30%;
+                                .we-people-title {
+                                    margin-top: 0;
+                                    margin-bottom: 20px;
+                                    padding-left: 20px;
+                                    text-align: left;
                                 }
 
                                 .we-person-details {
-                                    margin-top: 20px;
+                                    font-size: 18px;
+
+                                    .we-person-organisation {
+                                        font-size: 16px;
+                                        color: gray;
+                                    }
                                 }
-                            }
 
-                            .slick-prev, .slick-next {
-                                z-index: 2;
+                                .we-people-list .we-person-details {
+                                    text-align: left;
+                                    display: flex;
+                                    flex-direction: column;
 
-                                &:before {
-                                    color: black;
+                                    .we-person-organisation {
+                                        margin-top: 15px;
+                                    }
                                 }
-                            }
 
-                            .slick-prev {
-                                left: 0;
-                            }
+                                .we-people-carousel {
+                                    width: 100%;
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    padding-left: 20px;
+                                    padding-right: 20px;
 
-                            .slick-next {
-                                right: 0;
-                            }
+                                    .we-carousel-element {
+                                        width: 100%;
 
-                            .slick-dots {
-                                left: 0;
-                                bottom: initial;
+                                        .we-carousel-picture-container {
+                                            margin-left: auto;
+                                            margin-right: auto;
+                                            width: 30%;
+                                        }
+
+                                        .we-person-details {
+                                            margin-top: 20px;
+                                        }
+                                    }
+
+                                    .slick-prev, .slick-next {
+                                        z-index: 2;
+
+                                        &:before {
+                                            color: black;
+                                        }
+                                    }
+
+                                    .slick-prev {
+                                        left: 0;
+                                    }
+
+                                    .slick-next {
+                                        right: 0;
+                                    }
+
+                                    .slick-dots {
+                                        left: 0;
+                                        bottom: initial;
+                                    }
+                                }
                             }
                         }
-                    }
-
-                    .blocked {
-                        z-index: -1;
                     }
                 }
             }
         }
     }
+}
+
+.show-layout-button {
+    margin-left: 30px;
 }
 
 .modal {

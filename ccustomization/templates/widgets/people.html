@@ -19,7 +19,7 @@
 
         {% if settings.style.type == 'list' %}
 
-            <div class="we-people-list container-fluid{% if edit %} blocked{% endif %}">
+            <div class="we-people-list container-fluid">
                 {% set i = 0 %}
                 {% for person in settings.content.people %}
                     {% if i != 0 %}

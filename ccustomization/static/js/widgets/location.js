@@ -27,7 +27,7 @@ $.extend(LocationWidget.prototype, {
                 map: map,
                 title: address
             });
-            $('body').on('sortstop', function(){
+            $('body').on('refreshFinished', function(){
                 google.maps.event.trigger(map, 'resize');
                 map.setCenter(coords);
             });
@@ -38,7 +38,7 @@ $.extend(LocationWidget.prototype, {
 
     runEdit: function runEdit() {
         var self = this;
-        var dialog = self.widgetElem.find('.widget-dialog');
+        var dialog = $('#widget-dialog-'+self.widgetElem.data('counter'));
         var save = dialog.find('.we-save-button');
         var search = dialog.find('.we-search-button');
         var address = dialog.find('.we-address');
@@ -105,11 +105,6 @@ $.extend(LocationWidget.prototype, {
             zoom.text(defaultZoom);
         }
 
-        dialog.detach().appendTo('body');
-        dialog.modal({
-            show: false
-        });
-
         save.on('click', function(){
             self.settings.content = {
                 address: address.val(),
@@ -125,10 +120,6 @@ $.extend(LocationWidget.prototype, {
 
         dialog.on('shown.bs.modal', function() {
             coordinates.add(address).trigger('input');
-        });
-
-        self.widgetElem.on('click', function(){
-            dialog.modal('show');
         });
 
         coordinates.on('input', function(){

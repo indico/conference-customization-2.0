@@ -38,20 +38,27 @@ def index():
     return render_template('index.html', **wvars)
 
 
+def render_serialization(content, edit):
+    page_content = []
+    for first_lvl_cnt in content:
+        new_first_lvl_cnt = []
+        page_content.append(new_first_lvl_cnt)
+        for second_lvl_cnt in first_lvl_cnt:
+            new_second_lvl_cnt = []
+            new_first_lvl_cnt.append(new_second_lvl_cnt)
+            for widget in second_lvl_cnt:
+                new_second_lvl_cnt.append(render_widget(widget, edit))
+    return page_content
+
+
 @bp.route('/edit/<int:id>')
 @menu('edit')
 def edit(id):
     page = Page.query.filter_by(id=id).first_or_404()
     global counter
     counter = 0
-    page_content = []
-    for container in page.content:
-        new_container = []
-        page_content.append(new_container)
-        for widget in container:
-            new_container.append(render_widget(widget, True))
     wvars = {
-        'content': page_content,
+        'mainCnt': render_serialization(page.content, True),
         'page_id': id,
         'edit': True
     }
@@ -77,21 +84,15 @@ def view(id):
     page = Page.query.filter_by(id=id).first_or_404()
     global counter
     counter = 0
-    page_content = []
-    for container in page.content:
-        new_container = []
-        page_content.append(new_container)
-        for widget in container:
-            new_container.append(render_widget(widget, False))
     wvars = {
-        'content': page_content,
+        'mainCnt': render_serialization(page.content, False),
         'page_id': id,
         'edit': False
     }
     return render_template('view.html', **wvars)
 
 
-def render_widget(settings, edit=False):
+def render_widget(settings, edit):
     global counter
     counter += 1
     wvars = {

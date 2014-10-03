@@ -2,21 +2,33 @@
 
 {% block content -%}
 
-    <div id="main-container" class="main-container" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}" data-upload-url="{{ url_for('.upload') }}">
-        <ul class="main-list">
-            <li class="column-container{% if not edit %} view-mode{% endif %}">
-                <ul class="column-list">
-                    {% for container in content %}
-                        <li class="container-cc">
-                            <ul class="container-list">
-                                {% for widget in container %}
-                                    {{ widget | safe }}
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% endfor %}
+    <div class="main-cnt{% if edit %} edit-mode{% endif %} hidden-cnt" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}" data-upload-url="{{ url_for('.upload') }}">
+        <ul>
+
+            {% for firstLvlCnt in mainCnt %}<li class="lvl-1-cnt hidden-cnt">
+                {% if edit %}<div class="container-icons">
+                    <span class="ui-icon ui-icon-arrow-4"></span>
+                    <span class="ui-icon ui-icon-trash"></span>
+                    <span class="ui-icon ui-icon-copy"></span>
+                </div>{% endif %}
+                <ul>
+
+                    {% for secondLvlCnt in firstLvlCnt %}<li class="lvl-2-cnt hidden-cnt">
+                        {% if edit %}<div class="container-icons">
+                            <span class="ui-icon ui-icon-arrow-4"></span>
+                            <span class="ui-icon ui-icon-trash"></span>
+                            <span class="ui-icon ui-icon-copy"></span>
+                        </div>{% endif %}
+                        <ul>
+
+                            {% for widget in secondLvlCnt %} {{ widget | safe }} {% endfor %}
+
+                        </ul>
+                    </li>{% endfor %}
+
                 </ul>
-            </li>
+            </li>{% endfor %}
+
         </ul>
     </div>
 

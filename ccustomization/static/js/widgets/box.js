@@ -8,7 +8,7 @@ $.extend(BoxWidget.prototype, {
 
     runEdit: function runEdit() {
         var self = this;
-        var dialog = self.widgetElem.find('.widget-dialog');
+        var dialog = $('#widget-dialog-'+self.widgetElem.data('counter'));
         var save = dialog.find('.we-save-button');
         var title = dialog.find('.we-widget-title');
         var color = dialog.find('.we-widget-color');
@@ -27,11 +27,6 @@ $.extend(BoxWidget.prototype, {
         content.val(self.settings.content || '');
         content.trigger('input');
 
-        dialog.detach().appendTo('body');
-        dialog.modal({
-            show: false
-        });
-
         save.on('click', function(){
             self.settings['style'] = {
                 title: title.val(),
@@ -41,10 +36,6 @@ $.extend(BoxWidget.prototype, {
             self.settings.content = content.val();
             self.settings.empty = self.settings.content == '';
             updateWidget(self.widgetElem, self.settings);
-        });
-
-        self.widgetElem.on('click', function(){
-            dialog.modal('show');
         });
     }
 });

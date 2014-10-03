@@ -1,14 +1,15 @@
-<li id="widget-{{ counter }}" class="widget-cc uninitialized {% filter replace('\n', ' ') %}{% block widget_classes %}{% endblock %}{% endfilter %}" data-edit="{{ edit }}" data-counter="{{ counter }}" data-settings="{{ settings | tojson | forceescape }}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
+<li id="widget-{{ counter }}" class="widget uninitialized {% filter replace('\n', ' ') %}{% block widget_classes %}{% endblock %}{% endfilter %}" data-edit="{{ edit }}" data-counter="{{ counter }}" data-settings="{{ settings | tojson | forceescape }}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
 
     {% if edit %}
         <div class="widget-icons">
             <span class="ui-icon ui-icon-arrow-4"></span>
             <span class="ui-icon ui-icon-trash"></span>
             <span class="ui-icon ui-icon-copy"></span>
+            <span class="ui-icon ui-icon-gear"></span>
         </div>
         {% if settings.empty %}
             <span class="empty-widget-message">
-                Click to start the widget customization!
+                Click on the gear to start the widget customization!
             </span>
         {% endif %}
     {% endif %}
@@ -16,7 +17,7 @@
     {% block widget_content %}{% endblock %}
 
     {% if edit %}
-        <div class="widget-dialog modal fade">
+        <div id="widget-dialog-{{ counter }}" class="widget-dialog modal fade">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
