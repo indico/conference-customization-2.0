@@ -79,19 +79,19 @@ var droppableOpts = {
 function showDroppables(elements) {
     elements.each(function(){
         var element = $(this);
-        element.children('.droppable-token').show();
-        (element.children('.widget-content').children('.droppable-token')).show();
+        element.children('.droppable-area').show();
+        (element.children('.widget-content').children('.droppable-area')).show();
     });
 }
 function hideDroppables(elements) {
     elements.each(function(){
         var element = $(this);
-        element.children('.droppable-token').hide();
-        element.children('.widget-content').children('.droppable-token').hide();
+        element.children('.droppable-area').hide();
+        element.children('.widget-content').children('.droppable-area').hide();
     });
 }
 function hideAllDroppables() {
-    $('.droppable-token').hide();
+    $('.droppable-area').hide();
 }
 
 function getContainerIcons() {
@@ -132,7 +132,7 @@ function bindContainerIcons(iconsContainer) {
             reloadWidget($(this));
         });
         newContainer.draggable(draggableOpts);
-        newContainer.children('.droppable-token').droppable(droppableOpts);
+        newContainer.children('.droppable-area').droppable(droppableOpts);
         refreshElements();
     });
 }
@@ -152,15 +152,15 @@ function containerWrap(element, lvl) {
         secondDroppablePos = 'west';
     }
     var firstDroppable = $('<div>', {
-        'class': 'droppable-token droppable-' + firstDroppablePos
+        'class': 'droppable-area droppable-' + firstDroppablePos
     });
     var secondDroppable = $('<div>', {
-        'class': 'droppable-token droppable-' + secondDroppablePos
+        'class': 'droppable-area droppable-' + secondDroppablePos
     });
     element.before(firstDroppable);
     element.before(secondDroppable);
     container.draggable(draggableOpts);
-    container.children('.droppable-token').droppable(droppableOpts);
+    container.children('.droppable-area').droppable(droppableOpts);
 }
 
 // The refresh functions are used to refresh the widgets/containers aspect (icons, position, etc... not content)
@@ -176,7 +176,7 @@ function refreshContainers() {
         if (!container.find('.widget').length) {
             container.remove();
         } else if ((container.hasClass('.lvl-1-cnt') && container.parent().hasClass('.lvl-1-cnt')) || (container.hasClass('.lvl-2-cnt') && container.parent().hasClass('.lvl-2-cnt'))) {
-            container.children('.container-icons, .droppable-token').remove();
+            container.children('.container-icons, .droppable-area').remove();
             container.children().unwrap();
         }
     });
@@ -293,7 +293,7 @@ $(document).ready(function() {
     });
 
     $('.widget-cnt, .widget').draggable(draggableOpts);
-    $('.droppable-token').droppable(droppableOpts);
+    $('.droppable-area').droppable(droppableOpts);
 
     $('#widget-select li a').each(function(){
         bindSelectMenus($(this));

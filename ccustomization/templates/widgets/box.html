@@ -5,12 +5,8 @@
 {%- endblock %}
 
 {% block widget_content_classes -%}
-    {% if settings.empty %}
-        empty-widget
-    {% else %}
-        {% if settings.style.border %}
-            bordered
-        {% endif %}
+    {% if not settings.empty and settings.style.border %}
+        bordered
     {% endif %}
 {%- endblock %}
 

@@ -1,5 +1,5 @@
 <div id="widget-{{ counter }}" class="widget uninitialized {% filter replace('\n', ' ') %}{% block widget_classes %}{% endblock %}{% endfilter %}" data-edit="{{ edit }}" data-counter="{{ counter }}" data-settings="{{ settings | tojson | forceescape }}">
-    <div class="widget-content {% filter replace('\n', ' ') %}{% block widget_content_classes %}{% endblock %}{% endfilter %}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
+    <div class="widget-content{% if settings.empty %} empty-widget{% endif %} {% filter replace('\n', ' ') %}{% block widget_content_classes %}{% endblock %}{% endfilter %}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
 
         {% if edit %}
             <div class="widget-icons">

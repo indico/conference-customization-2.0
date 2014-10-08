@@ -3,13 +3,13 @@ function bindWidget(widget) {
     var copy = widget.find('.ui-icon.ui-icon-copy');
     var gear = widget.find('.ui-icon.ui-icon-gear');
     widget.on('mouseenter', function(){
-        var emptyMessage = widget.children('.empty-widget-message');
-        if(emptyMessage.length > 0) {
+        var emptyMessage = widget.find('.empty-widget-message');
+        if(emptyMessage.length) {
             emptyMessage.show(100);
         }
     }).on('mouseleave', function(){
-        var emptyMessage = widget.children('.empty-widget-message');
-        if(emptyMessage.length > 0) {
+        var emptyMessage = widget.find('.empty-widget-message');
+        if(emptyMessage.length) {
             emptyMessage.hide(100);
         }
     });
@@ -37,7 +37,7 @@ function bindWidget(widget) {
     });
 
     widget.draggable(draggableOpts);
-    widget.find('.droppable-token').droppable(droppableOpts);
+    widget.find('.droppable-area').droppable(droppableOpts);
 }
 
 function updateWidget(widget, settings) {
