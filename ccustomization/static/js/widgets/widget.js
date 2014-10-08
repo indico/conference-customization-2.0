@@ -15,13 +15,14 @@ function bindWidget(widget) {
     });
     trash.on('click', function(){
         widget.remove();
-        $('body').trigger('sortstop');
+        refreshElements();
     });
     copy.on('click', function(){
         var settings = widget.data('settings');
         renderWidget(settings).done(function(newWidget){
             widget.after(newWidget);
-            $('body').trigger('sortstop').trigger('inizialize-widgets');
+            refreshElements();
+            $('body').trigger('inizialize-widgets');
         });
     });
     gear.on('click', function(){
@@ -35,8 +36,8 @@ function bindWidget(widget) {
         show: false
     });
 
-    widget.parents('.lvl-1-cnt>ul').sortable(firstLvlSortableOpts);
-    widget.parents('.lvl-2-cnt>ul').sortable(secondLvlSortableOpts);
+    widget.draggable(draggableOpts);
+    widget.find('.droppable-token').droppable(droppableOpts);
 }
 
 function updateWidget(widget, settings) {

@@ -2,34 +2,36 @@
 
 {% block content -%}
 
-    <div class="main-cnt{% if edit %} edit-mode{% endif %} hidden-cnt" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}" data-upload-url="{{ url_for('.upload') }}">
-        <ul>
-
-            {% for firstLvlCnt in mainCnt %}<li class="lvl-1-cnt hidden-cnt">
-                {% if edit %}<div class="container-icons">
+    <div class="main-cnt{% if edit %} edit-mode{% endif %}" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}" data-upload-url="{{ url_for('.upload') }}">
+        {% for firstLvlCnt in mainCnt %}<div class="widget-cnt lvl-1-cnt">
+            {% if edit %}
+                <div class="container-icons">
                     <span class="ui-icon ui-icon-arrow-4"></span>
                     <span class="ui-icon ui-icon-trash"></span>
                     <span class="ui-icon ui-icon-copy"></span>
-                </div>{% endif %}
-                <ul>
+                </div>
 
-                    {% for secondLvlCnt in firstLvlCnt %}<li class="lvl-2-cnt hidden-cnt">
-                        {% if edit %}<div class="container-icons">
-                            <span class="ui-icon ui-icon-arrow-4"></span>
-                            <span class="ui-icon ui-icon-trash"></span>
-                            <span class="ui-icon ui-icon-copy"></span>
-                        </div>{% endif %}
-                        <ul>
+                <div class="droppable-token droppable-north"></div>
+                <div class="droppable-token droppable-south"></div>
+            {% endif %}
 
-                            {% for widget in secondLvlCnt %} {{ widget | safe }} {% endfor %}
+            {% for secondLvlCnt in firstLvlCnt %}<div class="widget-cnt lvl-2-cnt">
+                {% if edit %}
+                    <div class="container-icons">
+                        <span class="ui-icon ui-icon-arrow-4"></span>
+                        <span class="ui-icon ui-icon-trash"></span>
+                        <span class="ui-icon ui-icon-copy"></span>
+                    </div>
 
-                        </ul>
-                    </li>{% endfor %}
+                    <div class="droppable-token droppable-east"></div>
+                    <div class="droppable-token droppable-west"></div>
+                {% endif %}
 
-                </ul>
-            </li>{% endfor %}
+                {% for widget in secondLvlCnt %} {{ widget | safe }} {% endfor %}
 
-        </ul>
+            </div>{% endfor %}
+
+        </div>{% endfor %}
     </div>
 
 {%- endblock %}

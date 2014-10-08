@@ -2,6 +2,9 @@
 
 {% block widget_classes -%}
     box-widget
+{%- endblock %}
+
+{% block widget_content_classes -%}
     {% if settings.empty %}
         empty-widget
     {% else %}

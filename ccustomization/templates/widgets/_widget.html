@@ -1,39 +1,45 @@
-<li id="widget-{{ counter }}" class="widget uninitialized {% filter replace('\n', ' ') %}{% block widget_classes %}{% endblock %}{% endfilter %}" data-edit="{{ edit }}" data-counter="{{ counter }}" data-settings="{{ settings | tojson | forceescape }}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
+<div id="widget-{{ counter }}" class="widget uninitialized {% filter replace('\n', ' ') %}{% block widget_classes %}{% endblock %}{% endfilter %}" data-edit="{{ edit }}" data-counter="{{ counter }}" data-settings="{{ settings | tojson | forceescape }}">
+    <div class="widget-content {% filter replace('\n', ' ') %}{% block widget_content_classes %}{% endblock %}{% endfilter %}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
 
-    {% if edit %}
-        <div class="widget-icons">
-            <span class="ui-icon ui-icon-arrow-4"></span>
-            <span class="ui-icon ui-icon-trash"></span>
-            <span class="ui-icon ui-icon-copy"></span>
-            <span class="ui-icon ui-icon-gear"></span>
-        </div>
-        {% if settings.empty %}
-            <span class="empty-widget-message">
-                Click on the gear to start the widget customization!
-            </span>
+        {% if edit %}
+            <div class="widget-icons">
+                <span class="ui-icon ui-icon-arrow-4"></span>
+                <span class="ui-icon ui-icon-trash"></span>
+                <span class="ui-icon ui-icon-copy"></span>
+                <span class="ui-icon ui-icon-gear"></span>
+            </div>
+
+            {% if settings.empty %}
+                <span class="empty-widget-message">
+                    Click on the gear to start the widget customization!
+                </span>
+            {% endif %}
+
+            <div class="droppable-token droppable-north"></div>
+            <div class="droppable-token droppable-south"></div>
         {% endif %}
-    {% endif %}
 
-    {% block widget_content %}{% endblock %}
+        {% block widget_content %}{% endblock %}
 
-    {% if edit %}
-        <div id="widget-dialog-{{ counter }}" class="widget-dialog modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Style and content customization</h4>
-                    </div>
-                    <div class="modal-body container-fluid">
-                        {% block widget_dialog_body %}{% endblock %}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="we-save-button btn btn-primary" data-dismiss="modal">OK</button>
+        {% if edit %}
+            <div id="widget-dialog-{{ counter }}" class="widget-dialog modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Style and content customization</h4>
+                        </div>
+                        <div class="modal-body container-fluid">
+                            {% block widget_dialog_body %}{% endblock %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="we-save-button btn btn-primary" data-dismiss="modal">OK</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    {% endif %}
+        {% endif %}
 
-</li>
+    </div>
+</div>
