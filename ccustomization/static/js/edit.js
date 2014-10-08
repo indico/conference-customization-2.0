@@ -59,7 +59,13 @@ var draggableOpts = {
 
 var droppableOpts = {
     tolerance: 'pointer',
-    hoverClass: 'droppable-hover',
+    hoverClass: 'alert-success',
+    over: function(event, ui) {
+        $(this).removeClass('alert-danger');
+    },
+    out: function(event, ui) {
+        $(this).addClass('alert-danger');
+    },
     drop: function(event, ui) {
         var draggableElem = ui.draggable;
         var droppableElem = $(this);
@@ -91,7 +97,7 @@ function hideDroppables(elements) {
     });
 }
 function hideAllDroppables() {
-    $('.droppable-area').hide();
+    $('.droppable-area').hide().addClass('alert-danger');
 }
 
 function getContainerIcons() {
@@ -152,10 +158,10 @@ function containerWrap(element, lvl) {
         secondDroppablePos = 'west';
     }
     var firstDroppable = $('<div>', {
-        'class': 'droppable-area droppable-' + firstDroppablePos
+        'class': 'droppable-area droppable-' + firstDroppablePos + ' alert alert-danger'
     });
     var secondDroppable = $('<div>', {
-        'class': 'droppable-area droppable-' + secondDroppablePos
+        'class': 'droppable-area droppable-' + secondDroppablePos + ' alert alert-danger'
     });
     element.before(firstDroppable);
     element.before(secondDroppable);

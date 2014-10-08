@@ -11,8 +11,8 @@
                     <span class="ui-icon ui-icon-copy"></span>
                 </div>
 
-                <div class="droppable-area droppable-north"></div>
-                <div class="droppable-area droppable-south"></div>
+                <div class="droppable-area droppable-north alert alert-danger"></div>
+                <div class="droppable-area droppable-south alert alert-danger"></div>
             {% endif %}
 
             {% for secondLvlCnt in firstLvlCnt %}<div class="widget-cnt lvl-2-cnt">
@@ -23,8 +23,8 @@
                         <span class="ui-icon ui-icon-copy"></span>
                     </div>
 
-                    <div class="droppable-area droppable-east"></div>
-                    <div class="droppable-area droppable-west"></div>
+                    <div class="droppable-area droppable-east alert alert-danger"></div>
+                    <div class="droppable-area droppable-west alert alert-danger"></div>
                 {% endif %}
 
                 {% for widget in secondLvlCnt %} {{ widget | safe }} {% endfor %}
