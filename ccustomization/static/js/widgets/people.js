@@ -58,6 +58,7 @@ $.extend(PeopleWidget.prototype, {
         var peopleListSection = dialog.find('.we-people-list-section');
         var peopleList = peopleListSection.find('.we-people-list-preview');
         var addNewPersonButton = dialog.find('.we-add-new-person-button');
+        var border = dialog.find('.we-widget-border');
 
         var personTemplate = twig({
             id: "person-"+self.widgetElem.data('counter'),
@@ -328,19 +329,19 @@ $.extend(PeopleWidget.prototype, {
             });
         });
 
+        title.val(self.settings.title || '');
+        border.prop('checked', self.settings.border || false);
         if (self.settings.style != undefined) {
             if (self.settings.style.type == 'carousel' || self.settings.style.type == undefined) {
                 carouselOpt.trigger('click');
             } else {
                 listOpt.trigger('click');
             }
-            title.val(self.settings.style.title || '');
             autoplay.prop('checked', self.settings.style.autoplay || carouselDefaultOptions.autoplay);
             slidesToShow.val(self.settings.style.slidesToShow || carouselDefaultOptions.slidesToShow);
             slidesToScroll.val(self.settings.style.slidesToScroll || carouselDefaultOptions.slidesToScroll);
         } else {
             carouselOpt.trigger('click');
-            title.val('');
             autoplay.prop('checked', carouselDefaultOptions.autoplay);
             slidesToShow.val(carouselDefaultOptions.slidesToShow);
             slidesToScroll.val(carouselDefaultOptions.slidesToScroll);
@@ -356,8 +357,9 @@ $.extend(PeopleWidget.prototype, {
         bindPersonDialog(newPersonDialog, null);
 
         save.on('click', function(){
+            self.settings.title = title.val();
+            self.settings.border = border.is(':checked');
             self.settings.style = {
-                title: title.val(),
                 type: radio.find('.active input').val(),
                 autoplay: autoplay.prop('checked'),
                 slidesToShow: slidesToShow.val(),

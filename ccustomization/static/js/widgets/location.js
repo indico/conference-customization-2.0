@@ -49,6 +49,8 @@ $.extend(LocationWidget.prototype, {
         var coordinates = latitude.add(longitude);
         var zoom = previewSection.find('.we-zoom');
         var defaultZoom = 9;
+        var title = dialog.find('.we-widget-title');
+        var border = dialog.find('.we-widget-border');
 
         function geoCode(address) {
             var geocoder = new google.maps.Geocoder();
@@ -90,6 +92,8 @@ $.extend(LocationWidget.prototype, {
             });
         }
 
+        title.val(self.settings.title || '');
+        border.prop('checked', self.settings.border || false);
         if (self.settings.content != undefined) {
             address.val(self.settings.content.address || '');
             latitude.text(self.settings.content.latitude || '');
@@ -106,6 +110,8 @@ $.extend(LocationWidget.prototype, {
         }
 
         save.on('click', function(){
+            self.settings.title = title.val();
+            self.settings.border = border.is(':checked');
             self.settings.content = {
                 address: address.val(),
                 latitude: latitude.text(),

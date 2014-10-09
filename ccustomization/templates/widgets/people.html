@@ -2,79 +2,68 @@
 
 {% block widget_classes -%}
     people-widget
-    {% if settings.empty %}
-        empty-widget
-    {% endif %}
 {%- endblock %}
 
 {% block widget_content %}
 
     <input class="we-icon-url" type="hidden" value="{{ icon_url }}">
 
-    {% if not settings.empty %}
+    {% if settings.style.type == 'list' %}
 
-        {% if settings.style.title %}
-            <h1 class="we-people-title">{{ settings.style.title }}</h1>
-        {% endif %}
-
-        {% if settings.style.type == 'list' %}
-
-            <div class="we-people-list container-fluid">
-                {% set i = 0 %}
-                {% for person in settings.content.people %}
-                    {% if i != 0 %}
-                        <hr>
-                    {% endif %}
-                    <div class="row">
-                        <div class="col-md-3">
-                            {% if person.picture and person.picture.set %}
-                                <div class="we-picture" style="background-image: url({{ person.picture.path }});"></div>
-                            {% else %}
-                                <div class="we-picture" style="background-image: url({{ icon_url }});"></div>
-                            {% endif %}
-                        </div>
-                        <div class="we-person-details col-md-8">
-                            <div>
-                                <span>{{ person.name }}</span>
-                            </div>
-                            {% if person.organisation %}
-                                <div class="we-person-organisation">
-                                    <span>{{ person.organisation }}</span>
-                                </div>
-                            {% endif %}
-                        </div>
+        <div class="we-people-list container-fluid">
+            {% set i = 0 %}
+            {% for person in settings.content.people %}
+                {% if i != 0 %}
+                    <hr>
+                {% endif %}
+                <div class="row">
+                    <div class="col-md-3">
+                        {% if person.picture and person.picture.set %}
+                            <div class="we-picture" style="background-image: url({{ person.picture.path }});"></div>
+                        {% else %}
+                            <div class="we-picture" style="background-image: url({{ icon_url }});"></div>
+                        {% endif %}
                     </div>
-                    {% set i = i + 1 %}
-                {% endfor %}
-            </div>
-
-        {% else %}
-
-            <div class="we-people-carousel">
-                {% for person in settings.content.people %}
-                    <div class="we-carousel-element">
-                        <div class="we-carousel-picture-container">
-                            {% if person.picture and person.picture.set %}
-                                <div class="we-picture" style="background: url({{ person.picture.path }})"></div>
-                            {% else %}
-                                <div class="we-picture" style="background-image: url({{ icon_url }});"></div>
-                            {% endif %}
+                    <div class="we-person-details col-md-8">
+                        <div>
+                            <span>{{ person.name }}</span>
                         </div>
-                        <div class="we-person-details">
-                            <div>
-                                <span>{{ person.name }}</span>
+                        {% if person.organisation %}
+                            <div class="we-person-organisation">
+                                <span>{{ person.organisation }}</span>
                             </div>
-                            {% if person.organisation %}
-                                <div class="we-person-organisation">
-                                    <span>{{ person.organisation }}</span>
-                                </div>
-                            {% endif %}
-                        </div>
+                        {% endif %}
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+                {% set i = i + 1 %}
+            {% endfor %}
+        </div>
 
-        {% endif %}
+    {% else %}
+
+        <div class="we-people-carousel">
+            {% for person in settings.content.people %}
+                <div class="we-carousel-element">
+                    <div class="we-carousel-picture-container">
+                        {% if person.picture and person.picture.set %}
+                            <div class="we-picture" style="background: url({{ person.picture.path }})"></div>
+                        {% else %}
+                            <div class="we-picture" style="background-image: url({{ icon_url }});"></div>
+                        {% endif %}
+                    </div>
+                    <div class="we-person-details">
+                        <div>
+                            <span>{{ person.name }}</span>
+                        </div>
+                        {% if person.organisation %}
+                            <div class="we-person-organisation">
+                                <span>{{ person.organisation }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
     {% endif %}
 
@@ -143,6 +132,14 @@
                 </div>
                 <div class="col-md-6">
                     <input type="text" id="title-{{ counter }}" class="we-widget-title form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="border-{{ counter }}">Border</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="checkbox" id="border-{{ counter }}" class="we-widget-border">
                 </div>
             </div>
             <div class="row">

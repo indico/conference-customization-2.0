@@ -2,70 +2,92 @@
 
 {% block widget_classes -%}
     location-widget
-    {% if settings.empty %}
-        empty-widget
-    {% endif %}
 {%- endblock %}
 
 {% block widget_content %}
 
-    {% if not settings.empty %}
-        <div class="we-map-canvas"></div>
-    {% endif %}
+    <div class="we-map-canvas"></div>
 
 {% endblock %}
 
 {% block widget_dialog_body %}
 
-    <div class="row">
-        <div class="col-md-12">
-            <h4>Address</h4>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <label for="address-{{ counter }}">Address</label>
-        </div>
-        <div class="col-md-6">
-            <input type="text" id="address-{{ counter }}" class="we-address form-control" placeholder="Address or coordinates">
-        </div>
-        <div class="col-md-offset-1 col-md-2">
-            <button type="button" class="we-search-button btn btn-default">Search</button>
-        </div>
-    </div>
-    <div class="we-preview-section{% if settings.empty %} hidden{% endif %}">
-        <hr>
-        <h4>Preview</h4>
-        <div class="row no-spacing">
-            <div class="col-md-2">
-                <label>Zoom</label>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#content-pane-{{ counter }}" role="tab" data-toggle="tab">Content</a></li>
+        <li><a href="#style-pane-{{ counter }}" role="tab" data-toggle="tab">Style</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade in active container-fluid" id="content-pane-{{ counter }}">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Address</h4>
+                </div>
             </div>
-            <div class="col-md-6">
-                <span class="we-zoom"></span>
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="address-{{ counter }}">Address</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" id="address-{{ counter }}" class="we-address form-control" placeholder="Address or coordinates">
+                </div>
+                <div class="col-md-offset-1 col-md-2">
+                    <button type="button" class="we-search-button btn btn-default">Search</button>
+                </div>
+            </div>
+            <div class="we-preview-section{% if settings.empty %} hidden{% endif %}">
+                <hr>
+                <h4>Preview</h4>
+                <div class="row no-spacing">
+                    <div class="col-md-2">
+                        <label>Zoom</label>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="we-zoom"></span>
+                    </div>
+                </div>
+                <div class="row no-spacing">
+                    <div class="col-md-2">
+                        <label>Latitude</label>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="we-latitude"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>Longitude</label>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="we-longitude"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <span>Adjust zoom and position of the location:</span>
+                    </div>
+                </div>
+                <div class="we-preview-canvas"></div>
             </div>
         </div>
-        <div class="row no-spacing">
-            <div class="col-md-2">
-                <label>Latitude</label>
+        <div class="tab-pane fade container-fluid" id="style-pane-{{ counter }}">
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="title-{{ counter }}">Title</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" id="title-{{ counter }}" class="we-widget-title form-control">
+                </div>
             </div>
-            <div class="col-md-6">
-                <span class="we-latitude"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                <label>Longitude</label>
-            </div>
-            <div class="col-md-6">
-                <span class="we-longitude"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <span>Adjust zoom and position of the location:</span>
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="border-{{ counter }}">Border</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="checkbox" id="border-{{ counter }}" class="we-widget-border">
+                </div>
             </div>
         </div>
-        <div class="we-preview-canvas"></div>
     </div>
 
 {% endblock %}
