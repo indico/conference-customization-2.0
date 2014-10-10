@@ -113,18 +113,22 @@ function getContainerIcons() {
     var copy = $('<span>', {
         'class': 'ui-icon ui-icon-copy'
     });
+    var gear = $('<span>', {
+        'class': 'ui-icon ui-icon-gear'
+    });
     drag.appendTo(iconsContainer);
     trash.appendTo(iconsContainer);
     copy.appendTo(iconsContainer);
+    gear.appendTo(iconsContainer);
     bindContainerIcons(iconsContainer);
     return iconsContainer;
 }
 function bindContainerIcons(iconsContainer) {
     var trash = iconsContainer.find('.ui-icon.ui-icon-trash');
     var copy = iconsContainer.find('.ui-icon.ui-icon-copy');
+    var gear = iconsContainer.find('.ui-icon.ui-icon-gear');
     trash.on('click', function(){
-        var iconsContainer = $(this).parent('.container-icons');
-        var container = iconsContainer.parent('.widget-cnt');
+        var container = $(this).parent('.container-icons').parent('.widget-cnt');
         container.remove();
         refreshElements();
     });
@@ -140,6 +144,17 @@ function bindContainerIcons(iconsContainer) {
         newContainer.draggable(draggableOpts);
         newContainer.children('.droppable-area').droppable(droppableOpts);
         refreshElements();
+    });
+    gear.on('click', function(){
+        var container = $(this).parent('.container-icons').parent('.widget-cnt');
+        var dialog = $('#container-dialog');
+        var containerTitle = $('#container-title');
+        var containerBorder = $('#container-border');
+        $('.widget-cnt').removeClass('customizing');
+        container.addClass('customizing');
+        containerTitle.val(container.data('title') || '');
+        containerBorder.prop('checked', container.data('border') == 'True' || false);
+        dialog.modal('show');
     });
 }
 
@@ -163,8 +178,12 @@ function containerWrap(element, lvl) {
     var secondDroppable = $('<div>', {
         'class': 'droppable-area droppable-' + secondDroppablePos + ' alert alert-danger'
     });
+    var title = $('<h1>', {
+        'class': 'container-title hidden'
+    });
     element.before(firstDroppable);
     element.before(secondDroppable);
+    element.before(title);
     container.draggable(draggableOpts);
     container.children('.droppable-area').droppable(droppableOpts);
 }
@@ -228,21 +247,30 @@ function getSerializedLayout() {
     var firstLvlCntCount = 0;
     mainCnt.find('.lvl-1-cnt').each(function(){
         var firstLvlCnt = $(this);
-        content[firstLvlCntCount] = [];
+        content[firstLvlCntCount] = {
+            title: firstLvlCnt.data('title'),
+            border: firstLvlCnt.data('border'),
+            content: []
+        };
         var secondLvlCntCount = 0;
         firstLvlCnt.find('.lvl-2-cnt').each(function(){
             var secondLvlCnt = $(this);
-            content[firstLvlCntCount][secondLvlCntCount] = [];
+            content[firstLvlCntCount].content[secondLvlCntCount] = {
+                title: secondLvlCnt.data('title'),
+                border: secondLvlCnt.data('border'),
+                content: []
+            };
             var widgetCount = 0;
             secondLvlCnt.find('.widget').each(function(){
                 var widget = $(this);
-                content[firstLvlCntCount][secondLvlCntCount][widgetCount] = widget.data('settings');
+                content[firstLvlCntCount].content[secondLvlCntCount].content[widgetCount] = widget.data('settings');
                 widgetCount++;
             });
             secondLvlCntCount++;
         });
         firstLvlCntCount++;
     });
+    console.log(content);
     return JSON.stringify(content);
 }
 
@@ -307,6 +335,31 @@ $(document).ready(function() {
 
     $('.container-icons').each(function(){
         bindContainerIcons($(this));
+    });
+
+    $('#container-dialog-close').on('click', function(){
+        $('.widget-cnt').removeClass('customizing');
+    });
+    $('#container-dialog-save').on('click', function(){
+        var container = $('.widget-cnt.customizing');
+        var containerTitle = $('#container-title').val();
+        var containerBorder = $('#container-border').prop('checked');
+        container.data('title', containerTitle);
+        container.data('border', containerBorder);
+        if (containerTitle == '') {
+            container.children('.container-title').addClass('hidden');
+        } else {
+            container.children('.container-title').removeClass('hidden').text(containerTitle);
+        }
+        container.toggleClass('bordered', containerBorder);
+        container.children('.lvl-2-cnt').toggleClass('title-space', containerTitle != '')
+        $('.widget-cnt').removeClass('customizing');
+    });
+
+    var containerDialog = $('#container-dialog');
+    containerDialog.detach().appendTo('body');
+    containerDialog.modal({
+        show: false
     });
 
     refreshElements();

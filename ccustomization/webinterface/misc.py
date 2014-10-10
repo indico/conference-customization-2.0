@@ -1,3 +1,4 @@
+import copy
 import inspect
 import json
 import os
@@ -39,15 +40,11 @@ def index():
 
 
 def render_serialization(content, edit):
-    page_content = []
-    for first_lvl_cnt in content:
-        new_first_lvl_cnt = []
-        page_content.append(new_first_lvl_cnt)
-        for second_lvl_cnt in first_lvl_cnt:
-            new_second_lvl_cnt = []
-            new_first_lvl_cnt.append(new_second_lvl_cnt)
-            for widget in second_lvl_cnt:
-                new_second_lvl_cnt.append(render_widget(widget, edit))
+    page_content = copy.deepcopy(content)
+    for first_lvl_cnt in page_content:
+        for second_lvl_cnt in first_lvl_cnt['content']:
+            for i, widget in enumerate(second_lvl_cnt['content']):
+                second_lvl_cnt['content'][i] = render_widget(widget, edit)
     return page_content
 
 

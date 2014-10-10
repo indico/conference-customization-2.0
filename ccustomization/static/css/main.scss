@@ -14,6 +14,19 @@ $widget-margin: 5px;
         margin: $widget-margin;
     }
 
+    .lvl-2-cnt {
+        margin-top: 10px;
+        margin-bottom: 10px;
+
+        &.title-space {
+            margin-top: 60px;
+        }
+    }
+
+    .lvl-1-cnt {
+        margin-top: 20px;
+    }
+
     &.edit-mode {
 
         .widget-icons, .container-icons {
@@ -35,7 +48,8 @@ $widget-margin: 5px;
             }
 
             .lvl-2-cnt {
-                margin: $edit-margin-small 0 $edit-margin-small $edit-margin-large;
+                margin-right: 0;
+                margin-left: $edit-margin-large;
 
                 &:last-child {
                     margin-right: $edit-margin-large;
@@ -97,6 +111,36 @@ $widget-margin: 5px;
                 left: -($edit-margin-large - $droppable-size/4);
             }
         }
+    }
+
+    .bordered {
+        border-radius: $element-border-radius !important;
+        border: $element-border !important;
+
+        &.lvl-2-cnt, &.lvl-1-cnt {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        >.widget-title, >.container-title {
+            border-bottom: $element-border;
+        }
+
+        >.widget-icons {
+            border-top: $element-border;
+            border-right: $element-border;
+            border-top-right-radius: $element-border-radius;
+        }
+    }
+
+    .lvl-1-cnt>.container-title {
+        position: absolute;
+        width: 100%;
+    }
+
+    .container-title {
+        margin: 0;
+        padding: 5px;
     }
 
     .lvl-1-cnt {
@@ -306,14 +350,14 @@ $widget-margin: 5px;
 }
 
 .navbar {
-    z-index: 10;
+    z-index: 11;
 
     &.navbar-fixed-bottom .navbar-collapse {
         margin-top: 7px;
     }
 
     .navbar-collapse {
-        z-index: 11;
+        z-index: 12;
     }
 }
 

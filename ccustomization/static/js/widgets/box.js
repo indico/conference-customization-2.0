@@ -1,6 +1,7 @@
 function BoxWidget(widgetElem) {
     this.widgetElem = widgetElem;
     this.settings = widgetElem.data('settings');
+    delete this.settings.render_content;
 }
 
 $.extend(BoxWidget.prototype, {
