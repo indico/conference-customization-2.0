@@ -20,8 +20,6 @@ $.extend(BoxWidget.prototype, {
         border.prop('checked', self.settings.border || false);
         if (self.settings.style != undefined) {
             color.val(self.settings.style.color || '');
-        } else {
-            border.prop('checked', false);
         }
         content.val(self.settings.content || '');
         content.trigger('input');

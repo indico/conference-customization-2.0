@@ -141,6 +141,8 @@ function bindContainerIcons(iconsContainer) {
         newContainer.find('.widget').each(function(){
             reloadWidget($(this));
         });
+        newContainer.data('title', container.data('title'));
+        newContainer.data('border', container.data('border'));
         newContainer.draggable(draggableOpts);
         newContainer.children('.droppable-area').droppable(droppableOpts);
         refreshElements();
