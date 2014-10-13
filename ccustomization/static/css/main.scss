@@ -15,11 +15,14 @@ $widget-margin: 5px;
     }
 
     .lvl-2-cnt {
-        margin-top: 10px;
-        margin-bottom: 10px;
+
+        &.border-space {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
 
         &.title-space {
-            margin-top: 60px;
+            margin-top: 60px !important;
         }
     }
 
@@ -28,6 +31,11 @@ $widget-margin: 5px;
     }
 
     &.edit-mode {
+
+        .lvl-2-cnt {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
 
         .widget-icons, .container-icons {
             display: block;

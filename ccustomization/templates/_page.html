@@ -3,7 +3,7 @@
 {% block content -%}
 
     <div class="main-cnt{% if edit %} edit-mode{% endif %}" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}" data-upload-url="{{ url_for('.upload') }}">
-        {% for firstLvlCnt in mainCnt %}<div class="widget-cnt lvl-1-cnt {% if firstLvlCnt.border %}bordered{% endif %}" data-title="{{ firstLvlCnt.title }}" data-border="{{ firstLvlCnt.border }}">
+        {% for firstLvlCnt in mainCnt %}<div class="widget-cnt lvl-1-cnt{% if firstLvlCnt.border %} bordered{% endif %}" data-title="{{ firstLvlCnt.title }}" data-border="{{ firstLvlCnt.border | tojson }}">
             {% if edit %}
                 <div class="container-icons">
                     <span class="ui-icon ui-icon-arrow-4"></span>
@@ -18,7 +18,7 @@
 
             <h1 class="container-title{% if not firstLvlCnt.title %} hidden{% endif %}">{{ firstLvlCnt.title }}</h1>
 
-            {% for secondLvlCnt in firstLvlCnt.content %}<div class="widget-cnt lvl-2-cnt {% if secondLvlCnt.border %}bordered{% endif %}{% if firstLvlCnt.title %} title-space{% endif %}" data-title="{{ secondLvlCnt.title }}" data-border="{{ secondLvlCnt.border }}">
+            {% for secondLvlCnt in firstLvlCnt.content %}<div class="widget-cnt lvl-2-cnt{% if secondLvlCnt.border %} bordered{% endif %}{% if firstLvlCnt.title %} title-space{% endif %}{% if firstLvlCnt.border %} border-space{% endif %}" data-title="{{ secondLvlCnt.title }}" data-border="{{ secondLvlCnt.border | tojson }}">
                 {% if edit %}
                     <div class="container-icons">
                         <span class="ui-icon ui-icon-arrow-4"></span>

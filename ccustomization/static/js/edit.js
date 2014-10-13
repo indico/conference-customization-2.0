@@ -153,7 +153,7 @@ function bindContainerIcons(iconsContainer) {
         $('.widget-cnt').removeClass('customizing');
         container.addClass('customizing');
         containerTitle.val(container.data('title') || '');
-        containerBorder.prop('checked', container.data('border') == 'True' || false);
+        containerBorder.prop('checked', container.data('border') || false);
         dialog.modal('show');
     });
 }
@@ -270,7 +270,6 @@ function getSerializedLayout() {
         });
         firstLvlCntCount++;
     });
-    console.log(content);
     return JSON.stringify(content);
 }
 
@@ -352,7 +351,8 @@ $(document).ready(function() {
             container.children('.container-title').removeClass('hidden').text(containerTitle);
         }
         container.toggleClass('bordered', containerBorder);
-        container.children('.lvl-2-cnt').toggleClass('title-space', containerTitle != '')
+        container.children('.lvl-2-cnt').toggleClass('title-space', containerTitle != '');
+        container.children('.lvl-2-cnt').toggleClass('border-space', containerBorder);
         $('.widget-cnt').removeClass('customizing');
     });
 
