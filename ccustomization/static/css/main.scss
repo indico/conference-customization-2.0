@@ -232,6 +232,23 @@ $widget-margin: 5px;
                     }
                 }
 
+                &.image-widget .widget-content{
+                    width: 100%;
+
+                    &.empty-widget {
+                        background: url('http://critterbabies.com/wp-content/gallery/kittens/cats-animals-kittens-background-us.jpg') no-repeat center;
+                        background-size: cover;
+                    }
+
+                    &:not(.empty-widget) {
+                        text-align: left;
+
+                        img {
+                            width: 100%;
+                        }
+                    }
+                }
+
                 &.box-widget .widget-content{
                     overflow: auto;
 
@@ -469,4 +486,8 @@ $widget-margin: 5px;
     right: 0;
     background-color: white;
     cursor: pointer;
+}
+
+.we-preview-section .we-preview-picture img {
+    width: 100%;
 }
