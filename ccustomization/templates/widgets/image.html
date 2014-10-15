@@ -48,7 +48,11 @@
             </div>
             <div class="we-preview-section{% if settings.empty %} hidden{% endif %}">
                 <hr>
-                <h4>Preview</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Preview</h4>
+                    </div>
+                </div>
                 <div class="we-preview-picture">
                     <img src="{% if not settings.empty %}{{ settings.content.path }}{% endif %}">
                 </div>

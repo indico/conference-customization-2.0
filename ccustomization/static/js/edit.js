@@ -82,6 +82,8 @@ var droppableOpts = {
     }
 }
 
+var picURL = null;
+
 function showDroppables(elements) {
     elements.each(function(){
         var element = $(this);
@@ -143,6 +145,7 @@ function bindContainerIcons(iconsContainer) {
         });
         newContainer.data('title', container.data('title'));
         newContainer.data('border', container.data('border'));
+        newContainer.data('background', container.data('background'));
         newContainer.draggable(draggableOpts);
         newContainer.children('.droppable-area').droppable(droppableOpts);
         refreshElements();
@@ -152,12 +155,30 @@ function bindContainerIcons(iconsContainer) {
         var dialog = $('#container-dialog');
         var containerTitle = $('#container-title');
         var containerBorder = $('#container-border');
+        var backgroundPreview = $('.we-background-preview');
+        var backgroundPath = $('.we-background-path');
+        var backgroundURL = $('.we-background-url');
         $('.widget-cnt').removeClass('customizing');
         container.addClass('customizing');
+        updateBackgroundPath(container.data('background'));
+        backgroundURL.val(container.data('background') || '');
         containerTitle.val(container.data('title') || '');
         containerBorder.prop('checked', container.data('border') || false);
         dialog.modal('show');
     });
+}
+
+function updateBackgroundPath(path) {
+    var backgroundPath = $('.we-background-path');
+    var backgroundPreview = $('.we-background-preview');
+    var background = $('.we-background');
+    backgroundPath.val(path || '');
+    if (path) {
+        backgroundPreview.show();
+        background.css('background-image', 'url(' + path + ')');
+    } else {
+        backgroundPreview.hide();
+    }
 }
 
 function containerWrap(element, lvl) {
@@ -252,6 +273,7 @@ function getSerializedLayout() {
         content[firstLvlCntCount] = {
             title: firstLvlCnt.data('title'),
             border: firstLvlCnt.data('border'),
+            background: firstLvlCnt.data('background'),
             content: []
         };
         var secondLvlCntCount = 0;
@@ -260,6 +282,7 @@ function getSerializedLayout() {
             content[firstLvlCntCount].content[secondLvlCntCount] = {
                 title: secondLvlCnt.data('title'),
                 border: secondLvlCnt.data('border'),
+                background: secondLvlCnt.data('background'),
                 content: []
             };
             var widgetCount = 0;
@@ -301,7 +324,57 @@ function bindSelectMenus(element) {
 $(document).ready(function() {
     "use strict";
 
-    var mainCnt = $('.main-cnt');
+    var mainCnt = $('.main-cnt'); 
+    var fileForm = $('#background-form');
+    var backgroundUpload = $('.we-background-file');
+    var backgroundURL = $('.we-background-url');
+
+    fileForm.submit(function() {
+        fileForm.ajaxSubmit({
+            async: false,
+            success: function(response) {
+                picURL = response;
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert('File loading failed: ' + errorThrown);
+                backgroundUpload.val('');
+                picURL = null;
+            }
+        });
+        return false;
+    });
+
+    $('.we-load-background-button').on('click', function(){
+        $('<img>', {
+            src: backgroundURL.val(),
+            error: function() {
+                alert('The specified URL is invalid!');
+                backgroundURL.val('');
+            },
+            load: function() {
+                updateBackgroundPath(backgroundURL.val());
+                backgroundUpload.val('');
+            }
+        });
+    });
+
+    backgroundUpload.on('change', function(){
+        var ok = backgroundUpload[0].files[0].type.match('^image/.*');
+        if (ok) {
+            fileForm.submit();
+            if (picURL != null) {
+                updateBackgroundPath(picURL);
+                backgroundURL.val('');
+            }
+        } else {
+            alert('The specified file is invalid!');
+            backgroundUpload.val('');
+        }
+    });
+
+    $('.we-remove-background-button').on('click', function(){
+        updateBackgroundPath('');
+    });
 
     $('#add-widget').on('click', function(){
         var settings = {
@@ -345,14 +418,21 @@ $(document).ready(function() {
         var container = $('.widget-cnt.customizing');
         var containerTitle = $('#container-title').val();
         var containerBorder = $('#container-border').prop('checked');
+        var backgroundPath = $('.we-background-path').val();
         container.data('title', containerTitle);
         container.data('border', containerBorder);
+        container.data('background', backgroundPath);
         if (containerTitle == '') {
             container.children('.container-title').addClass('hidden');
         } else {
             container.children('.container-title').removeClass('hidden').text(containerTitle);
         }
         container.toggleClass('bordered', containerBorder);
+        if (backgroundPath == '') {
+            container.css('background-image', 'none');
+        } else {
+            container.css('background-image', 'url(' + backgroundPath + ')');
+        }
         container.children('.lvl-2-cnt').toggleClass('title-space', containerTitle != '');
         container.children('.lvl-2-cnt').toggleClass('border-space', containerBorder);
         $('.widget-cnt').removeClass('customizing');

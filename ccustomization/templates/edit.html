@@ -82,6 +82,44 @@
                             <input type="checkbox" id="container-border">
                         </div>
                     </div>
+                    <hr>
+                    <input class="we-background-path" type="hidden">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Background</h4>
+                        </div>
+                    </div>
+                    <div class="row we-background-preview">
+                        <div class="col-md-2">
+                            <label>Preview</label>
+                        </div>
+                        <div class="we-background-container col-md-3">
+                            <div class="we-background" style="background-image: url(/static/pics/glyphicons_003_user.png);">
+                                <span class="we-remove-background-button glyphicon glyphicon-remove" title="Remove background"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Upload</label>
+                        </div>
+                        <div class="col-md-6">
+                            <form id="background-form" action="{{ url_for('.upload') }}" method="post">
+                                <input type="file" name="file" class="we-background-file">
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Url</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="we-background-url form-control">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="we-load-background-button btn btn-default">Load</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button id="container-dialog-close" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

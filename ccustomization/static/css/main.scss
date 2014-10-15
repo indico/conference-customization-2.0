@@ -10,6 +10,22 @@ $widget-margin: 5px;
 .main-cnt {
     height: 100%;
 
+    .widget-cnt {
+        display: inline-block;
+        position: relative;
+        -webkit-background-size: cover !important;
+        -moz-background-size: cover !important;
+        -o-background-size: cover !important;
+        background-size: cover !important;
+        background-position: 50% 50%;
+        background-repeat: no-repeat no-repeat;
+
+        &:after {
+            content: '';
+            display: block;
+        }
+    }
+
     .widget {
         margin: $widget-margin;
     }
@@ -458,7 +474,7 @@ $widget-margin: 5px;
     overflow-x: hidden;
 }
 
-.we-picture {
+.we-picture, .we-background {
     display: inline-block;
     position: relative;
     width: 100%;
@@ -480,12 +496,15 @@ $widget-margin: 5px;
     z-index: 1051;
 }
 
-.we-picture-preview span.glyphicon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: white;
-    cursor: pointer;
+.we-picture-preview, .we-background-container {
+
+    span.glyphicon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: white;
+        cursor: pointer;
+    }
 }
 
 .we-preview-section .we-preview-picture img {
