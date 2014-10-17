@@ -13,6 +13,7 @@ var draggableOpts = {
             showDroppables($('.lvl-1-cnt'));
             showDroppables($('.lvl-2-cnt'));
             showDroppables($('.widget'));
+            $('.droppable-area.droppable-title').show();
         }
         hideDroppables(element);
         $('.lvl-1-cnt, .lvl-2-cnt, .widget').each(function(){
@@ -194,6 +195,9 @@ function containerWrap(element, lvl) {
     if (lvl == 2) {
         firstDroppablePos = 'east';
         secondDroppablePos = 'west';
+        var firstLvlCnt = container.parent('.lvl-1-cnt');
+        container.toggleClass('title-space', firstLvlCnt.data('title') != '');
+        container.toggleClass('border-space', firstLvlCnt.data('border'));
     }
     var firstDroppable = $('<div>', {
         'class': 'droppable-area droppable-' + firstDroppablePos + ' alert alert-danger'
@@ -265,12 +269,17 @@ function moveWidgets() {
 }
 
 function getSerializedLayout() {
-    var mainCnt = $('.main-cnt');
-    var content = [];
+    var mainCntElem = $('.main-cnt');
+    var titleContainer = mainCntElem.children('.conference-title-container');
+    var mainCnt = {
+        title: titleContainer.find('input.conference-title').val(),
+        subtitle: titleContainer.find('input.conference-subtitle').val(),
+        content: []
+    };
     var firstLvlCntCount = 0;
-    mainCnt.find('.lvl-1-cnt').each(function(){
+    mainCntElem.find('.lvl-1-cnt').each(function(){
         var firstLvlCnt = $(this);
-        content[firstLvlCntCount] = {
+        mainCnt.content[firstLvlCntCount] = {
             title: firstLvlCnt.data('title'),
             border: firstLvlCnt.data('border'),
             background: firstLvlCnt.data('background'),
@@ -279,7 +288,7 @@ function getSerializedLayout() {
         var secondLvlCntCount = 0;
         firstLvlCnt.find('.lvl-2-cnt').each(function(){
             var secondLvlCnt = $(this);
-            content[firstLvlCntCount].content[secondLvlCntCount] = {
+            mainCnt.content[firstLvlCntCount].content[secondLvlCntCount] = {
                 title: secondLvlCnt.data('title'),
                 border: secondLvlCnt.data('border'),
                 background: secondLvlCnt.data('background'),
@@ -288,14 +297,14 @@ function getSerializedLayout() {
             var widgetCount = 0;
             secondLvlCnt.find('.widget').each(function(){
                 var widget = $(this);
-                content[firstLvlCntCount].content[secondLvlCntCount].content[widgetCount] = widget.data('settings');
+                mainCnt.content[firstLvlCntCount].content[secondLvlCntCount].content[widgetCount] = widget.data('settings');
                 widgetCount++;
             });
             secondLvlCntCount++;
         });
         firstLvlCntCount++;
     });
-    return JSON.stringify(content);
+    return JSON.stringify(mainCnt);
 }
 
 function saveLayout() {
@@ -389,7 +398,13 @@ $(document).ready(function() {
     });
 
     $('#show-layout').on('click', function(){
+        var titleEdit = $('#conference-title-edit');
+        var titleShow = $('#conference-title-show');
+        titleShow.find('.conference-title').text(titleEdit.find('.conference-title').val());
+        titleShow.find('.conference-subtitle').text(titleEdit.find('.conference-subtitle').val());
         $('.main-cnt').toggleClass('edit-mode');
+        titleEdit.toggleClass('hidden');
+        titleShow.toggleClass('hidden');
         refreshElements();
     });
 

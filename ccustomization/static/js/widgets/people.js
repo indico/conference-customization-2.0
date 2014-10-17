@@ -19,7 +19,7 @@ function replaceMissingPicture(pictureElem, defaultPicURL) {
 $.extend(PeopleWidget.prototype, {
     run: function run() {
         var self = this;
-        var iconURL = self.widgetElem.find('.we-icon-url').val();
+        var iconURL = self.widgetElem.data('icon-url');
         var pictures = self.widgetElem.find('.we-picture');
         var carousel = self.widgetElem.find('.we-people-carousel');
 
@@ -40,7 +40,7 @@ $.extend(PeopleWidget.prototype, {
 
     runEdit: function runEdit() {
         var self = this;
-        var iconURL = self.widgetElem.find('.we-icon-url').val();
+        var iconURL = self.widgetElem.data('icon-url');
         var dialog = $('#widget-dialog-'+self.widgetElem.data('counter'));
         var title = dialog.find('.we-widget-title');
         var save = dialog.find('.we-save-button');

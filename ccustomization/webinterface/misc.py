@@ -41,7 +41,7 @@ def index():
 
 def render_serialization(content, edit):
     page_content = copy.deepcopy(content)
-    for first_lvl_cnt in page_content:
+    for first_lvl_cnt in page_content['content']:
         for second_lvl_cnt in first_lvl_cnt['content']:
             for i, widget in enumerate(second_lvl_cnt['content']):
                 second_lvl_cnt['content'][i] = render_widget(widget, edit)

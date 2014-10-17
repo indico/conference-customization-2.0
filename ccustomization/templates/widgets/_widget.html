@@ -1,4 +1,4 @@
-<div id="widget-{{ counter }}" class="widget uninitialized {% filter replace('\n', ' ') %}{% block widget_classes %}{% endblock %}{% endfilter %}" data-edit="{{ edit }}" data-counter="{{ counter }}" data-settings="{{ settings | tojson | forceescape }}">
+<div id="widget-{{ counter }}" class="widget uninitialized {% filter replace('\n', ' ') %}{% block widget_classes %}{% endblock %}{% endfilter %}" data-edit="{{ edit }}" data-counter="{{ counter }}" data-settings="{{ settings | tojson | forceescape }}" {% if icon_url %}data-icon-url="{{ icon_url }}"{% endif %}>
     <div class="widget-content{% if settings.empty %} empty-widget{% else %}{% if settings.border %} bordered{% endif %}{% endif %}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
 
         {% if edit %}
@@ -21,7 +21,7 @@
 
         {% if not settings.empty %}
             {% if settings.title %}
-                <h1 class="widget-title">{{ settings.title }}</h1>
+                <h4 class="widget-title">{{ settings.title }}</h1>
             {% endif %}
             {% block widget_content %}{% endblock %}
         {% endif %}

@@ -33,12 +33,12 @@ $widget-margin: 5px;
     .lvl-2-cnt {
 
         &.border-space {
-            margin-top: 10px;
-            margin-bottom: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
 
         &.title-space {
-            margin-top: 60px !important;
+            margin-top: 50px !important;
         }
     }
 
@@ -46,11 +46,41 @@ $widget-margin: 5px;
         margin-top: 20px;
     }
 
+    .droppable-title {
+        display: none;
+        position: absolute;
+        width: 3 * $droppable-size;
+        height: $droppable-size;
+        left: 0;
+        right: 0;
+        margin: 0 auto 0 auto;
+        bottom: 15px;
+    }
+
     &.edit-mode {
 
+        .conference-title-container {
+            border: $grid-border;
+            position: relative;
+
+            .conference-title, .conference-subtitle {
+                height: 100%;
+                margin-top: 20px;
+            }
+
+            .conference-title {
+                font-size: 36px;
+            }
+
+            .conference-subtitle {
+                font-size: 24px;
+                margin-bottom: 60px;
+            }
+        }
+
         .lvl-2-cnt {
-            margin-top: 10px;
-            margin-bottom: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
 
         .widget-icons, .container-icons {
@@ -223,8 +253,7 @@ $widget-margin: 5px;
                         .widget-title {
                             text-align: left;
                             margin: 0;
-                            padding-bottom: 5px;
-                            padding-left: 20px;
+                            padding: 5px;
                         }
 
                         &.bordered {
