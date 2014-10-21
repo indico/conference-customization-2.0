@@ -4,12 +4,12 @@ function bindWidget(widget) {
     var gear = widget.find('.ui-icon.ui-icon-gear');
     widget.on('mouseenter', function(){
         var emptyMessage = widget.find('.empty-widget-message');
-        if(emptyMessage.length) {
+        if(emptyMessage.length && widget.parents('.main-cnt, .title-cnt').hasClass('edit-mode')) {
             emptyMessage.show(100);
         }
     }).on('mouseleave', function(){
         var emptyMessage = widget.find('.empty-widget-message');
-        if(emptyMessage.length) {
+        if(emptyMessage.length && widget.parents('.main-cnt, .title-cnt').hasClass('edit-mode')) {
             emptyMessage.hide(100);
         }
     });
@@ -29,6 +29,11 @@ function bindWidget(widget) {
         var widgetDialog = $('#widget-dialog-'+widget.data('counter'));
         widgetDialog.modal('show');
     });
+
+    if (widget.data('settings').type == 'title') {
+        trash.remove();
+        copy.remove();
+    }
 
     var dialog = widget.find('.widget-dialog');
     dialog.detach().appendTo('body');
@@ -72,7 +77,7 @@ function renderWidget(settings) {
 
 function widgetFactory(widgetElem) {
     var settings = widgetElem.data('settings');
-    var type = settings['type'];
+    var type = settings.type;
     type = type.charAt(0).toUpperCase() + type.slice(1);
     var widget = new window[type+'Widget'](widgetElem);
     return widget;

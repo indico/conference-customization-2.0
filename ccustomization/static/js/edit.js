@@ -15,6 +15,9 @@ var draggableOpts = {
             showDroppables($('.widget'));
             $('.droppable-area.droppable-title').show();
         }
+        if (element.hasClass('title-widget') || element.find('.title-widget').length) {
+            $('.main-cnt .droppable-area').hide();
+        }
         hideDroppables(element);
         $('.lvl-1-cnt, .lvl-2-cnt, .widget').each(function(){
             var elem = $(this);
@@ -25,10 +28,6 @@ var draggableOpts = {
                 elemClass = 'lvl-2-cnt';
             } else if (elem.hasClass('widget')) {
                 elemClass = 'widget';
-                var secondLvlCnt = elem.parent('.lvl-2-cnt');
-                if (!secondLvlCnt.siblings('.lvl-2-cnt').length) {
-                    hideDroppables(elem);
-                }
             }
             if (elem.next().hasClass(elemClass)) {
                 if (elem.next().next().length) {
@@ -196,8 +195,8 @@ function containerWrap(element, lvl) {
         firstDroppablePos = 'east';
         secondDroppablePos = 'west';
         var firstLvlCnt = container.parent('.lvl-1-cnt');
-        container.toggleClass('title-space', firstLvlCnt.data('title') != '');
-        container.toggleClass('border-space', firstLvlCnt.data('border'));
+        container.toggleClass('title-space', firstLvlCnt.length > 0 && firstLvlCnt.data('title') != '' && firstLvlCnt.data('title') != undefined);
+        container.toggleClass('border-space', firstLvlCnt.length > 0 && firstLvlCnt.data('border') != undefined && firstLvlCnt.data('border'));
     }
     var firstDroppable = $('<div>', {
         'class': 'droppable-area droppable-' + firstDroppablePos + ' alert alert-danger'
@@ -205,7 +204,7 @@ function containerWrap(element, lvl) {
     var secondDroppable = $('<div>', {
         'class': 'droppable-area droppable-' + secondDroppablePos + ' alert alert-danger'
     });
-    var title = $('<h1>', {
+    var title = $('<h' + (lvl+1) +'>', {
         'class': 'container-title hidden'
     });
     element.before(firstDroppable);
@@ -220,6 +219,7 @@ function refreshElements() {
     var mainCnt = $('.main-cnt');
     refreshContainers();
     refreshWidgets();
+    refreshContainers();
     $('body').trigger('refreshFinished');
 }
 function refreshContainers() {
@@ -231,11 +231,15 @@ function refreshContainers() {
             container.children('.container-icons, .droppable-area').remove();
             container.children().unwrap();
         }
+        if (container.find('.title-widget').length) {
+            container.find('.ui-icon.ui-icon-trash, .ui-icon.ui-icon-copy').hide();
+        } else {
+            container.find('.ui-icon.ui-icon-trash, .ui-icon.ui-icon-copy').show();
+        }
     });
 }
 function refreshWidgets() {
     wrapWidgets();
-    moveWidgets();
 }
 function wrapWidgets() {
     $('.widget').each(function(){
@@ -252,34 +256,13 @@ function wrapWidget(widget) {
         containerWrap(secondLvlCnt, 1);
     }
 }
-function moveWidgets() {
-    $('.lvl-2-cnt').each(function(){
-        var secondLvlCnt = $(this);
-        if (!secondLvlCnt.siblings('.lvl-2-cnt').length) {
-            var widgets = secondLvlCnt.find('.widget:not(:last-child)');
-            widgets.each(function(){
-                var widget = $(this);
-                var firstLvlCnt = widget.parents('.lvl-1-cnt');
-                widget.detach();
-                firstLvlCnt.before(widget);
-                wrapWidget(widget);
-            });
-        }
-    });
-}
 
-function getSerializedLayout() {
-    var mainCntElem = $('.main-cnt');
-    var titleContainer = mainCntElem.children('.conference-title-container');
-    var mainCnt = {
-        title: titleContainer.find('input.conference-title').val(),
-        subtitle: titleContainer.find('input.conference-subtitle').val(),
-        content: []
-    };
+function getSerializedContainer(container) {
+    var serializedContainer = [];
     var firstLvlCntCount = 0;
-    mainCntElem.find('.lvl-1-cnt').each(function(){
+    container.find('.lvl-1-cnt').each(function(){
         var firstLvlCnt = $(this);
-        mainCnt.content[firstLvlCntCount] = {
+        serializedContainer[firstLvlCntCount] = {
             title: firstLvlCnt.data('title'),
             border: firstLvlCnt.data('border'),
             background: firstLvlCnt.data('background'),
@@ -288,7 +271,7 @@ function getSerializedLayout() {
         var secondLvlCntCount = 0;
         firstLvlCnt.find('.lvl-2-cnt').each(function(){
             var secondLvlCnt = $(this);
-            mainCnt.content[firstLvlCntCount].content[secondLvlCntCount] = {
+            serializedContainer[firstLvlCntCount].content[secondLvlCntCount] = {
                 title: secondLvlCnt.data('title'),
                 border: secondLvlCnt.data('border'),
                 background: secondLvlCnt.data('background'),
@@ -297,14 +280,22 @@ function getSerializedLayout() {
             var widgetCount = 0;
             secondLvlCnt.find('.widget').each(function(){
                 var widget = $(this);
-                mainCnt.content[firstLvlCntCount].content[secondLvlCntCount].content[widgetCount] = widget.data('settings');
+                serializedContainer[firstLvlCntCount].content[secondLvlCntCount].content[widgetCount] = widget.data('settings');
                 widgetCount++;
             });
             secondLvlCntCount++;
         });
         firstLvlCntCount++;
     });
-    return JSON.stringify(mainCnt);
+    return serializedContainer;
+}
+
+function getSerializedLayout() {
+    var content = {
+        title: getSerializedContainer($('.title-cnt')),
+        main: getSerializedContainer($('.main-cnt'))
+    }
+    return JSON.stringify(content);
 }
 
 function saveLayout() {
@@ -327,6 +318,18 @@ function bindSelectMenus(element) {
         var dropup = element.parents('.dropup');
         dropup.find('.dropdown-toggle').html(elemText+' <span class="caret"></span>');
         dropup.find('input').val(elemText.toLowerCase());
+    });
+}
+
+function addWidget(type, container) {
+    var settings = {
+        type: type,
+        empty: true
+    };
+    renderWidget(settings).done(function(newWidget){
+        newWidget.appendTo(container);
+        refreshElements();
+        $('body').trigger('inizialize-widgets');
     });
 }
 
@@ -386,25 +389,12 @@ $(document).ready(function() {
     });
 
     $('#add-widget').on('click', function(){
-        var settings = {
-            type: $('#widget-select input').val(),
-            empty: true
-        };
-        renderWidget(settings).done(function(newWidget){
-            newWidget.appendTo(mainCnt);
-            refreshElements();
-            $('body').trigger('inizialize-widgets');
-        });
+        addWidget($('#widget-select input').val(), mainCnt);
     });
 
     $('#show-layout').on('click', function(){
-        var titleEdit = $('#conference-title-edit');
-        var titleShow = $('#conference-title-show');
-        titleShow.find('.conference-title').text(titleEdit.find('.conference-title').val());
-        titleShow.find('.conference-subtitle').text(titleEdit.find('.conference-subtitle').val());
-        $('.main-cnt').toggleClass('edit-mode');
-        titleEdit.toggleClass('hidden');
-        titleShow.toggleClass('hidden');
+        $('.title-cnt, .main-cnt').toggleClass('edit-mode');
+        $('.container-label').toggleClass('hidden');
         refreshElements();
     });
 
@@ -458,6 +448,10 @@ $(document).ready(function() {
     containerDialog.modal({
         show: false
     });
+
+    if (!$('.title-cnt .title-widget').length) {
+        addWidget('title', $('.title-cnt'));
+    }
 
     refreshElements();
 

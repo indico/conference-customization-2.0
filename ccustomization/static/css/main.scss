@@ -7,7 +7,30 @@ $edit-margin-small: 20px;
 $edit-margin-large: $droppable-size + ($droppable-size/2);
 $widget-margin: 5px;
 
-.main-cnt {
+.edit-mode {
+    min-height: 100px;
+}
+
+.title-cnt.edit-mode {
+    margin-bottom: 20px;
+}
+
+.widget-cnt, .widget, .widget-icons, .container-icons {
+
+    &.on-foreground {
+        background-color: white;
+    }
+
+    &:not(.on-foreground) {
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+}
+
+.empty-widget-message {
+    background-color: white;
+}
+
+.main-cnt, .title-cnt {
     height: 100%;
 
     .widget-cnt {
@@ -46,37 +69,7 @@ $widget-margin: 5px;
         margin-top: 20px;
     }
 
-    .droppable-title {
-        display: none;
-        position: absolute;
-        width: 3 * $droppable-size;
-        height: $droppable-size;
-        left: 0;
-        right: 0;
-        margin: 0 auto 0 auto;
-        bottom: 15px;
-    }
-
     &.edit-mode {
-
-        .conference-title-container {
-            border: $grid-border;
-            position: relative;
-
-            .conference-title, .conference-subtitle {
-                height: 100%;
-                margin-top: 20px;
-            }
-
-            .conference-title {
-                font-size: 36px;
-            }
-
-            .conference-subtitle {
-                font-size: 24px;
-                margin-bottom: 60px;
-            }
-        }
 
         .lvl-2-cnt {
             margin-top: 5px;
@@ -87,11 +80,11 @@ $widget-margin: 5px;
             display: block;
         }
 
-        &.main-cnt, .lvl-1-cnt, .lvl-2-cnt, .widget {
+        &.main-cnt, &.title-cnt, .lvl-1-cnt, .lvl-2-cnt, .widget {
             border: $grid-border;
         }
 
-        &.main-cnt {
+        &.main-cnt, &.title-cnt {
 
             .lvl-1-cnt, .widget {
                 margin: $edit-margin-large $edit-margin-small 0 $edit-margin-small;
@@ -109,10 +102,6 @@ $widget-margin: 5px;
                     margin-right: $edit-margin-large;
                 }
             }
-        }
-
-        .widget-cnt {
-            background-color: white;
         }
 
         .on-foreground {
@@ -205,7 +194,6 @@ $widget-margin: 5px;
             position: absolute;
             right: 0;
             top: 0;
-            background-color: white;
             border-bottom-left-radius: $element-border-radius;
             z-index: 1;
 
@@ -228,7 +216,6 @@ $widget-margin: 5px;
             flex-direction: column;
 
             .widget {
-                background-color: white;
                 position: relative;
                 text-align: center;
 
@@ -238,7 +225,6 @@ $widget-margin: 5px;
 
                 .empty-widget-message {
                     margin-top: 50px;
-                    background-color: white;
                     border-radius: $element-border-radius;
                     display: none;
                 }
@@ -274,6 +260,20 @@ $widget-margin: 5px;
 
                     .box-content, .we-people-list, .we-people-carousel {
                         margin-top: 10px;
+                    }
+                }
+
+                &.title-widget .widget-content{
+                    width: 100%;
+
+                    &.empty-widget {
+                        background: url('http://static.giantbomb.com/uploads/original/0/7785/2159258-_insert_title_.png') no-repeat center;
+                        background-size: cover;
+                    }
+
+                    &:not(.empty-widget) {
+                        text-align: left;
+                        padding-left: 5px;
                     }
                 }
 

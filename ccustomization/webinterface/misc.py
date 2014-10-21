@@ -39,12 +39,17 @@ def index():
     return render_template('index.html', **wvars)
 
 
-def render_serialization(content, edit):
-    page_content = copy.deepcopy(content)
-    for first_lvl_cnt in page_content['content']:
+def render_container_serialization(container, edit):
+    for first_lvl_cnt in container:
         for second_lvl_cnt in first_lvl_cnt['content']:
             for i, widget in enumerate(second_lvl_cnt['content']):
                 second_lvl_cnt['content'][i] = render_widget(widget, edit)
+
+
+def render_layout_serialization(content, edit):
+    page_content = copy.deepcopy(content)
+    render_container_serialization(page_content['title'], edit)
+    render_container_serialization(page_content['main'], edit)
     return page_content
 
 
@@ -55,7 +60,7 @@ def edit(id):
     global counter
     counter = 0
     wvars = {
-        'mainCnt': render_serialization(page.content, True),
+        'content': render_layout_serialization(page.content, True),
         'page_id': id,
         'edit': True
     }
@@ -82,7 +87,7 @@ def view(id):
     global counter
     counter = 0
     wvars = {
-        'mainCnt': render_serialization(page.content, False),
+        'content': render_layout_serialization(page.content, False),
         'page_id': id,
         'edit': False
     }

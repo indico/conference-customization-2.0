@@ -2,38 +2,10 @@
 
 {% block content -%}
 
-    <div class="main-cnt{% if edit %} edit-mode{% endif %}" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}" data-upload-url="{{ url_for('.upload') }}">
+    {% if edit %}<span class="container-label">Title</span>{% endif %}
+    <div class="title-cnt{% if edit %} edit-mode{% endif %}">
 
-        <div class="conference-title-container container-fluid">
-            {% if edit %}<div id="conference-title-edit">
-                <div class="row">
-                    <div class="col-md-6">
-                        <input type="text" class="conference-title form-control" placeholder="Insert conference title" value="{{ mainCnt.title }}">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-8">
-                        <input type="text" class="conference-subtitle form-control" placeholder="Insert conference subtitle" value="{{ mainCnt.subtitle }}">
-                    </div>
-                </div>
-            </div>{% endif %}
-            <div id="conference-title-show" {% if edit %}class="hidden"{% endif %}>
-                <div class="row">
-                    <div class="col-md-12">
-                        <h1 class="conference-title">{{ mainCnt.title }}</h1>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3 class="conference-subtitle">{{ mainCnt.subtitle }}</h3>
-                    </div>
-                </div>
-            </div>
-
-            {% if edit %}<div class="droppable-area droppable-title alert alert-danger"></div>{% endif %}
-        </div>
-
-        {% for firstLvlCnt in mainCnt.content %}<div class="widget-cnt lvl-1-cnt{% if firstLvlCnt.border %} bordered{% endif %}" data-title="{{ firstLvlCnt.title }}" data-border="{% if firstLvlCnt.border %}{{ firstLvlCnt.border | tojson }}{% else %}false{% endif %}" data-background="{{ firstLvlCnt.background }}" {% if firstLvlCnt.background %}style="background-image: url({{ firstLvlCnt.background }});"{% endif %}>
+        {% for firstLvlCnt in content.title %}<div class="widget-cnt lvl-1-cnt{% if firstLvlCnt.border %} bordered{% endif %}" data-title="{{ firstLvlCnt.title }}" data-border="{% if firstLvlCnt.border %}{{ firstLvlCnt.border | tojson }}{% else %}false{% endif %}" data-background="{{ firstLvlCnt.background }}" {% if firstLvlCnt.background %}style="background-image: url({{ firstLvlCnt.background }});"{% endif %}>
             {% if edit %}
                 <div class="container-icons">
                     <span class="ui-icon ui-icon-arrow-4"></span>
@@ -68,6 +40,48 @@
             </div>{% endfor %}
 
         </div>{% endfor %}
+
+    </div>
+
+    {% if edit %}<span class="container-label">Page content</span>{% endif %}
+    <div class="main-cnt{% if edit %} edit-mode{% endif %}" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}" data-upload-url="{{ url_for('.upload') }}">
+
+        {% for firstLvlCnt in content.main %}<div class="widget-cnt lvl-1-cnt{% if firstLvlCnt.border %} bordered{% endif %}" data-title="{{ firstLvlCnt.title }}" data-border="{% if firstLvlCnt.border %}{{ firstLvlCnt.border | tojson }}{% else %}false{% endif %}" data-background="{{ firstLvlCnt.background }}" {% if firstLvlCnt.background %}style="background-image: url({{ firstLvlCnt.background }});"{% endif %}>
+            {% if edit %}
+                <div class="container-icons">
+                    <span class="ui-icon ui-icon-arrow-4"></span>
+                    <span class="ui-icon ui-icon-trash"></span>
+                    <span class="ui-icon ui-icon-copy"></span>
+                    <span class="ui-icon ui-icon-gear"></span>
+                </div>
+
+                <div class="droppable-area droppable-north alert alert-danger"></div>
+                <div class="droppable-area droppable-south alert alert-danger"></div>
+            {% endif %}
+
+            <h2 class="container-title{% if not firstLvlCnt.title %} hidden{% endif %}">{{ firstLvlCnt.title }}</h1>
+
+            {% for secondLvlCnt in firstLvlCnt.content %}<div class="widget-cnt lvl-2-cnt{% if secondLvlCnt.border %} bordered{% endif %}{% if firstLvlCnt.title %} title-space{% endif %}{% if firstLvlCnt.border %} border-space{% endif %}" data-title="{{ secondLvlCnt.title }}" data-border="{% if secondLvlCnt.border %}{{ secondLvlCnt.border | tojson }}{% else %}false{% endif %}" data-background="{{ secondLvlCnt.background }}" {% if secondLvlCnt.background %}style="background-image: url({{ secondLvlCnt.background }});"{% endif %}>
+                {% if edit %}
+                    <div class="container-icons">
+                        <span class="ui-icon ui-icon-arrow-4"></span>
+                        <span class="ui-icon ui-icon-trash"></span>
+                        <span class="ui-icon ui-icon-copy"></span>
+                        <span class="ui-icon ui-icon-gear"></span>
+                    </div>
+
+                    <div class="droppable-area droppable-east alert alert-danger"></div>
+                    <div class="droppable-area droppable-west alert alert-danger"></div>
+                {% endif %}
+
+                <h3 class="container-title{% if not secondLvlCnt.title %} hidden{% endif %}">{{ secondLvlCnt.title }}</h1>
+
+                {% for widget in secondLvlCnt.content %} {{ widget | safe }} {% endfor %}
+
+            </div>{% endfor %}
+
+        </div>{% endfor %}
+
     </div>
 
 {%- endblock %}
