@@ -40,16 +40,17 @@ def index():
 
 
 def render_container_serialization(container, edit):
-    for first_lvl_cnt in container:
-        for second_lvl_cnt in first_lvl_cnt['content']:
-            for i, widget in enumerate(second_lvl_cnt['content']):
-                second_lvl_cnt['content'][i] = render_widget(widget, edit)
+    if container is not None:
+        for first_lvl_cnt in container:
+            for second_lvl_cnt in first_lvl_cnt['content']:
+                for i, widget in enumerate(second_lvl_cnt['content']):
+                    second_lvl_cnt['content'][i] = render_widget(widget, edit)
 
 
 def render_layout_serialization(content, edit):
     page_content = copy.deepcopy(content)
-    render_container_serialization(page_content['title'], edit)
-    render_container_serialization(page_content['main'], edit)
+    render_container_serialization(page_content.get('title', None), edit)
+    render_container_serialization(page_content.get('main', None), edit)
     return page_content
 
 
