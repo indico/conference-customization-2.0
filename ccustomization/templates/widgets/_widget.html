@@ -1,8 +1,7 @@
-<div id="widget-{{ counter }}" class="widget uninitialized {% filter replace('\n', ' ') %}{% block widget_classes %}{% endblock %}{% endfilter %}" data-edit="{{ edit }}" data-counter="{{ counter }}" data-settings="{{ settings | tojson | forceescape }}" {% if icon_url %}data-icon-url="{{ icon_url }}"{% endif %}>
-    <div class="widget-content{% if settings.empty %} empty-widget{% else %}{% if settings.border %} bordered{% endif %}{% endif %}" style="{% filter replace('\n', ' ') %}{% block widget_style %}{% endblock %}{% endfilter %}">
+<div id="widget-{{ counter }}" class="widget uninitialized{% if settings.empty %} empty-widget{% else %}{% if settings.border %} bordered{% endif %}{% endif %} {% filter replace('\n', ' ') %}{% block widget_classes %}{% endblock %}{% endfilter %}" data-edit="{{ edit }}" data-counter="{{ counter }}" data-settings="{{ settings | tojson | forceescape }}" {% if icon_url %}data-icon-url="{{ icon_url }}"{% endif %}>
 
         {% if edit %}
-            <div class="widget-icons">
+            <div class="icons-container">
                 <span class="ui-icon ui-icon-arrow-4"></span>
                 <span class="ui-icon ui-icon-trash"></span>
                 <span class="ui-icon ui-icon-copy"></span>
@@ -15,16 +14,23 @@
                 </span>
             {% endif %}
 
-            <div class="droppable-area droppable-north alert alert-danger"></div>
-            <div class="droppable-area droppable-south alert alert-danger"></div>
+            <div class="droppables-container">
+                <div class="droppable-area droppable-north alert alert-danger"></div>
+                <div class="droppable-area droppable-east alert alert-danger"></div>
+                <div class="droppable-area droppable-south alert alert-danger"></div>
+                <div class="droppable-area droppable-west alert alert-danger"></div>
+            </div>
         {% endif %}
 
-        {% if not settings.empty %}
+        {% block widget_title %}
             {% if settings.title %}
-                <h4 class="widget-title">{{ settings.title }}</h1>
+                <h4 class="title">{{ settings.title }}</h1>
             {% endif %}
+        {% endblock %}
+
+        <div class="content">
             {% block widget_content %}{% endblock %}
-        {% endif %}
+        </div>
 
         {% if edit %}
             <div id="widget-dialog-{{ counter }}" class="widget-dialog modal fade">
@@ -46,5 +52,4 @@
             </div>
         {% endif %}
 
-    </div>
 </div>

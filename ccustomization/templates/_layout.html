@@ -11,7 +11,7 @@
             <link href="{{ ASSET_URL|version_url }}" rel="stylesheet">
         {%- endassets %}
         {%- assets filters='pyscss,cssmin,cssrewrite', output='assets/bundle-scss.css',
-                   'css/jquery-ui.css', 'css/slick.css', 'css/main.scss'%}
+                   'css/jquery-ui.css', 'css/slick.css', 'css/widgets/*.scss', 'css/main.scss'%}
             <link href="{{ ASSET_URL|version_url }}" rel="stylesheet">
         {%- endassets %}
  

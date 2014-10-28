@@ -6,7 +6,11 @@
 
 {% block widget_content %}
 
-    <img src="{{ settings.content.path }}">
+    {% if not settings.empty %}
+
+        <img src="{{ settings.content.path }}">
+
+    {% endif %}
 
 {% endblock %}
 

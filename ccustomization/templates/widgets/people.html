@@ -6,62 +6,66 @@
 
 {% block widget_content %}
 
-    {% if settings.style.type == 'list' %}
+    {% if not settings.empty %}
 
-        <div class="we-people-list container-fluid">
-            {% set i = 0 %}
-            {% for person in settings.content.people %}
-                {% if i != 0 %}
-                    <hr>
-                {% endif %}
-                <div class="row">
-                    <div class="col-md-3">
-                        {% if person.picture and person.picture.set %}
-                            <div class="we-picture" style="background-image: url({{ person.picture.path }});"></div>
-                        {% else %}
-                            <div class="we-picture" style="background-image: url({{ icon_url }});"></div>
-                        {% endif %}
-                    </div>
-                    <div class="we-person-details col-md-8">
-                        <div>
-                            <span>{{ person.name }}</span>
+        {% if settings.style.type == 'list' %}
+
+            <div class="we-people-list container-fluid">
+                {% set i = 0 %}
+                {% for person in settings.content.people %}
+                    {% if i != 0 %}
+                        <hr>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-3">
+                            {% if person.picture and person.picture.set %}
+                                <div class="we-picture" style="background-image: url({{ person.picture.path }});"></div>
+                            {% else %}
+                                <div class="we-picture" style="background-image: url({{ icon_url }});"></div>
+                            {% endif %}
                         </div>
-                        {% if person.organisation %}
-                            <div class="we-person-organisation">
-                                <span>{{ person.organisation }}</span>
+                        <div class="we-person-details col-md-8">
+                            <div>
+                                <span>{{ person.name }}</span>
                             </div>
-                        {% endif %}
-                    </div>
-                </div>
-                {% set i = i + 1 %}
-            {% endfor %}
-        </div>
-
-    {% else %}
-
-        <div class="we-people-carousel">
-            {% for person in settings.content.people %}
-                <div class="we-carousel-element">
-                    <div class="we-carousel-picture-container">
-                        {% if person.picture and person.picture.set %}
-                            <div class="we-picture" style="background: url({{ person.picture.path }})"></div>
-                        {% else %}
-                            <div class="we-picture" style="background-image: url({{ icon_url }});"></div>
-                        {% endif %}
-                    </div>
-                    <div class="we-person-details">
-                        <div>
-                            <span>{{ person.name }}</span>
+                            {% if person.organisation %}
+                                <div class="we-person-organisation">
+                                    <span>{{ person.organisation }}</span>
+                                </div>
+                            {% endif %}
                         </div>
-                        {% if person.organisation %}
-                            <div class="we-person-organisation">
-                                <span>{{ person.organisation }}</span>
-                            </div>
-                        {% endif %}
                     </div>
-                </div>
-            {% endfor %}
-        </div>
+                    {% set i = i + 1 %}
+                {% endfor %}
+            </div>
+
+        {% else %}
+
+            <div class="we-people-carousel">
+                {% for person in settings.content.people %}
+                    <div class="we-carousel-element">
+                        <div class="we-carousel-picture-container">
+                            {% if person.picture and person.picture.set %}
+                                <div class="we-picture" style="background: url({{ person.picture.path }})"></div>
+                            {% else %}
+                                <div class="we-picture" style="background-image: url({{ icon_url }});"></div>
+                            {% endif %}
+                        </div>
+                        <div class="we-person-details">
+                            <div>
+                                <span>{{ person.name }}</span>
+                            </div>
+                            {% if person.organisation %}
+                                <div class="we-person-organisation">
+                                    <span>{{ person.organisation }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        {% endif %}
 
     {% endif %}
 

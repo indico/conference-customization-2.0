@@ -6,9 +6,13 @@
 
 {% block widget_content %}
 
-    <h1>{{ settings.content.title }}</h1>
-    {% if settings.content.subtitle %}
-        <h3>{{ settings.content.subtitle | safe }}</h3>
+    {% if not settings.empty %}
+
+        <h1>{{ settings.content.title }}</h1>
+        {% if settings.content.subtitle %}
+            <h3>{{ settings.content.subtitle | safe }}</h3>
+        {% endif %}
+
     {% endif %}
 
 {% endblock %}

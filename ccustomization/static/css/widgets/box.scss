@@ -1,0 +1,15 @@
+.box-widget {
+
+    &.empty-widget .content {
+        background: url('http://hackathon-in-a-box.org/img/box.png') repeat center;
+    }
+
+    &:not(.empty-widget) .content {
+        text-align: left;
+
+        .box-content {
+            float: left;
+            padding: 20px;
+        }
+    }
+}

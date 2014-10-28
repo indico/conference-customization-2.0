@@ -4,17 +4,15 @@
     box-widget
 {%- endblock %}
 
-{% block widget_style -%}
-    {% if not settings.empty %}
-        background-color: {{ settings.style.color }};
-    {% endif %}
-{%- endblock %}
-
 {% block widget_content %}
 
-    <div class="box-content">
-        {{ settings.render_content }}
-    </div>
+    {% if not settings.empty %}
+
+        <div class="box-content">
+            {{ settings.render_content }}
+        </div>
+
+    {% endif %}
 
 {% endblock %}
 
@@ -48,14 +46,6 @@
                 </div>
                 <div class="col-md-2">
                     <input type="checkbox" id="border-{{ counter }}" class="we-widget-border">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <label for="color-{{ counter }}">Background color</label>
-                </div>
-                <div class="col-md-6">
-                    <input type="text" id="color-{{ counter }}" class="we-widget-color form-control">
                 </div>
             </div>
         </div>

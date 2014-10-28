@@ -1,0 +1,15 @@
+.image-widget {
+
+    &.empty-widget .content {
+        background: url('http://critterbabies.com/wp-content/gallery/kittens/cats-animals-kittens-background-us.jpg') no-repeat center;
+        background-size: cover;
+    }
+
+    &:not(.empty-widget) .content {
+        text-align: left;
+
+        img {
+            width: 100%;
+        }
+    }
+}

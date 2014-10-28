@@ -6,7 +6,11 @@
 
 {% block widget_content %}
 
-    <div class="we-map-canvas"></div>
+    {% if not settings.empty %}
+
+        <div class="we-map-canvas"></div>
+
+    {% endif %}
 
 {% endblock %}
 

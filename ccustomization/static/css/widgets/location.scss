@@ -1,0 +1,14 @@
+.location-widget {
+
+    &.empty-widget .content {
+        background: url('http://upload.wikimedia.org/wikipedia/commons/f/f7/Soho_-_map_1.png') no-repeat center;
+        background-size: 100%;
+    }
+
+    &:not(.empty-widget) .content {
+
+        .we-map-canvas {
+            min-height: 400px;
+        }
+    }
+}

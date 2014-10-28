@@ -4,24 +4,22 @@ function bindWidget(widget) {
     var gear = widget.find('.ui-icon.ui-icon-gear');
     widget.on('mouseenter', function(){
         var emptyMessage = widget.find('.empty-widget-message');
-        if(emptyMessage.length && widget.parents('.main-cnt, .title-cnt').hasClass('edit-mode')) {
+        if(emptyMessage.length && widget.parents('.main-cnt').hasClass('edit-mode')) {
             emptyMessage.show(100);
         }
     }).on('mouseleave', function(){
         var emptyMessage = widget.find('.empty-widget-message');
-        if(emptyMessage.length && widget.parents('.main-cnt, .title-cnt').hasClass('edit-mode')) {
+        if(emptyMessage.length && widget.parents('.main-cnt').hasClass('edit-mode')) {
             emptyMessage.hide(100);
         }
     });
     trash.on('click', function(){
         widget.remove();
-        refreshElements();
     });
     copy.on('click', function(){
         var settings = widget.data('settings');
         renderWidget(settings).done(function(newWidget){
             widget.after(newWidget);
-            refreshElements();
             $('body').trigger('inizialize-widgets');
         });
     });

@@ -1,0 +1,76 @@
+.people-widget {
+
+    &.empty-widget .content {
+        background: url('http://www.risk.net/IMG/315/86315/people-outline.jpg') repeat center;
+        background-size: auto 100%;
+    }
+
+    &:not(.empty-widget) .content {
+
+        .we-people-list, .we-people-carousel {
+            margin-top: 10px;
+        }
+
+        .we-person-details {
+            font-size: 18px;
+
+            .we-person-organisation {
+                font-size: 16px;
+                color: gray;
+            }
+        }
+
+        .we-people-list .we-person-details {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+
+            .we-person-organisation {
+                margin-top: 15px;
+            }
+        }
+
+        .we-people-carousel {
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 20px;
+            padding-right: 20px;
+
+            .we-carousel-element {
+                width: 100%;
+
+                .we-carousel-picture-container {
+                    margin-left: auto;
+                    margin-right: auto;
+                    width: 30%;
+                }
+
+                .we-person-details {
+                    margin-top: 20px;
+                }
+            }
+
+            .slick-prev, .slick-next {
+                z-index: 2;
+
+                &:before {
+                    color: black;
+                }
+            }
+
+            .slick-prev {
+                left: 0;
+            }
+
+            .slick-next {
+                right: 0;
+            }
+
+            .slick-dots {
+                left: 0;
+                bottom: initial;
+            }
+        }
+    }
+}
