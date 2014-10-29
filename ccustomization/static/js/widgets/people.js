@@ -1,8 +1,8 @@
 function PeopleWidget(widgetElem) {
-    this.widgetElem = widgetElem;
-    this.settings = widgetElem.data('settings');
-    this.dialog = widgetElem.find('.widget-dialog');
+    Widget.call(this, widgetElem);
 }
+PeopleWidget.prototype = Object.create(Widget.prototype);
+PeopleWidget.prototype.constructor = PeopleWidget;
 
 function updateBackground(pictureElem, url) {
     pictureElem.css('background-image', 'url(' + url + ')');
@@ -374,7 +374,7 @@ $.extend(PeopleWidget.prototype, {
                 people: people
             };
             self.settings.empty = people.length == 0;
-            updateWidget(self.widgetElem, self.settings);
+            self.update();
         });
 
         typeahead.typeahead({

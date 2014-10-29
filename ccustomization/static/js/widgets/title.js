@@ -1,8 +1,8 @@
 function TitleWidget(widgetElem) {
-    this.widgetElem = widgetElem;
-    this.settings = widgetElem.data('settings');
-    this.dialog = widgetElem.find('.widget-dialog');
+    Widget.call(this, widgetElem);
 }
+TitleWidget.prototype = Object.create(Widget.prototype);
+TitleWidget.prototype.constructor = TitleWidget;
 
 $.extend(TitleWidget.prototype, {
     run: function run() {},
@@ -28,7 +28,7 @@ $.extend(TitleWidget.prototype, {
                 subtitle: subtitle.val().replace(/\n/g, '</h3>\n<h3>')
             };
             self.settings.empty = self.settings.content.title == '';
-            updateWidget(self.widgetElem, self.settings);
+            self.update();
         });
     }
 });

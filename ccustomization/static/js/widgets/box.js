@@ -1,9 +1,8 @@
 function BoxWidget(widgetElem) {
-    this.widgetElem = widgetElem;
-    this.settings = widgetElem.data('settings');
-    this.dialog = widgetElem.find('.widget-dialog');
-    delete this.settings.render_content;
+    Widget.call(this, widgetElem);
 }
+BoxWidget.prototype = Object.create(Widget.prototype);
+BoxWidget.prototype.constructor = BoxWidget;
 
 $.extend(BoxWidget.prototype, {
     run: function run() {},
@@ -16,6 +15,8 @@ $.extend(BoxWidget.prototype, {
         var border = dialog.find('.we-widget-border');
         var content = dialog.find('.we-widget-content');
 
+        delete self.settings.render_content;
+
         title.val(self.settings.title || '');
         border.prop('checked', self.settings.border || false);
         content.val(self.settings.content || '');
@@ -26,7 +27,7 @@ $.extend(BoxWidget.prototype, {
             self.settings.border = border.is(':checked');
             self.settings.content = content.val();
             self.settings.empty = self.settings.content == '';
-            updateWidget(self.widgetElem, self.settings);
+            self.update();
         });
     }
 });

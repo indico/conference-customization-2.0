@@ -1,54 +1,102 @@
-function bindWidget(widget) {
-    var widgetElem = widget.widgetElem;
-    var trash = widgetElem.find('.ui-icon.ui-icon-trash');
-    var copy = widgetElem.find('.ui-icon.ui-icon-copy');
-    var gear = widgetElem.find('.ui-icon.ui-icon-gear');
-    widgetElem.on('mouseenter', function(){
-        var emptyMessage = widgetElem.find('.empty-widget-message');
-        if(emptyMessage.length && widgetElem.parents('.page-content-container').hasClass('edit-mode')) {
-            emptyMessage.show(100);
+function Widget(widgetElem) {
+    this.widgetElem = widgetElem;
+    this.settings = widgetElem.data('settings');
+    this.dialog = widgetElem.find('.widget-dialog');
+}
+
+$.extend(Widget.prototype, {
+    initialize: function initialize() {
+        var self = this;
+        var edit = $('.page-content-container').data('edit').toLowerCase() === 'true';
+        var empty = self.settings['empty'];
+
+        self.bind();
+
+        if (!empty) {
+            self.run();
         }
-    }).on('mouseleave', function(){
-        var emptyMessage = widgetElem.find('.empty-widget-message');
-        if(emptyMessage.length && widgetElem.parents('.page-content-container').hasClass('edit-mode')) {
-            emptyMessage.hide(100);
+        if (edit) {
+            self.runEdit();
         }
-    });
-    trash.on('click', function(){
-        widgetElem.remove();
-    });
-    copy.on('click', function(){
-        var settings = widgetElem.data('settings');
-        renderWidget(settings).done(function(newWidget){
-            widgetElem.after(newWidget);
-            $('body').trigger('inizialize-widgets');
+    },
+
+    bind: function bind() {
+        var self = this;
+        self.widgetElem.on('mouseenter', function(){
+            var emptyMessage = self.widgetElem.find('.empty-widget-message');
+            if(emptyMessage.length && self.widgetElem.parents('.page-content-container').hasClass('edit-mode')) {
+                emptyMessage.show(100);
+            }
+        }).on('mouseleave', function(){
+            var emptyMessage = self.widgetElem.find('.empty-widget-message');
+            if(emptyMessage.length && self.widgetElem.parents('.page-content-container').hasClass('edit-mode')) {
+                emptyMessage.hide(100);
+            }
         });
-    });
-    gear.on('click', function(){
-        var widgetDialog = widget.dialog;
-        widgetDialog.modal('show');
-    });
 
-    var dialog = widget.dialog;
-    dialog.detach().appendTo('body');
-    dialog.modal({
-        show: false
-    });
+        self.bindIcons();
 
-    widgetElem.draggable(draggableOpts);
-    widgetElem.find('.droppable-area').droppable(droppableOpts);
-}
+        self.dialog.detach().appendTo('body');
+        self.dialog.modal({
+            show: false
+        });
 
-function updateWidget(widget, settings) {
-    renderWidget(settings).done(function(newWidget){
-        widget.replaceWith(newWidget);
-        $('body').trigger('inizialize-widgets');
-    });
-}
+        self.widgetElem.draggable(draggableOpts);
+        self.widgetElem.find('.droppable-area').droppable(droppableOpts);
+    },
 
-function reloadWidget(widget) {
-    var settings = widget.data('settings');
-    updateWidget(widget, settings);
+    bindIcons : function bindIcons() {
+        var self = this;
+        var trash = self.widgetElem.find('.ui-icon.ui-icon-trash');
+        var copy = self.widgetElem.find('.ui-icon.ui-icon-copy');
+        var gear = self.widgetElem.find('.ui-icon.ui-icon-gear');
+
+        trash.on('click', function(){
+            self.widgetElem.remove();
+        });
+        copy.on('click', function(){
+            var settings = self.widgetElem.data('settings');
+            self.render().done(function(newWidget){
+                self.widgetElem.after(newWidget);
+                widgetFactory(newWidget);
+            });
+        });
+        gear.on('click', function(){
+            self.dialog.modal('show');
+        });
+    },
+
+    update: function update() {
+        var self = this;
+        self.render().done(function(newWidget){
+            self.widgetElem.replaceWith(newWidget);
+            widgetFactory(newWidget);
+        });
+    },
+
+    reload:  function reload() {
+        var self = this;
+        self.update();
+    },
+
+    render: function render() {
+        var self = this;
+        return renderWidget(self.settings);
+    },
+
+    run: function run() {},
+
+    runEdit: function runEdit() {}
+});
+
+function widgetFactory(widgetElem) {
+    var settings = widgetElem.data('settings');
+    var type = settings.type;
+    type = type.charAt(0).toUpperCase() + type.slice(1);
+    var widget = new window[type+'Widget'](widgetElem);
+    widgetElem.data('object', widget);
+    widget.initialize();
+    return widget;
 }
 
 function renderWidget(settings) {
@@ -68,38 +116,12 @@ function renderWidget(settings) {
     return newWidget.promise();
 }
 
-function widgetFactory(widgetElem) {
-    var settings = widgetElem.data('settings');
-    var type = settings.type;
-    type = type.charAt(0).toUpperCase() + type.slice(1);
-    var widget = new window[type+'Widget'](widgetElem);
-    return widget;
-}
-
-function initialize(widgetElem) {
-    var edit = $('.page-content-container').data('edit').toLowerCase() === 'true';
-    var settings = widgetElem.data('settings');
-    var empty = settings['empty'];
-    var widget = widgetFactory(widgetElem);
-    bindWidget(widget);
-    if (!empty) {
-        widget.run();
-    }
-    if (edit) {
-        widget.runEdit();
-    }
-    widgetElem.removeClass('uninitialized');
-}
-
 $(document).ready(function() {
     "use strict";
 
-    $('body').on('inizialize-widgets', function(){
-        var uninitializedWidgets = $('.widget.uninitialized');
-        uninitializedWidgets.each(function(){
-            var widgetElem = $(this);
-            initialize(widgetElem);
-        });
-    }).trigger('inizialize-widgets');
+    $('.widget').each(function(){
+        var widgetElem = $(this);
+        widgetFactory(widgetElem);
+    });
 
 });

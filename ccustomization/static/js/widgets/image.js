@@ -1,8 +1,8 @@
 function ImageWidget(widgetElem) {
-    this.widgetElem = widgetElem;
-    this.settings = widgetElem.data('settings');
-    this.dialog = widgetElem.find('.widget-dialog');
+    Widget.call(this, widgetElem);
 }
+ImageWidget.prototype = Object.create(Widget.prototype);
+ImageWidget.prototype.constructor = ImageWidget;
 
 $.extend(ImageWidget.prototype, {
     run: function run() {},
@@ -93,7 +93,7 @@ $.extend(ImageWidget.prototype, {
                 path: path.val()
             }
             self.settings.empty = path.val() == '';
-            updateWidget(self.widgetElem, self.settings);
+            self.update();
         });
     }
 });

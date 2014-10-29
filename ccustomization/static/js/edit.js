@@ -110,7 +110,8 @@ function bindContainerIcons(iconsContainer) {
         bindContainerIcons(iconsContainer); // not binding inner containers? ---> investigate <---
         container.after(newContainer);
         newContainer.find('.widget').each(function(){
-            reloadWidget($(this));
+            var widget = widgetFactory($(this));
+            widget.reload();
         });
         newContainer.data('title', container.data('title'));
         newContainer.data('border', container.data('border'));
@@ -266,7 +267,7 @@ function addWidget(type) {
     };
     renderWidget(settings).done(function(newWidget){
         newWidget.appendTo($('.main-cnt > .content'));
-        $('body').trigger('inizialize-widgets');
+        widgetFactory(newWidget);
     });
 }
 

@@ -1,8 +1,8 @@
 function LocationWidget(widgetElem) {
-    this.widgetElem = widgetElem;
-    this.settings = widgetElem.data('settings');
-    this.dialog = widgetElem.find('.widget-dialog');
+    Widget.call(this, widgetElem);
 }
+LocationWidget.prototype = Object.create(Widget.prototype);
+LocationWidget.prototype.constructor = LocationWidget;
 
 $.extend(LocationWidget.prototype, {
     run: function run() {
@@ -122,7 +122,7 @@ $.extend(LocationWidget.prototype, {
                 zoom: zoom.text()
             };
             self.settings.empty = (self.settings.content.latitude == '' || self.settings.content.longitude == '');
-            updateWidget(self.widgetElem, self.settings);
+            self.update();
         });
 
         dialog.on('shown.bs.modal', function() {
