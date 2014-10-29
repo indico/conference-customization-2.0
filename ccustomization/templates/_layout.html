@@ -48,7 +48,7 @@
 
         {% block navbars %}{% endblock %}
 
-        <div class="clearfix container page-content-container">
+        <div class="clearfix container page-content-container{% if edit %} edit-mode{% endif %}" data-edit="{{ edit }}" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}" data-upload-url="{{ url_for('.upload') }}">
             {% block content %}{% endblock %}
         </div>
 

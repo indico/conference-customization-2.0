@@ -20,6 +20,10 @@ $edit-margin: $droppable-size + ($droppable-size/2);
 
 .title {
     background-color: rgba(255,255,255,0.5);
+    text-align: left;
+    margin: 0;
+    padding: 5px;
+    overflow: hidden;
 }
 
 .content {
@@ -61,216 +65,205 @@ $edit-margin: $droppable-size + ($droppable-size/2);
     }
 }
 
+.widget > .content {
+    overflow: auto;
+}
+
+.bordered {
+    border-radius: $element-border-radius !important;
+    border: $element-border !important;
+
+    >.title {
+        border-bottom: $element-border;
+    }
+}
+
 .main-cnt {
     width: 100%;
+    margin: 0 !important;
+    min-height: $min-height;
+}
 
-    &.edit-mode {   // move edit-mode to page-content-container
-        min-height: $min-height;
+.page-content-container.edit-mode {
+
+    .widget-cnt, .widget {
         border: $grid-border;
+        margin: $edit-margin;
+    }
 
-        .widget-cnt, .widget {
-            border: $grid-border;
-            margin: $edit-margin;
-        }
+    .vertical > .content {
 
-        &.vertical > .content, .vertical > .content {
+        > .widget-cnt, > .widget {
+            margin-bottom: 0;
 
-            > .widget-cnt, > .widget {
-                margin-bottom: 0;
-
-                &:last-child {
-                    margin-bottom: $edit-margin;
-                }
-            }
-        }
-
-        &.horizontal > .content, .horizontal > .content {
-
-            > .widget-cnt, > .widget {
-                margin-right: 0;
-
-                &:last-child {
-                    margin-right: $edit-margin;
-                }
-            }
-        }
-
-        .icons-container {
-            display: block;
-            position: absolute;
-            right: 0;
-            top: 0;
-            border-bottom-left-radius: $element-border-radius;
-            z-index: 1;
-
-            .ui-icon {
-                cursor: pointer;
-
-                &.ui-icon-arrow-4 {
-                    cursor: grab;
-                    cursor: -webkit-grab;
-                    cursor: -moz-grab;
-
-                    &.dragging {
-                        cursor: move;
-                    }
-                }
-            }
-        }
-
-        .widget {
-
-            .icons-container .ui-icon {
-                float: right;
-            }
-
-            .empty-widget-message {
-                background-color: white;
-                border-radius: $element-border-radius;
-                display: none;
-                position: absolute;
-                margin: auto;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                width: 330px;
-                height: 20px;
-            }
-        }
-
-        .droppable-area {
-            display: none;
-            position: absolute;
-            height: $droppable-size;
-            width: $droppable-size;
-
-            &.droppable-north, &.droppable-south {
-                margin: 0 auto 0 auto;
-                right: 0;
-                left: 0;
-                width: 3 * $droppable-size;
-            }
-
-            &.droppable-north {
-                top: -($edit-margin - $droppable-size/4);
-            }
-            
-            &.droppable-south {
-                bottom: -($edit-margin - $droppable-size/4);
-            }
-
-            &.droppable-east, &.droppable-west {
-                margin: auto 0 auto 0;
-                top: 0;
-                bottom: 0;
-                height: 3 * $droppable-size;
-            }
-
-            &.droppable-east {
-                right: -($edit-margin - $droppable-size/4);
-            }
-            
-            &.droppable-west {
-                left: -($edit-margin - $droppable-size/4);
+            &:last-child {
+                margin-bottom: $edit-margin;
             }
         }
     }
 
-    &:not(.edit-mode) {
+    .horizontal > .content {
 
-        .widget-cnt.bordered {
+        > .widget-cnt, > .widget {
+            margin-right: 0;
 
-            > .content {
-
-                >.widget-cnt, >.widget {
-                    margin: $view-margin;
-                }
-            }
-
-            &.vertical > .content {
-
-                > .widget-cnt, > .widget {
-                    margin-bottom: 0;
-
-                    &:last-child {
-                        margin-bottom: $view-margin;
-                    }
-                }
-            }
-
-            &.horizontal > .content {
-
-                > .widget-cnt, > .widget {
-                    margin-right: 0;
-
-                    &:last-child {
-                        margin-right: $view-margin;
-                    }
-                }
+            &:last-child {
+                margin-right: $edit-margin;
             }
         }
+    }
 
-        .widget-cnt:not(.bordered) > .content {
+    .icons-container {
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        border-bottom-left-radius: $element-border-radius;
+        z-index: 1;
 
-            >.widget-cnt, >.widget {
-                margin: 0;
-            }
-        }
+        .ui-icon {
+            cursor: pointer;
 
-        &.vertical > .content, .vertical > .content {
+            &.ui-icon-arrow-4 {
+                cursor: grab;
+                cursor: -webkit-grab;
+                cursor: -moz-grab;
 
-            > .widget-cnt, > .widget {
-
-                &:not(:last-child) {
-                    margin-bottom: $view-margin;
+                &.dragging {
+                    cursor: move;
                 }
             }
-        }
-
-        &.horizontal > .content, .horizontal > .content {
-
-            > .widget-cnt, > .widget {
-
-                &:not(:last-child) {
-                    margin-right: $view-margin;
-                }
-            }
-        }
-
-        .icons-container, .droppables-container {
-            display: none;
-        }
-
-        .widget .empty-widget-message {
-            display: none !important;
         }
     }
 
     .widget {
 
-        .content {
-            overflow: auto;
+        .icons-container .ui-icon {
+            float: right;
+        }
+
+        .empty-widget-message {
+            background-color: white;
+            border-radius: $element-border-radius;
+            display: none;
+            position: absolute;
+            margin: auto;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 330px;
+            height: 20px;
         }
     }
 
-    .title {
-        text-align: left;
-        margin: 0;
-        padding: 5px;
-        overflow: hidden;
-    }
+    .droppable-area {
+        display: none;
+        position: absolute;
+        height: $droppable-size;
+        width: $droppable-size;
 
-    .bordered {
-        border-radius: $element-border-radius !important;
-        border: $element-border !important;
+        &.droppable-north, &.droppable-south {
+            margin: 0 auto 0 auto;
+            right: 0;
+            left: 0;
+            width: 3 * $droppable-size;
+        }
 
-        >.title {
-            border-bottom: $element-border;
+        &.droppable-north {
+            top: -($edit-margin - $droppable-size/4);
+        }
+        
+        &.droppable-south {
+            bottom: -($edit-margin - $droppable-size/4);
+        }
+
+        &.droppable-east, &.droppable-west {
+            margin: auto 0 auto 0;
+            top: 0;
+            bottom: 0;
+            height: 3 * $droppable-size;
+        }
+
+        &.droppable-east {
+            right: -($edit-margin - $droppable-size/4);
+        }
+        
+        &.droppable-west {
+            left: -($edit-margin - $droppable-size/4);
         }
     }
 }
 
+.page-content-container:not(.edit-mode) {
+
+    .widget-cnt.bordered {
+
+        > .content {
+
+            >.widget-cnt, >.widget {
+                margin: $view-margin;
+            }
+        }
+
+        &.vertical > .content {
+
+            > .widget-cnt, > .widget {
+                margin-bottom: 0;
+
+                &:last-child {
+                    margin-bottom: $view-margin;
+                }
+            }
+        }
+
+        &.horizontal > .content {
+
+            > .widget-cnt, > .widget {
+                margin-right: 0;
+
+                &:last-child {
+                    margin-right: $view-margin;
+                }
+            }
+        }
+    }
+
+    .widget-cnt:not(.bordered) > .content {
+
+        >.widget-cnt, >.widget {
+            margin: 0;
+        }
+    }
+
+    .vertical > .content {
+
+        > .widget-cnt, > .widget {
+
+            &:not(:last-child) {
+                margin-bottom: $view-margin;
+            }
+        }
+    }
+
+    .horizontal > .content {
+
+        > .widget-cnt, > .widget {
+
+            &:not(:last-child) {
+                margin-right: $view-margin;
+            }
+        }
+    }
+
+    .icons-container, .droppables-container {
+        display: none;
+    }
+
+    .widget .empty-widget-message {
+        display: none !important;
+    }
+}
 
 // -------------------------------------------------
 

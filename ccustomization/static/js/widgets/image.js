@@ -1,6 +1,7 @@
 function ImageWidget(widgetElem) {
     this.widgetElem = widgetElem;
     this.settings = widgetElem.data('settings');
+    this.dialog = widgetElem.find('.widget-dialog');
 }
 
 $.extend(ImageWidget.prototype, {
@@ -8,7 +9,7 @@ $.extend(ImageWidget.prototype, {
 
     runEdit: function runEdit() {
         var self = this;
-        var dialog = $('#widget-dialog-'+self.widgetElem.data('counter'));
+        var dialog = self.dialog;
         var save = dialog.find('.we-save-button');
         var title = dialog.find('.we-widget-title');
         var border = dialog.find('.we-widget-border');

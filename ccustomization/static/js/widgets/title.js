@@ -1,6 +1,7 @@
 function TitleWidget(widgetElem) {
     this.widgetElem = widgetElem;
     this.settings = widgetElem.data('settings');
+    this.dialog = widgetElem.find('.widget-dialog');
 }
 
 $.extend(TitleWidget.prototype, {
@@ -8,7 +9,7 @@ $.extend(TitleWidget.prototype, {
 
     runEdit: function runEdit() {
         var self = this;
-        var dialog = $('#widget-dialog-'+self.widgetElem.data('counter'));
+        var dialog = self.dialog;
         var save = dialog.find('.we-save-button');
         var title = dialog.find('.we-widget-title');
         var subtitle = dialog.find('.we-widget-subtitle');

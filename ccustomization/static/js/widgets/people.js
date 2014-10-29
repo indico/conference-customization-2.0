@@ -1,6 +1,7 @@
 function PeopleWidget(widgetElem) {
     this.widgetElem = widgetElem;
     this.settings = widgetElem.data('settings');
+    this.dialog = widgetElem.find('.widget-dialog');
 }
 
 function updateBackground(pictureElem, url) {
@@ -41,7 +42,7 @@ $.extend(PeopleWidget.prototype, {
     runEdit: function runEdit() {
         var self = this;
         var iconURL = self.widgetElem.data('icon-url');
-        var dialog = $('#widget-dialog-'+self.widgetElem.data('counter'));
+        var dialog = self.dialog;
         var title = dialog.find('.we-widget-title');
         var save = dialog.find('.we-save-button');
         var radio = dialog.find('.we-radio');
@@ -78,7 +79,7 @@ $.extend(PeopleWidget.prototype, {
             dialogClass: "new-person-dialog",
             title: "Add new person",
             buttonLabel: "Add",
-            uploadURL: $('.main-cnt').data('upload-url'),
+            uploadURL: $('.page-content-container').data('upload-url'),
             iconURL: iconURL
         });
         var newPersonDialog = $(newPersonDialogHTML).children('.modal');
@@ -91,7 +92,7 @@ $.extend(PeopleWidget.prototype, {
         function fetchPeople(query, type, success) {
             $.ajax({
                 type: 'GET',
-                url: $('.main-cnt').data('fetch-url'),
+                url: $('.page-content-container').data('fetch-url'),
                 dataType: 'json',
                 data: {
                     data_type: type,
@@ -144,7 +145,7 @@ $.extend(PeopleWidget.prototype, {
                     dialogClass: "person-dialog",
                     title: "Customize person details",
                     buttonLabel: "OK",
-                    uploadURL: $('.main-cnt').data('upload-url'),
+                    uploadURL: $('.page-content-container').data('upload-url'),
                     iconURL: iconURL
                 })
         }

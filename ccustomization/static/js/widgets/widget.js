@@ -1,46 +1,42 @@
 function bindWidget(widget) {
-    var trash = widget.find('.ui-icon.ui-icon-trash');
-    var copy = widget.find('.ui-icon.ui-icon-copy');
-    var gear = widget.find('.ui-icon.ui-icon-gear');
-    widget.on('mouseenter', function(){
-        var emptyMessage = widget.find('.empty-widget-message');
-        if(emptyMessage.length && widget.parents('.main-cnt').hasClass('edit-mode')) {
+    var widgetElem = widget.widgetElem;
+    var trash = widgetElem.find('.ui-icon.ui-icon-trash');
+    var copy = widgetElem.find('.ui-icon.ui-icon-copy');
+    var gear = widgetElem.find('.ui-icon.ui-icon-gear');
+    widgetElem.on('mouseenter', function(){
+        var emptyMessage = widgetElem.find('.empty-widget-message');
+        if(emptyMessage.length && widgetElem.parents('.page-content-container').hasClass('edit-mode')) {
             emptyMessage.show(100);
         }
     }).on('mouseleave', function(){
-        var emptyMessage = widget.find('.empty-widget-message');
-        if(emptyMessage.length && widget.parents('.main-cnt').hasClass('edit-mode')) {
+        var emptyMessage = widgetElem.find('.empty-widget-message');
+        if(emptyMessage.length && widgetElem.parents('.page-content-container').hasClass('edit-mode')) {
             emptyMessage.hide(100);
         }
     });
     trash.on('click', function(){
-        widget.remove();
+        widgetElem.remove();
     });
     copy.on('click', function(){
-        var settings = widget.data('settings');
+        var settings = widgetElem.data('settings');
         renderWidget(settings).done(function(newWidget){
-            widget.after(newWidget);
+            widgetElem.after(newWidget);
             $('body').trigger('inizialize-widgets');
         });
     });
     gear.on('click', function(){
-        var widgetDialog = $('#widget-dialog-'+widget.data('counter'));
+        var widgetDialog = widget.dialog;
         widgetDialog.modal('show');
     });
 
-    if (widget.data('settings').type == 'title') {
-        trash.remove();
-        copy.remove();
-    }
-
-    var dialog = widget.find('.widget-dialog');
+    var dialog = widget.dialog;
     dialog.detach().appendTo('body');
     dialog.modal({
         show: false
     });
 
-    widget.draggable(draggableOpts);
-    widget.find('.droppable-area').droppable(droppableOpts);
+    widgetElem.draggable(draggableOpts);
+    widgetElem.find('.droppable-area').droppable(droppableOpts);
 }
 
 function updateWidget(widget, settings) {
@@ -59,12 +55,11 @@ function renderWidget(settings) {
     var newWidget = $.Deferred();
     $.ajax({
         type: 'POST',
-        url: $('.main-cnt').data('render-url'),
+        url: $('.page-content-container').data('render-url'),
         contentType: 'application/json',
         dataType: 'html',
         data: JSON.stringify({
-            settings: settings,
-            edit: true
+            settings: settings
         }),
         success: function(response) {
             newWidget.resolve($($.parseHTML(response)));
@@ -82,15 +77,15 @@ function widgetFactory(widgetElem) {
 }
 
 function initialize(widgetElem) {
-    var edit = widgetElem.data('edit').toLowerCase() === 'true';
+    var edit = $('.page-content-container').data('edit').toLowerCase() === 'true';
     var settings = widgetElem.data('settings');
     var empty = settings['empty'];
     var widget = widgetFactory(widgetElem);
+    bindWidget(widget);
     if (!empty) {
         widget.run();
     }
     if (edit) {
-        bindWidget(widgetElem);
         widget.runEdit();
     }
     widgetElem.removeClass('uninitialized');

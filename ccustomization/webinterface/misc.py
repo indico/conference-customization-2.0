@@ -39,17 +39,17 @@ def index():
     return render_template('index.html', **wvars)
 
 
-def render_container(container, edit):
-    for i, element in enumerate(container.get('content', []), edit):
+def render_container(container):
+    for i, element in enumerate(container.get('content', [])):
         if element['type'] == 'container':
-            render_container(element, edit)
+            render_container(element)
         elif element['type'] == 'widget':
-            element['html'] = render_widget(element['settings'], edit)
+            element['html'] = render_widget(element['settings'])
 
 
-def render_layout(content, edit):
+def render_layout(content):
     main_cnt = copy.deepcopy(content)
-    render_container(main_cnt, edit)
+    render_container(main_cnt[0])
     return main_cnt
 
 
@@ -60,7 +60,7 @@ def edit(id):
     global counter
     counter = 0
     wvars = {
-        'main_cnt': render_layout(page.content, True),
+        'main_cnt': render_layout(page.content),
         'page_id': id,
         'edit': True
     }
@@ -87,19 +87,18 @@ def view(id):
     global counter
     counter = 0
     wvars = {
-        'main_cnt': render_layout(page.content, False),
+        'main_cnt': render_layout(page.content),
         'page_id': id,
         'edit': False
     }
     return render_template('view.html', **wvars)
 
 
-def render_widget(settings, edit):
+def render_widget(settings):
     global counter
     counter += 1
     wvars = {
         'settings': settings,
-        'edit': edit,
         'counter': counter
     }
     if settings['type'] == 'box' and wvars.get('settings', {}).get('content', None):
@@ -112,7 +111,7 @@ def render_widget(settings, edit):
 @bp.route('/render/', methods=('POST',))
 def render():
     data = request.get_json()
-    return render_widget(data['settings'], data['edit'])
+    return render_widget(data['settings'])
 
 
 def fetch_data(page_id, data_type):

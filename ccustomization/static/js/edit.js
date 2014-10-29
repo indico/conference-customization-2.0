@@ -232,11 +232,7 @@ function serializeContent(container, serializedContainer) {
 
 function getSerializedLayout() {
     var mainCnt = $('.main-cnt');
-    var serializedMainCnt = {
-        orientation: mainCnt.hasClass('vertical') ? 'vertical' : 'horizontal',
-        content: []
-    };
-    serializeContent(mainCnt, serializedMainCnt);
+    var serializedMainCnt = [getSerializedContainer(mainCnt)];
     return JSON.stringify(serializedMainCnt);
 }
 
@@ -334,7 +330,7 @@ $(document).ready(function() {
     });
 
     $('#show-layout').on('click', function(){
-        $('.main-cnt').toggleClass('edit-mode');
+        $('.page-content-container').toggleClass('edit-mode');
         $('.container-label').toggleClass('hidden');
     });
 

@@ -1,6 +1,7 @@
 function LocationWidget(widgetElem) {
     this.widgetElem = widgetElem;
     this.settings = widgetElem.data('settings');
+    this.dialog = widgetElem.find('.widget-dialog');
 }
 
 $.extend(LocationWidget.prototype, {
@@ -38,7 +39,7 @@ $.extend(LocationWidget.prototype, {
 
     runEdit: function runEdit() {
         var self = this;
-        var dialog = $('#widget-dialog-'+self.widgetElem.data('counter'));
+        var dialog = self.dialog;
         var save = dialog.find('.we-save-button');
         var search = dialog.find('.we-search-button');
         var address = dialog.find('.we-address');
