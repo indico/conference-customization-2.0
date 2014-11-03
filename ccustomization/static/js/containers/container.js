@@ -1,0 +1,221 @@
+function Container(containerElem) {
+    this.containerElem = containerElem;
+    this.settings = containerElem.data('settings');
+    this.content = []
+}
+
+$.extend(Container.prototype, {
+    initialize: function initialize() {
+        var self = this;
+
+        self.containerElem.data('object', self);
+        self.bind();
+
+        var contentElem = self.containerElem.children('.content');
+        self.content = [];
+        contentElem.children().each(function(){
+            var jqElement = $(this);
+            var jsElement = null;
+            if (jqElement.hasClass('widget-cnt')) {
+                jsElement = containerFactory(jqElement);
+            } else if (jqElement.hasClass('widget')) {
+                jsElement = widgetFactory(jqElement);
+            }
+            self.content.push(jsElement);
+        });
+    },
+
+    updateContent: function updateContent() {
+        var self = this;
+
+        var contentElem = self.containerElem.children('.content');
+        self.content = [];
+        contentElem.children().each(function(){
+            var jqElement = $(this);
+            var jsElement = jqElement.data('object');
+            self.content.push(jsElement);
+        });
+    },
+
+    bind: function bind() {
+        var self = this;
+
+        self.bindIcons();
+
+        if (!self.containerElem.hasClass('main-cnt')) {
+            self.containerElem.draggable(draggableOpts);
+            self.containerElem.children('.droppables-container').children('.droppable-area').droppable(droppableOpts);
+        }
+    },
+
+    bindIcons: function bindIcons() {
+        var self = this;
+        var iconsContainer = self.containerElem.children('.icons-container');
+        var trash = iconsContainer.children('.ui-icon.ui-icon-trash');
+        var copy = iconsContainer.children('.ui-icon.ui-icon-copy');
+        var gear = iconsContainer.children('.ui-icon.ui-icon-gear');
+        trash.on('click', function(){
+            var container = $(this).parent('.icons-container').parent('.widget-cnt');
+            var parent = container.parent('.content').parent('.widget-cnt');
+            container.remove();
+            parent.data('object').updateContent();
+        });
+        copy.on('click', function(){
+            var container = $(this).parent('.icons-container').parent('.widget-cnt');
+            var newContainer = container.clone();
+            var iconsContainer = newContainer.children('.icons-container');
+            container.after(newContainer);
+            newContainer.data('settings', self.settings);
+            containerFactory(newContainer);
+            newContainer.find('.widget').data('object').reload();
+        });
+        gear.on('click', function(){
+            var container = $(this).parent('.icons-container').parent('.widget-cnt');
+            var dialog = $('#container-dialog');
+            var containerTitle = $('#container-title');
+            var containerBorder = $('#container-border');
+            var backgroundPreview = $('.we-background-preview');
+            var backgroundPath = $('.we-background-path');
+            var backgroundURL = $('.we-background-url');
+            $('.widget-cnt').removeClass('customizing');
+            container.addClass('customizing');
+            updateBackgroundPreview(self.settings.background);
+            backgroundURL.val(self.settings.background || '');
+            containerTitle.val(self.settings.title || '');
+            containerBorder.prop('checked', self.settings.border || false);
+            dialog.modal('show');
+        });
+    },
+
+    updateSettings: function updateSettings(title, border, background) {
+        var self = this;
+        self.settings.title = title;
+        self.settings.border = border;
+        self.settings.background = background;
+        if (title == '') {
+            self.containerElem.children('.title').addClass('hidden');
+        } else {
+            self.containerElem.children('.title').removeClass('hidden').text(title);
+        }
+        self.containerElem.toggleClass('bordered', border);
+        if (background == '') {
+            self.containerElem.css('background-image', 'none');
+        } else {
+            self.containerElem.css('background-image', 'url(' + background + ')');
+        }
+    },
+
+    serialize: function serialize() {
+        var self = this;
+        var serializedContainer = {
+            type: 'container',
+            settings: self.settings,
+            content: []
+        };
+        self.content.forEach(function(element){
+            serializedContainer.content.push(element.serialize());
+        });
+        return serializedContainer;
+    }
+});
+
+function containerFactory(containerElem) {
+    var container = new Container(containerElem);
+    container.initialize();
+    return container;
+}
+
+function updateBackgroundPreview(path) {
+    var backgroundPath = $('.we-background-path');
+    var backgroundPreview = $('.we-background-preview');
+    var background = $('.we-background');
+    var backgroundUpload = $('.we-background-file');
+    var backgroundURL = $('.we-background-url');
+    backgroundPath.val(path || '');
+    if (path) {
+        backgroundPreview.show();
+        background.css('background-image', 'url(' + path + ')');
+    } else {
+        backgroundPreview.hide();
+        backgroundURL.val('');
+        backgroundUpload.val('');
+    }
+}
+
+$(document).ready(function() {
+    "use strict";
+
+    var fileForm = $('#background-form');
+    var backgroundUpload = $('.we-background-file');
+    var backgroundURL = $('.we-background-url');
+    var picURL = null;
+
+    fileForm.submit(function() {
+        fileForm.ajaxSubmit({
+            async: false,
+            success: function(response) {
+                picURL = response;
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert('File loading failed: ' + errorThrown);
+                backgroundUpload.val('');
+                picURL = null;
+            }
+        });
+        return false;
+    });
+
+    $('.we-load-background-button').on('click', function(){
+        $('<img>', {
+            src: backgroundURL.val(),
+            error: function() {
+                alert('The specified URL is invalid!');
+                backgroundURL.val('');
+            },
+            load: function() {
+                updateBackgroundPreview(backgroundURL.val());
+                backgroundUpload.val('');
+            }
+        });
+    });
+
+    backgroundUpload.on('change', function(){
+        var ok = backgroundUpload[0].files[0].type.match('^image/.*');
+        if (ok) {
+            fileForm.submit();
+            if (picURL != null) {
+                updateBackgroundPreview(picURL);
+                backgroundURL.val('');
+            }
+        } else {
+            alert('The specified file is invalid!');
+            backgroundUpload.val('');
+        }
+    });
+
+    $('.we-remove-background-button').on('click', function(){
+        updateBackgroundPreview('');
+    });
+
+    $('#container-dialog-close').on('click', function(){
+        $('.widget-cnt').removeClass('customizing');
+    });
+
+    $('#container-dialog-save').on('click', function(){
+        var container = $('.widget-cnt.customizing');
+        var containerTitle = $('#container-title').val();
+        var containerBorder = $('#container-border').prop('checked');
+        var backgroundPath = $('.we-background-path').val();
+        container.data('object').updateSettings(containerTitle, containerBorder, backgroundPath);
+        $('.widget-cnt').removeClass('customizing');
+    });
+
+    var containerDialog = $('#container-dialog');
+    containerDialog.detach().appendTo('body');
+    containerDialog.modal({
+        show: false
+    });
+
+    var main = containerFactory($('.main-cnt'));
+
+});

@@ -7,42 +7,47 @@ function Widget(widgetElem) {
 $.extend(Widget.prototype, {
     initialize: function initialize() {
         var self = this;
+        var empty = self.settings.empty;
         var edit = $('.page-content-container').data('edit').toLowerCase() === 'true';
-        var empty = self.settings['empty'];
 
-        self.bind();
+        self.widgetElem.data('object', self);
 
         if (!empty) {
             self.run();
         }
         if (edit) {
-            self.runEdit();
+            self.bind();
         }
     },
 
     bind: function bind() {
         var self = this;
-        self.widgetElem.on('mouseenter', function(){
-            var emptyMessage = self.widgetElem.find('.empty-widget-message');
-            if(emptyMessage.length && self.widgetElem.parents('.page-content-container').hasClass('edit-mode')) {
-                emptyMessage.show(100);
-            }
-        }).on('mouseleave', function(){
-            var emptyMessage = self.widgetElem.find('.empty-widget-message');
-            if(emptyMessage.length && self.widgetElem.parents('.page-content-container').hasClass('edit-mode')) {
-                emptyMessage.hide(100);
-            }
-        });
 
         self.bindIcons();
+        self.bindDialog();
 
+        self.widgetElem.draggable(draggableOpts);
+        self.widgetElem.find('.droppable-area').droppable(droppableOpts);
+    },
+
+    bindDialog: function bindDialog() {
+        var self = this;
+        var save = self.dialog.find('.we-save-button');
+        var title = self.dialog.find('.we-widget-title');
+        var border = self.dialog.find('.we-widget-border');
         self.dialog.detach().appendTo('body');
         self.dialog.modal({
             show: false
         });
-
-        self.widgetElem.draggable(draggableOpts);
-        self.widgetElem.find('.droppable-area').droppable(droppableOpts);
+        title.val(self.settings.title || '');
+        border.prop('checked', self.settings.border || false);
+        self.initializeDialog();
+        save.on('click', function(){
+            self.settings.title = title.val();
+            self.settings.border = border.is(':checked');
+            self.saveSettings();
+            self.update();
+        });
     },
 
     bindIcons : function bindIcons() {
@@ -52,10 +57,12 @@ $.extend(Widget.prototype, {
         var gear = self.widgetElem.find('.ui-icon.ui-icon-gear');
 
         trash.on('click', function(){
+            var parent = self.widgetElem.parent('.content').parent('.widget-cnt');
             self.widgetElem.remove();
+            parent.data('object').updateContent();
         });
         copy.on('click', function(){
-            var settings = self.widgetElem.data('settings');
+            var settings = self.settings;
             self.render().done(function(newWidget){
                 self.widgetElem.after(newWidget);
                 widgetFactory(newWidget);
@@ -64,6 +71,15 @@ $.extend(Widget.prototype, {
         gear.on('click', function(){
             self.dialog.modal('show');
         });
+    },
+
+    serialize: function serialize(){
+        var self = this;
+        var serializedWidget = {
+            type: 'widget',
+            settings: self.settings
+        };
+        return serializedWidget;
     },
 
     update: function update() {
@@ -86,7 +102,9 @@ $.extend(Widget.prototype, {
 
     run: function run() {},
 
-    runEdit: function runEdit() {}
+    initializeDialog: function initializeDialog() {},
+
+    saveSettings: function saveSettings() {}
 });
 
 function widgetFactory(widgetElem) {
@@ -94,7 +112,6 @@ function widgetFactory(widgetElem) {
     var type = settings.type;
     type = type.charAt(0).toUpperCase() + type.slice(1);
     var widget = new window[type+'Widget'](widgetElem);
-    widgetElem.data('object', widget);
     widget.initialize();
     return widget;
 }
@@ -115,13 +132,3 @@ function renderWidget(settings) {
     });
     return newWidget.promise();
 }
-
-$(document).ready(function() {
-    "use strict";
-
-    $('.widget').each(function(){
-        var widgetElem = $(this);
-        widgetFactory(widgetElem);
-    });
-
-});

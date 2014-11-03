@@ -136,25 +136,8 @@ $edit-margin: $droppable-size + ($droppable-size/2);
         }
     }
 
-    .widget {
-
-        .icons-container .ui-icon {
-            float: right;
-        }
-
-        .empty-widget-message {
-            background-color: white;
-            border-radius: $element-border-radius;
-            display: none;
-            position: absolute;
-            margin: auto;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            width: 330px;
-            height: 20px;
-        }
+    .widget .icons-container .ui-icon {
+        float: right;
     }
 
     .droppable-area {
@@ -258,10 +241,6 @@ $edit-margin: $droppable-size + ($droppable-size/2);
 
     .icons-container, .droppables-container {
         display: none;
-    }
-
-    .widget .empty-widget-message {
-        display: none !important;
     }
 }
 

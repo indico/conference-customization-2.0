@@ -4,7 +4,7 @@
             
     {% for element in main_cnt recursive %}
         {% if element.type == 'container' %}
-            <div class="widget-cnt{% if loop.depth0 == 0 %} main-cnt{% endif %} {{ element.orientation }}{% if element.border %} bordered{% endif %}" data-title="{{ element.title }}" data-border="{% if element.border %}{{ element.border | tojson }}{% else %}false{% endif %}" data-background="{{ element.background }}" {% if element.background %}style="background-image: url({{ element.background }});"{% endif %}>
+            <div class="widget-cnt{% if loop.depth0 == 0 %} main-cnt{% endif %} {{ element.settings.orientation }}{% if element.settings.border %} bordered{% endif %}" data-settings="{{ element.settings | tojson | forceescape }}" {% if element.settings.background %}style="background-image: url({{ element.settings.background }});"{% endif %}>
                 {% if loop.depth0 > 0 %}
                     <div class="icons-container">
                         <span class="ui-icon ui-icon-arrow-4"></span>
@@ -18,7 +18,7 @@
                         <div class="droppable-area droppable-south alert alert-danger"></div>
                         <div class="droppable-area droppable-west alert alert-danger"></div>
                     </div>
-                    <h3 class="title{% if not element.title %} hidden{% endif %}">{{ element.title }}</h3>
+                    <h3 class="title{% if not element.settings.title %} hidden{% endif %}">{{ element.settings.title }}</h3>
                 {% endif %}
                 <div class="content">{{ loop(element.content) }}</div>
             </div>

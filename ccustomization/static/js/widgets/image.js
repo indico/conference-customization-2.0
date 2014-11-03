@@ -5,14 +5,19 @@ ImageWidget.prototype = Object.create(Widget.prototype);
 ImageWidget.prototype.constructor = ImageWidget;
 
 $.extend(ImageWidget.prototype, {
-    run: function run() {},
-
-    runEdit: function runEdit() {
+    saveSettings: function saveSettings() {
         var self = this;
         var dialog = self.dialog;
-        var save = dialog.find('.we-save-button');
-        var title = dialog.find('.we-widget-title');
-        var border = dialog.find('.we-widget-border');
+        var path = dialog.find('.we-picture-path');
+        self.settings.content = {
+            path: path.val()
+        }
+        self.settings.empty = path.val() == '';
+    },
+
+    initializeDialog: function initializeDialog() {
+        var self = this;
+        var dialog = self.dialog;
         var upload = dialog.find('.we-picture-file');
         var url = dialog.find('.we-picture-url');
         var loadPictureButton = dialog.find('.we-load-picture-button');
@@ -51,8 +56,6 @@ $.extend(ImageWidget.prototype, {
             return false;
         });
 
-        title.val(self.settings.title || '');
-        border.prop('checked', self.settings.border || false);
         if (self.settings.content != undefined) {
             url.val(self.settings.content.path);
             updatePath(self.settings.content.path);
@@ -84,16 +87,6 @@ $.extend(ImageWidget.prototype, {
                 alert('The specified file is invalid!');
                 upload.val('');
             }
-        });
-
-        save.on('click', function(){
-            self.settings.title = title.val();
-            self.settings.border = border.is(':checked');
-            self.settings.content = {
-                path: path.val()
-            }
-            self.settings.empty = path.val() == '';
-            self.update();
         });
     }
 });

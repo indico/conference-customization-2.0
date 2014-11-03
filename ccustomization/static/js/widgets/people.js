@@ -39,12 +39,36 @@ $.extend(PeopleWidget.prototype, {
         }
     },
 
-    runEdit: function runEdit() {
+    saveSettings: function saveSettings() {
+        var self = this;
+        var dialog = self.dialog;
+        var radio = dialog.find('.we-radio');
+        var carouselOptionsSection = dialog.find('.we-carousel-options-section');
+        var autoplay = carouselOptionsSection.find('.we-carousel-autoplay');
+        var slidesToShow = carouselOptionsSection.find('.we-carousel-slides-to-show');
+        var slidesToScroll = carouselOptionsSection.find('.we-carousel-slides-to-scroll');
+        var peopleListSection = dialog.find('.we-people-list-section');
+        var peopleList = peopleListSection.find('.we-people-list-preview');
+        self.settings.style = {
+            type: radio.find('.active input').val(),
+            autoplay: autoplay.prop('checked'),
+            slidesToShow: slidesToShow.val(),
+            slidesToScroll: slidesToScroll.val()
+        };
+        var people = [];
+        peopleList.find('.we-person').each(function(){
+            people.push($(this).data('settings'));
+        });
+        self.settings.content = {
+            people: people
+        };
+        self.settings.empty = people.length == 0;
+    },
+
+    initializeDialog: function initializeDialog() {
         var self = this;
         var iconURL = self.widgetElem.data('icon-url');
         var dialog = self.dialog;
-        var title = dialog.find('.we-widget-title');
-        var save = dialog.find('.we-save-button');
         var radio = dialog.find('.we-radio');
         var listOpt = radio.find('.we-list-opt');
         var carouselOpt = radio.find('.we-carousel-opt');
@@ -59,7 +83,6 @@ $.extend(PeopleWidget.prototype, {
         var peopleListSection = dialog.find('.we-people-list-section');
         var peopleList = peopleListSection.find('.we-people-list-preview');
         var addNewPersonButton = dialog.find('.we-add-new-person-button');
-        var border = dialog.find('.we-widget-border');
 
         var personTemplate = twig({
             id: "person-"+self.widgetElem.data('counter'),
@@ -87,7 +110,6 @@ $.extend(PeopleWidget.prototype, {
         var newPersonName = newPersonDialog.find('.we-person-name');
         var newPersonEmail = newPersonDialog.find('.we-person-email');
         var newPersonOrganisation = newPersonDialog.find('.we-person-organisation');
-        var addNewPersonButtonFinish = newPersonDialog.find('.we-save-button');
 
         function fetchPeople(query, type, success) {
             $.ajax({
@@ -319,7 +341,7 @@ $.extend(PeopleWidget.prototype, {
             carousels.each(function(){
                 var carousel = $(this);
                 var peopleWidget = carousel.parents('.people-widget');
-                var carouselSettings = peopleWidget.data('settings');
+                var carouselSettings = self.settings;
                 var carouselOptions = carouselDefaultOptions;
                 if (carouselSettings.style != undefined) {
                     carouselOptions.autoplay = carouselSettings.style.autoplay || carouselOptions.autoplay;
@@ -330,8 +352,6 @@ $.extend(PeopleWidget.prototype, {
             });
         });
 
-        title.val(self.settings.title || '');
-        border.prop('checked', self.settings.border || false);
         if (self.settings.style != undefined) {
             if (self.settings.style.type == 'carousel' || self.settings.style.type == undefined) {
                 carouselOpt.trigger('click');
@@ -356,26 +376,6 @@ $.extend(PeopleWidget.prototype, {
         }
 
         bindPersonDialog(newPersonDialog, null);
-
-        save.on('click', function(){
-            self.settings.title = title.val();
-            self.settings.border = border.is(':checked');
-            self.settings.style = {
-                type: radio.find('.active input').val(),
-                autoplay: autoplay.prop('checked'),
-                slidesToShow: slidesToShow.val(),
-                slidesToScroll: slidesToScroll.val()
-            };
-            var people = [];
-            peopleList.find('.we-person').each(function(){
-                people.push($(this).data('settings'));
-            });
-            self.settings.content = {
-                people: people
-            };
-            self.settings.empty = people.length == 0;
-            self.update();
-        });
 
         typeahead.typeahead({
             hint: true,
