@@ -14,6 +14,7 @@ from ..menu import menu, breadcrumb, make_breadcrumb
 from ..models import Event, Page
 from . import bp
 
+
 counter = 0
 
 
@@ -39,17 +40,40 @@ def index():
     return render_template('index.html', **wvars)
 
 
-def render_container(container):
-    for i, element in enumerate(container.get('content', [])):
-        if element['type'] == 'container':
-            render_container(element)
-        elif element['type'] == 'widget':
-            element['html'] = render_widget(element['settings'])
+def render_widget(settings):
+    global counter
+    counter += 1
+    wvars = {
+        'settings': settings,
+        'counter': counter
+    }
+    if settings['type'] == 'box' and wvars.get('settings', {}).get('content', None):
+        wvars['render_content'] = Markup(markdown.markdown(wvars['settings']['content']))
+    elif settings['type'] == 'people':
+        wvars['icon_url'] = os.path.join(str(current_app.static_url_path), 'pics/glyphicons_003_user.png')
+    return render_template('widgets/{0}.html'.format(settings['type']), **wvars)
+
+
+def render_block(settings, containers):
+    global counter
+    counter += 1
+    containers_html = []
+    for i, container in enumerate(containers):
+        containers_html.append([])
+        for widget in container.get('content', []):
+            containers_html[i].append(render_widget(widget.get('settings', {})))
+    wvars = {
+        'settings': settings,
+        'containers_html': containers_html,
+        'counter': counter
+    }
+    return render_template('blocks/{0}.html'.format(settings['type']), **wvars)
 
 
 def render_layout(content):
     main_cnt = copy.deepcopy(content)
-    render_container(main_cnt[0])
+    for i, block in enumerate(main_cnt.get('content', [])):
+        main_cnt['content'][i] = render_block(block.get('settings', {}), block.get('containers', []))
     return main_cnt
 
 
@@ -94,24 +118,13 @@ def view(id):
     return render_template('view.html', **wvars)
 
 
-def render_widget(settings):
-    global counter
-    counter += 1
-    wvars = {
-        'settings': settings,
-        'counter': counter
-    }
-    if settings['type'] == 'box' and wvars.get('settings', {}).get('content', None):
-        wvars['settings']['render_content'] = Markup(markdown.markdown(wvars['settings']['content']))
-    elif settings['type'] == 'people':
-        wvars['icon_url'] = os.path.join(str(current_app.static_url_path), 'pics/glyphicons_003_user.png')
-    return render_template('widgets/{0}.html'.format(settings['type']), **wvars)
-
-
 @bp.route('/render/', methods=('POST',))
 def render():
     data = request.get_json()
-    return render_widget(data['settings'])
+    if data['type'] == 'block':
+        return render_block(data['settings'], data['containers'])
+    elif data['type'] == 'widget':
+        return render_widget(data['settings'])
 
 
 def fetch_data(page_id, data_type):

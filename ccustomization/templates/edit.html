@@ -23,24 +23,6 @@
             <div id="navbar-collapse-edit" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        <div class="btn-group">
-                            <div id="widget-select" class="btn-group dropup">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    Box
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#">Box</a></li>
-                                    <li><a href="#">Location</a></li>
-                                    <li><a href="#">People</a></li>
-                                    <li><a href="#">Image</a></li>
-                                </ul>
-                                <input type="hidden" value="box">
-                            </div>
-                            <button id="add-widget" type="button" class="btn btn-default">Add widget</button>
-                        </div>
-                    </li>
-                    <li>
                         <button id="show-layout" type="button" class="btn btn-default show-layout-button" data-toggle="button">Show/hide layout</button>
                     </li>
                 </ul>
@@ -55,6 +37,29 @@
             </div>
         </div>
     </nav>
+{% endblock %}
+
+{% block content_end %}
+    <div class="elements-bar">
+        <div class="block-section">
+            <div class="section-header">Blocks</div>
+            <div class="element-stubs">
+                <img class="element-stub block-stub" src="/static/img/icon_19113.png" title="Title" data-type="title"></img>
+                <img class="element-stub block-stub" src="/static/img/icon_18043.png" title="2 columns" data-type="twoColumns"></img>
+                <img class="element-stub block-stub" src="/static/img/icon_18042.png" title="3 columns" data-type="threeColumns"></img>
+                <img class="element-stub block-stub" src="/static/img/icon_50408.png" title="Horizontal" data-type="horizontal"></img>
+            </div>
+        </div>
+        <div class="widget-section hidden-section">
+            <div class="section-header">Widgets</div>
+            <div class="element-stubs">
+                <img class="element-stub widget-stub" src="/static/img/icon_16320.png" title="Text Box" data-type="box"></img>
+                <img class="element-stub widget-stub" src="/static/img/icon_8191.png" title="Location" data-type="location"></img>
+                <img class="element-stub widget-stub" src="/static/img/icon_45483.png" title="People" data-type="people"></img>
+                <img class="element-stub widget-stub" src="/static/img/icon_16459.png" title="Image" data-type="image"></img>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block body_end %}
@@ -94,7 +99,7 @@
                             <label>Preview</label>
                         </div>
                         <div class="we-background-container col-md-3">
-                            <div class="we-background" style="background-image: url(/static/pics/glyphicons_003_user.png);">
+                            <div class="we-background">
                                 <span class="we-remove-background-button glyphicon glyphicon-remove" title="Remove background"></span>
                             </div>
                         </div>

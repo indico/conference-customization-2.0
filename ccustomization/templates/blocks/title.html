@@ -1,0 +1,32 @@
+{% extends 'blocks/_block.html' %}
+
+{% block block_classes -%}
+    title-block
+{%- endblock %}
+
+{% block block_content %}
+
+    <div class="title-header input-fields">
+        <input type="text" class="title" placeholder="Title" value="{% if settings.title %}{{ settings.title }}{% else %}My Conference{% endif %}">
+        <input type="text" class="subtitle" placeholder="Subtitle" value="{% if settings.subtitle %}{{ settings.subtitle }}{% else %}Date, location, description...{% endif %}">
+    </div>
+    <div class="title-header text-fields">
+        <span class="title">{% if settings.title %}{{ settings.title }}{% else %}My Conference{% endif %}</span>
+        <span class="subtitle">{% if settings.subtitle %}{{ settings.subtitle }}{% else %}Date, location, description...{% endif %}</span>
+    </div>
+
+    <div class="widget-cnt horizontal">
+        <div class="icons-container">
+            <span class="ui-icon ui-icon-gear"></span>
+        </div>
+        <div class="droppables-container">
+            <div class="droppable-area droppable-container alert alert-danger"></div>
+        </div>
+        <div class="content">
+            {% for widget in containers_html[0] %}
+                {{ widget | safe }}
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

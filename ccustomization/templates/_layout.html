@@ -17,7 +17,7 @@
  
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
         {%- assets filters='rjsmin', output='assets/bundle.js', 'js/jquery.js', 'js/jquery-ui.js',
-                   'js/slick.js', 'js/bootstrap.js', 'js/widgets/*.js', 'js/containers/*.js', 'js/main.js' %}
+                   'js/slick.js', 'js/bootstrap.js', 'js/widgets/*.js', 'js/blocks/*.js', 'js/containers/*.js', 'js/main.js' %}
             <script src="{{ ASSET_URL|version_url }}"></script>
         {%- endassets %}
 
@@ -50,6 +50,7 @@
 
         <div class="clearfix container page-content-container{% if edit %} edit-mode{% endif %}" data-edit="{{ edit }}" data-render-url="{{ url_for('.render') }}" data-fetch-url="{{ url_for('.fetch', id=page_id) }}" data-upload-url="{{ url_for('.upload') }}">
             {% block content %}{% endblock %}
+            {% block content_end %}{% endblock %}
         </div>
 
         {% block body_end %}{% endblock %}

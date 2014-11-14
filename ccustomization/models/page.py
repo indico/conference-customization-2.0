@@ -10,15 +10,13 @@ class Page(db.Model):
 
     def __init__(self, event_id, name=None):
         self.name = name or "Page {0}".format(self.id)
-        content = [
-            {
-                'type': 'container',
-                'settings': {
-                    'orientation': 'vertical'
-                },
-                'content': []
-            }
-        ]
+        content = {
+            'type': 'container',
+            'settings': {
+                'orientation': 'vertical'
+            },
+            'content': []
+        }
         self.content = content
         self.event_id = event_id
 

@@ -1,15 +1,19 @@
 function Container(containerElem) {
     this.containerElem = containerElem;
-    this.settings = containerElem.data('settings');
+    this.settings = containerElem.data('settings') || {};
     this.content = []
 }
 
 $.extend(Container.prototype, {
     initialize: function initialize() {
         var self = this;
+        var edit = $('.page-content-container').data('edit').toLowerCase() === 'true';
 
         self.containerElem.data('object', self);
-        self.bind();
+
+        if (edit) {
+            self.bind();
+        }
 
         var contentElem = self.containerElem.children('.content');
         self.content = [];
@@ -20,6 +24,8 @@ $.extend(Container.prototype, {
                 jsElement = containerFactory(jqElement);
             } else if (jqElement.hasClass('widget')) {
                 jsElement = widgetFactory(jqElement);
+            } else if (jqElement.hasClass('widget-block')) {
+                jsElement = blockFactory(jqElement);
             }
             self.content.push(jsElement);
         });
@@ -35,6 +41,17 @@ $.extend(Container.prototype, {
             var jsElement = jqElement.data('object');
             self.content.push(jsElement);
         });
+
+        var edit = $('.page-content-container').data('edit').toLowerCase() === 'true';
+        if (self.containerElem.hasClass('main-cnt') && edit) {
+            var blockSection = $('.elements-bar .block-section');
+            var widgetSection = $('.elements-bar .widget-section');
+            if (self.content.length) {
+                widgetSection.show();
+            } else {
+                widgetSection.hide();
+            }
+        }
     },
 
     bind: function bind() {
@@ -44,39 +61,22 @@ $.extend(Container.prototype, {
 
         if (!self.containerElem.hasClass('main-cnt')) {
             self.containerElem.draggable(draggableOpts);
-            self.containerElem.children('.droppables-container').children('.droppable-area').droppable(droppableOpts);
         }
+        self.containerElem.children('.droppables-container').children('.droppable-area').droppable(droppableOpts);
     },
 
     bindIcons: function bindIcons() {
         var self = this;
         var iconsContainer = self.containerElem.children('.icons-container');
-        var trash = iconsContainer.children('.ui-icon.ui-icon-trash');
-        var copy = iconsContainer.children('.ui-icon.ui-icon-copy');
         var gear = iconsContainer.children('.ui-icon.ui-icon-gear');
-        trash.on('click', function(){
-            var container = $(this).parent('.icons-container').parent('.widget-cnt');
-            var parent = container.parent('.content').parent('.widget-cnt');
-            container.remove();
-            parent.data('object').updateContent();
-        });
-        copy.on('click', function(){
-            var container = $(this).parent('.icons-container').parent('.widget-cnt');
-            var newContainer = container.clone();
-            var iconsContainer = newContainer.children('.icons-container');
-            container.after(newContainer);
-            newContainer.data('settings', self.settings);
-            containerFactory(newContainer);
-            newContainer.find('.widget').data('object').reload();
-        });
         gear.on('click', function(){
             var container = $(this).parent('.icons-container').parent('.widget-cnt');
             var dialog = $('#container-dialog');
             var containerTitle = $('#container-title');
             var containerBorder = $('#container-border');
-            var backgroundPreview = $('.we-background-preview');
-            var backgroundPath = $('.we-background-path');
-            var backgroundURL = $('.we-background-url');
+            var backgroundPreview = dialog.find('.we-background-preview');
+            var backgroundPath = dialog.find('.we-background-path');
+            var backgroundURL = dialog.find('.we-background-url');
             $('.widget-cnt').removeClass('customizing');
             container.addClass('customizing');
             updateBackgroundPreview(self.settings.background);
@@ -126,11 +126,12 @@ function containerFactory(containerElem) {
 }
 
 function updateBackgroundPreview(path) {
-    var backgroundPath = $('.we-background-path');
-    var backgroundPreview = $('.we-background-preview');
-    var background = $('.we-background');
-    var backgroundUpload = $('.we-background-file');
-    var backgroundURL = $('.we-background-url');
+    var containerDialog = $('#container-dialog');
+    var backgroundPath = containerDialog.find('.we-background-path');
+    var backgroundPreview = containerDialog.find('.we-background-preview');
+    var background = containerDialog.find('.we-background');
+    var backgroundUpload = containerDialog.find('.we-background-file');
+    var backgroundURL = containerDialog.find('.we-background-url');
     backgroundPath.val(path || '');
     if (path) {
         backgroundPreview.show();
@@ -145,9 +146,10 @@ function updateBackgroundPreview(path) {
 $(document).ready(function() {
     "use strict";
 
+    var containerDialog = $('#container-dialog');
     var fileForm = $('#background-form');
-    var backgroundUpload = $('.we-background-file');
-    var backgroundURL = $('.we-background-url');
+    var backgroundUpload = containerDialog.find('.we-background-file');
+    var backgroundURL = containerDialog.find('.we-background-url');
     var picURL = null;
 
     fileForm.submit(function() {
@@ -210,12 +212,14 @@ $(document).ready(function() {
         $('.widget-cnt').removeClass('customizing');
     });
 
-    var containerDialog = $('#container-dialog');
     containerDialog.detach().appendTo('body');
     containerDialog.modal({
         show: false
     });
 
     var main = containerFactory($('.main-cnt'));
+    main.updateContent();
+
+    $('.element-stub').draggable(draggableStubOpts);
 
 });

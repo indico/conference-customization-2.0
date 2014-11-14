@@ -2,7 +2,7 @@
 
 {% block content -%}
             
-    {% for element in main_cnt recursive %}
+<!--     {% for element in main_cnt recursive %}
         {% if element.type == 'container' %}
             <div class="widget-cnt{% if loop.depth0 == 0 %} main-cnt{% endif %} {{ element.settings.orientation }}{% if element.settings.border %} bordered{% endif %}" data-settings="{{ element.settings | tojson | forceescape }}" {% if element.settings.background %}style="background-image: url({{ element.settings.background }});"{% endif %}>
                 {% if loop.depth0 > 0 %}
@@ -25,6 +25,17 @@
         {% elif element.type == 'widget' %}
             {{ element.html | safe }}
         {% endif %}
-    {% endfor %}
+    {% endfor %} -->
+
+    <div class="widget-cnt main-cnt vertical">
+        <div class="droppables-container">
+            <div class="droppable-area droppable-container alert alert-danger"></div>
+        </div>
+        <div class="content">
+            {% for block in main_cnt.content %}
+                {{ block | safe }}
+            {% endfor %}
+        </div>
+    </div>
 
 {%- endblock %}

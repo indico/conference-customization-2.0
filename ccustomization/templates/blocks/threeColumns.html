@@ -1,0 +1,40 @@
+{% extends 'blocks/_block.html' %}
+
+{% block block_classes -%}
+    three-columns-block
+{%- endblock %}
+
+{% block block_content %}
+
+    <div class="widget-cnt vertical">
+        <div class="droppables-container">
+            <div class="droppable-area droppable-container alert alert-danger"></div>
+        </div>
+        <div class="content">
+            {% for widget in containers_html[0] %}
+                {{ widget | safe }}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="widget-cnt vertical">
+        <div class="droppables-container">
+            <div class="droppable-area droppable-container alert alert-danger"></div>
+        </div>
+        <div class="content">
+            {% for widget in containers_html[1] %}
+                {{ widget | safe }}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="widget-cnt vertical">
+        <div class="droppables-container">
+            <div class="droppable-area droppable-container alert alert-danger"></div>
+        </div>
+        <div class="content">
+            {% for widget in containers_html[2] %}
+                {{ widget | safe }}
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

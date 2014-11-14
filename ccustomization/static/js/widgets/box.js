@@ -5,10 +5,6 @@ BoxWidget.prototype = Object.create(Widget.prototype);
 BoxWidget.prototype.constructor = BoxWidget;
 
 $.extend(BoxWidget.prototype, {
-    runEdit: function runEdit() {
-        delete self.settings.render_content;
-    },
-
     saveSettings: function saveSettings() {
         var self = this;
         var dialog = self.dialog;

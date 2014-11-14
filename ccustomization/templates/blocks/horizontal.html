@@ -1,0 +1,20 @@
+{% extends 'blocks/_block.html' %}
+
+{% block block_classes -%}
+    horizontal-block
+{%- endblock %}
+
+{% block block_content %}
+
+    <div class="widget-cnt horizontal">
+        <div class="droppables-container">
+            <div class="droppable-area droppable-container alert alert-danger"></div>
+        </div>
+        <div class="content">
+            {% for widget in containers_html[0] %}
+                {{ widget | safe }}
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 function Widget(widgetElem) {
     this.widgetElem = widgetElem;
-    this.settings = widgetElem.data('settings');
+    this.settings = widgetElem.data('settings') || {};
     this.dialog = widgetElem.find('.widget-dialog');
 }
 
@@ -50,7 +50,7 @@ $.extend(Widget.prototype, {
         });
     },
 
-    bindIcons : function bindIcons() {
+    bindIcons: function bindIcons() {
         var self = this;
         var trash = self.widgetElem.find('.ui-icon.ui-icon-trash');
         var copy = self.widgetElem.find('.ui-icon.ui-icon-copy');
@@ -62,10 +62,12 @@ $.extend(Widget.prototype, {
             parent.data('object').updateContent();
         });
         copy.on('click', function(){
+            var parent = self.widgetElem.parent('.content').parent('.widget-cnt');
             var settings = self.settings;
             self.render().done(function(newWidget){
                 self.widgetElem.after(newWidget);
                 widgetFactory(newWidget);
+                parent.data('object').updateContent();
             });
         });
         gear.on('click', function(){
@@ -90,7 +92,7 @@ $.extend(Widget.prototype, {
         });
     },
 
-    reload:  function reload() {
+    reload: function reload() {
         var self = this;
         self.update();
     },
@@ -124,6 +126,7 @@ function renderWidget(settings) {
         contentType: 'application/json',
         dataType: 'html',
         data: JSON.stringify({
+            type: 'widget',
             settings: settings
         }),
         success: function(response) {
