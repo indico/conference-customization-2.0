@@ -47,9 +47,11 @@ $.extend(Container.prototype, {
             var blockSection = $('.elements-bar .block-section');
             var widgetSection = $('.elements-bar .widget-section');
             if (self.content.length) {
-                widgetSection.show();
+                widgetSection.removeClass('greyed-out-section');
+                widgetSection.find('.element-stub').draggable('enable');
             } else {
-                widgetSection.hide();
+                widgetSection.addClass('greyed-out-section');
+                widgetSection.find('.element-stub').draggable('disable');
             }
         }
     },
@@ -217,9 +219,9 @@ $(document).ready(function() {
         show: false
     });
 
+    $('.element-stub').draggable(draggableStubOpts);
+
     var main = containerFactory($('.main-cnt'));
     main.updateContent();
-
-    $('.element-stub').draggable(draggableStubOpts);
 
 });

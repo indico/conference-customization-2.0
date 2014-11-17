@@ -538,8 +538,17 @@ $edit-margin: $droppable-size + ($droppable-size/2);
     border: 2px solid black;
     border-radius: 4px;
     margin: 10px auto 10px auto;
+}
 
-    cursor: grab;
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
+.block-section, .widget-section:not(.greyed-out-section) {
+
+    .element-stub {
+        cursor: grab;
+        cursor: -webkit-grab;
+        cursor: -moz-grab;
+    }
+}
+
+.greyed-out-section {
+    opacity: 0.3;
 }
