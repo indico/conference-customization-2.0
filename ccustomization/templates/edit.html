@@ -3,6 +3,7 @@
 {% block title %}Layout modification{% endblock %}
 
 {% block assets %}
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     {%- assets filters='rjsmin', output='assets/edit.js', 'js/edit.js', 'js/typeahead.bundle.js', 'js/twig.js', 'js/jquery.form.js' %}
         <script src="{{ ASSET_URL|version_url }}"></script>
     {%- endassets %}
@@ -44,19 +45,35 @@
         <div class="block-section">
             <div class="section-header">Blocks</div>
             <div class="element-stubs">
-                <img class="element-stub block-stub" src="/static/img/icon_19113.png" title="Title" data-type="title"></img>
-                <img class="element-stub block-stub" src="/static/img/icon_18043.png" title="2 columns" data-type="twoColumns"></img>
-                <img class="element-stub block-stub" src="/static/img/icon_18042.png" title="3 columns" data-type="threeColumns"></img>
-                <img class="element-stub block-stub" src="/static/img/icon_50408.png" title="Horizontal" data-type="horizontal"></img>
+                <div class="element-stub block-stub" title="Title" data-type="title">
+                    <i class="fa fa-align-left"></i>
+                </div>
+                <div class="element-stub block-stub" title="2 Columns" data-type="twoColumns">
+                    <i class="fa fa-columns"></i>
+                </div>
+                <div class="element-stub block-stub" title="3 Columns" data-type="threeColumns">
+                    <i class="fa fa-bars"></i>
+                </div>
+                <div class="element-stub block-stub" title="Horizontal" data-type="horizontal">
+                    <i class="fa fa-arrows-h"></i>
+                </div>
             </div>
         </div>
         <div class="widget-section">
             <div class="section-header">Widgets</div>
             <div class="element-stubs">
-                <img class="element-stub widget-stub" src="/static/img/icon_16320.png" title="Text Box" data-type="box"></img>
-                <img class="element-stub widget-stub" src="/static/img/icon_8191.png" title="Location" data-type="location"></img>
-                <img class="element-stub widget-stub" src="/static/img/icon_45483.png" title="People" data-type="people"></img>
-                <img class="element-stub widget-stub" src="/static/img/icon_16459.png" title="Image" data-type="image"></img>
+                <div class="element-stub widget-stub" title="Text Box" data-type="box">
+                    <i class="fa fa-file-text-o"></i>
+                </div>
+                <div class="element-stub widget-stub" title="Location" data-type="location">
+                    <i class="fa fa-map-marker"></i>
+                </div>
+                <div class="element-stub widget-stub" title="People" data-type="people">
+                    <i class="fa fa-users"></i>
+                </div>
+                <div class="element-stub widget-stub" title="Image" data-type="image">
+                    <i class="fa fa-picture-o"></i>
+                </div>
             </div>
         </div>
     </div>

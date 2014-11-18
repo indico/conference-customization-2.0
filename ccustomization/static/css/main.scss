@@ -531,13 +531,28 @@ $edit-margin: $droppable-size + ($droppable-size/2);
 
 .element-stub {
     background-color: white;
-    display: block;
     z-index: 10;
-    width: 100px;
-    height: 100px;
     border: 2px solid black;
     border-radius: 4px;
     margin: 10px auto 10px auto;
+    width: 100px;
+    text-align: center
+
+
+    i {
+        padding-top: 5px;
+        padding-bottom: 5px;
+
+        &:before {
+            font-size: 80px;
+        }
+
+        &.fa-bars {
+            -ms-transform: rotate(90deg); /* IE 9 */
+            -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
+            transform: rotate(90deg);
+        }
+    }
 }
 
 .block-section, .widget-section:not(.greyed-out-section) {
