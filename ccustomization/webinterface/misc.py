@@ -57,14 +57,20 @@ def render_widget(settings):
 def render_block(settings, containers):
     global counter
     counter += 1
-    containers_html = []
+    rendered_containers = []
     for i, container in enumerate(containers):
-        containers_html.append([])
+        rendered_container = {
+            'settings': container.get('settings') or {'color': '#FFFFFF', 'opacity': 1},
+            'widgets': []
+        }
+        if settings['type'] == 'title':
+            rendered_container['settings']['opacity'] = 0.5
+        rendered_containers.append(rendered_container)
         for widget in container.get('content', []):
-            containers_html[i].append(render_widget(widget.get('settings', {})))
+            rendered_containers[i]['widgets'].append(render_widget(widget.get('settings', {})))
     wvars = {
         'settings': settings,
-        'containers_html': containers_html,
+        'containers': rendered_containers,
         'counter': counter
     }
     return render_template('blocks/{0}.html'.format(settings['type']), **wvars)

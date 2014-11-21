@@ -4,7 +4,7 @@
 
 {% block assets %}
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    {%- assets filters='rjsmin', output='assets/edit.js', 'js/edit.js', 'js/typeahead.bundle.js', 'js/twig.js', 'js/jquery.form.js' %}
+    {%- assets filters='rjsmin', output='assets/edit.js', 'js/edit.js', 'js/typeahead.bundle.js', 'js/twig.js', 'js/jquery.form.js', 'js/jscolor.js' %}
         <script src="{{ ASSET_URL|version_url }}"></script>
     {%- endassets %}
 {% endblock %}
@@ -89,57 +89,18 @@
                 </div>
                 <div class="modal-body container-fluid">
                     <div class="row">
-                        <div class="col-md-2">
-                            <label for="container-title">Title</label>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" id="container-title" class="form-control">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label for="container-border">Border</label>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="checkbox" id="container-border">
-                        </div>
-                    </div>
-                    <hr>
-                    <input class="we-background-path" type="hidden">
-                    <div class="row">
                         <div class="col-md-12">
                             <h4>Background</h4>
                         </div>
                     </div>
-                    <div class="row we-background-preview">
+                    <div class="row">
                         <div class="col-md-2">
-                            <label>Preview</label>
+                            <label>Color</label>
                         </div>
-                        <div class="we-background-container col-md-3">
-                            <div class="we-background">
-                                <span class="we-remove-background-button glyphicon glyphicon-remove" title="Remove background"></span>
+                        <div class="col-md-3">
+                            <div>
+                                <input class="color {hash:true}" value="FFFFFF">
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label>Upload</label>
-                        </div>
-                        <div class="col-md-6">
-                            <form id="background-form" action="{{ url_for('.upload') }}" method="post">
-                                <input type="file" name="file" class="we-background-file">
-                            </form>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label>Url</label>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="we-background-url form-control">
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" class="we-load-background-button btn btn-default">Load</button>
                         </div>
                     </div>
                 </div>

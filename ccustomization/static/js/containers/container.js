@@ -74,37 +74,14 @@ $.extend(Container.prototype, {
         gear.on('click', function(){
             var container = $(this).parent('.icons-container').parent('.widget-cnt');
             var dialog = $('#container-dialog');
-            var containerTitle = $('#container-title');
-            var containerBorder = $('#container-border');
-            var backgroundPreview = dialog.find('.we-background-preview');
-            var backgroundPath = dialog.find('.we-background-path');
-            var backgroundURL = dialog.find('.we-background-url');
             $('.widget-cnt').removeClass('customizing');
             container.addClass('customizing');
-            updateBackgroundPreview(self.settings.background);
-            backgroundURL.val(self.settings.background || '');
-            containerTitle.val(self.settings.title || '');
-            containerBorder.prop('checked', self.settings.border || false);
             dialog.modal('show');
         });
     },
 
-    updateSettings: function updateSettings(title, border, background) {
+    updateSettings: function updateSettings() {
         var self = this;
-        self.settings.title = title;
-        self.settings.border = border;
-        self.settings.background = background;
-        if (title == '') {
-            self.containerElem.children('.title').addClass('hidden');
-        } else {
-            self.containerElem.children('.title').removeClass('hidden').text(title);
-        }
-        self.containerElem.toggleClass('bordered', border);
-        if (background == '') {
-            self.containerElem.css('background-image', 'none');
-        } else {
-            self.containerElem.css('background-image', 'url(' + background + ')');
-        }
     },
 
     serialize: function serialize() {
@@ -127,79 +104,10 @@ function containerFactory(containerElem) {
     return container;
 }
 
-function updateBackgroundPreview(path) {
-    var containerDialog = $('#container-dialog');
-    var backgroundPath = containerDialog.find('.we-background-path');
-    var backgroundPreview = containerDialog.find('.we-background-preview');
-    var background = containerDialog.find('.we-background');
-    var backgroundUpload = containerDialog.find('.we-background-file');
-    var backgroundURL = containerDialog.find('.we-background-url');
-    backgroundPath.val(path || '');
-    if (path) {
-        backgroundPreview.show();
-        background.css('background-image', 'url(' + path + ')');
-    } else {
-        backgroundPreview.hide();
-        backgroundURL.val('');
-        backgroundUpload.val('');
-    }
-}
-
 $(document).ready(function() {
     "use strict";
 
     var containerDialog = $('#container-dialog');
-    var fileForm = $('#background-form');
-    var backgroundUpload = containerDialog.find('.we-background-file');
-    var backgroundURL = containerDialog.find('.we-background-url');
-    var picURL = null;
-
-    fileForm.submit(function() {
-        fileForm.ajaxSubmit({
-            async: false,
-            success: function(response) {
-                picURL = response;
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                alert('File loading failed: ' + errorThrown);
-                backgroundUpload.val('');
-                picURL = null;
-            }
-        });
-        return false;
-    });
-
-    $('.we-load-background-button').on('click', function(){
-        $('<img>', {
-            src: backgroundURL.val(),
-            error: function() {
-                alert('The specified URL is invalid!');
-                backgroundURL.val('');
-            },
-            load: function() {
-                updateBackgroundPreview(backgroundURL.val());
-                backgroundUpload.val('');
-            }
-        });
-    });
-
-    backgroundUpload.on('change', function(){
-        var ok = backgroundUpload[0].files[0].type.match('^image/.*');
-        if (ok) {
-            fileForm.submit();
-            if (picURL != null) {
-                updateBackgroundPreview(picURL);
-                backgroundURL.val('');
-            }
-        } else {
-            alert('The specified file is invalid!');
-            backgroundUpload.val('');
-        }
-    });
-
-    $('.we-remove-background-button').on('click', function(){
-        updateBackgroundPreview('');
-    });
 
     $('#container-dialog-close').on('click', function(){
         $('.widget-cnt').removeClass('customizing');
@@ -207,10 +115,7 @@ $(document).ready(function() {
 
     $('#container-dialog-save').on('click', function(){
         var container = $('.widget-cnt.customizing');
-        var containerTitle = $('#container-title').val();
-        var containerBorder = $('#container-border').prop('checked');
-        var backgroundPath = $('.we-background-path').val();
-        container.data('object').updateSettings(containerTitle, containerBorder, backgroundPath);
+        container.data('object').updateSettings();
         $('.widget-cnt').removeClass('customizing');
     });
 
